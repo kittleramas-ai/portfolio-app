@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0A0D14" />
+      <stop offset="100%" stop-color="#121826" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <!-- Background with subtle border -->
+  <rect width="64" height="64" rx="16" fill="url(#bgGrad)" />
+  <rect x="1" y="1" width="62" height="62" rx="15" stroke="url(#glowGrad)" stroke-width="1.5" stroke-opacity="0.6" />
+  
+  <!-- Stylized Monogram S -->
+  <path d="M42 22C40 18 36.5 16 32 16C25.5 16 21 20 21 25.5C21 34 38 31 38 39C38 43 34.5 45.5 30.5 45.5C25 45.5 21.5 42 20 38M44 26L41 22" 
+        stroke="url(#glowGrad)" 
+        stroke-width="5" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+  
+  <!-- Subtle accent dot -->
+  <circle cx="45" cy="44" r="3" fill="#38bdf8" />
+</svg>
