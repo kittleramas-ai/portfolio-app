@@ -66,9 +66,9 @@ export function VenturesSection() {
           {/* CARD 01: Infodazz Technologies */}
           <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-cyan-400 relative lg:-rotate-1">
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
-                  className="text-stat-counter font-stat-counter text-white/90 tracking-tighter"
+                  className="text-stat-counter font-stat-counter text-text-primary tracking-tighter"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     fontSize: '64px',
@@ -112,7 +112,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Deployments
                   </div>
@@ -120,7 +120,7 @@ export function VenturesSection() {
                     <CountUp target={100} suffix="+" /> Enterprise
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Architecture
                   </div>
@@ -128,7 +128,7 @@ export function VenturesSection() {
                     Hybrid &amp; AI Cloud
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Clientele
                   </div>
@@ -136,7 +136,7 @@ export function VenturesSection() {
                     Mid-Market &amp; Enterprise
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Footprint
                   </div>
@@ -166,7 +166,7 @@ export function VenturesSection() {
             id="bni"
           >
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
                   className="text-stat-counter font-stat-counter text-accent-gold tracking-tighter"
                   style={{
@@ -212,7 +212,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Facilitated Value
                   </div>
@@ -220,7 +220,7 @@ export function VenturesSection() {
                     ₹<CountUp target={120} suffix="+" /> Crores
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Mentored Scope
                   </div>
@@ -228,7 +228,7 @@ export function VenturesSection() {
                     <CountUp target={500} suffix="+" /> Founders
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Trade Conclaves
                   </div>
@@ -236,7 +236,7 @@ export function VenturesSection() {
                     <CountUp target={12} suffix="+" /> Major Summits
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Honor Standing
                   </div>
@@ -261,7 +261,7 @@ export function VenturesSection() {
           {/* CARD 03: SSRG International Journals */}
           <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-indigo-400 relative lg:rotate-1">
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
                   className="text-stat-counter font-stat-counter text-indigo-400 tracking-tighter"
                   style={{
@@ -307,7 +307,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Published Papers
                   </div>
@@ -315,7 +315,7 @@ export function VenturesSection() {
                     <CountUp target={10000} format="comma" suffix="+" /> Works
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Global Networks
                   </div>
@@ -323,7 +323,7 @@ export function VenturesSection() {
                     <CountUp target={45} suffix="+" /> Universities
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Disciplinary Range
                   </div>
@@ -331,7 +331,7 @@ export function VenturesSection() {
                     <CountUp target={14} /> Journals
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Peer Protocol
                   </div>

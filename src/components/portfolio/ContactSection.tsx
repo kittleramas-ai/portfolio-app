@@ -72,7 +72,7 @@ export function ContactSection() {
                     check_circle
                   </span>
                 </div>
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-2xl font-bold text-text-primary">
                   Inquiry Successfully Transmitted
                 </h3>
                 <p className="text-text-secondary max-w-md mx-auto leading-relaxed">
@@ -92,7 +92,7 @@ export function ContactSection() {
                       message: '',
                     })
                   }}
-                  className="mt-4 px-6 py-2.5 rounded-lg bg-slate-surface border border-slate-border text-white text-sm font-semibold hover:border-primary/50 transition-all cursor-pointer"
+                  className="mt-4 px-6 py-2.5 rounded-lg bg-slate-surface border border-slate-border text-text-primary text-sm font-semibold hover:border-primary/50 transition-all cursor-pointer"
                 >
                   Send Another Message
                 </button>
@@ -193,7 +193,7 @@ export function ContactSection() {
                 <div className="text-mono-metric font-mono-metric text-text-tertiary text-[12px] leading-relaxed">
                   By submitting this form, you agree to our{' '}
                   <a
-                    className="underline text-text-secondary hover:text-white"
+                    className="underline text-text-secondary hover:text-text-primary"
                     href="#privacy"
                   >
                     Privacy Policy
@@ -205,7 +205,7 @@ export function ContactSection() {
                 {/* Submit Button */}
                 <div className="pt-4 flex items-center justify-between">
                   <button
-                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-text-primary text-obsidian-base hover:bg-white font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer"
+                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-text-primary text-obsidian-base hover:opacity-90 font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer"
                     style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                     type="submit"
                   >

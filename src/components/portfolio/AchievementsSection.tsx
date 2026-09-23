@@ -304,7 +304,7 @@ export function AchievementsSection() {
                   className={`px-3.5 py-1.5 rounded-full text-mono-metric text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
                       ? `${d.tabActive} shadow-lg scale-105`
-                      : 'bg-white/[0.03] border-white/10 text-text-tertiary hover:text-white hover:border-white/25'
+                      : 'bg-slate-surface border-slate-border text-text-tertiary hover:text-text-primary hover:border-slate-border-highlight'
                   }`}
                 >
                   <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${isActive ? 'bg-black' : `${d.accentText} bg-current`}`} />
@@ -329,13 +329,13 @@ export function AchievementsSection() {
                   <button
                     key={d.id}
                     onClick={() => goTo(cardIdx)}
-                    className="group w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 hover:bg-white/[0.06] transition-all cursor-pointer text-left"
+                    className="group w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-2.5 rounded-xl bg-slate-surface border border-slate-border hover:border-slate-border-highlight transition-all cursor-pointer text-left"
                   >
                     <span className="flex items-center gap-2 min-w-0">
                       <span className={`text-[11px] font-mono-metric font-bold ${d.accentText}`}>
                         ✦ {d.index}.
                       </span>
-                      <span className="text-[11px] sm:text-xs font-mono-metric font-semibold text-text-secondary group-hover:text-white truncate uppercase tracking-wider">
+                      <span className="text-[11px] sm:text-xs font-mono-metric font-semibold text-text-secondary group-hover:text-text-primary truncate uppercase tracking-wider">
                         {d.barTitle}
                       </span>
                     </span>
@@ -362,8 +362,8 @@ export function AchievementsSection() {
           >
             {/* shadow stack behind card only */}
             <div className="relative rounded-2xl">
-            <div className="absolute inset-0 translate-y-3 scale-[0.98] rounded-2xl bg-white/[0.03] border border-white/10 pointer-events-none" />
-            <div className="absolute inset-0 translate-y-6 scale-[0.96] rounded-2xl bg-white/[0.02] border border-white/[0.07] pointer-events-none" />
+            <div className="absolute inset-0 translate-y-3 scale-[0.98] rounded-2xl bg-slate-surface border border-slate-border pointer-events-none" />
+            <div className="absolute inset-0 translate-y-6 scale-[0.96] rounded-2xl bg-slate-surface/70 border border-slate-border pointer-events-none" />
 
             <div
               key={card.id}
@@ -374,11 +374,11 @@ export function AchievementsSection() {
             >
               {/* Archive record header */}
               <div
-                className={`w-full ${card.headBg} border-b ${card.headBorder} px-6 sm:px-8 py-3.5 flex items-center justify-between gap-3 text-white select-none`}
+                className={`w-full ${card.headBg} border-b ${card.headBorder} px-6 sm:px-8 py-3.5 flex items-center justify-between gap-3 text-text-primary select-none`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span className={`h-2 w-2 rounded-full shrink-0 ${card.accentText} bg-current`} />
-                  <span className="text-[11px] sm:text-xs font-mono-metric font-extrabold uppercase tracking-wider text-slate-100 truncate">
+                  <span className="text-[11px] sm:text-xs font-mono-metric font-extrabold uppercase tracking-wider text-text-primary truncate">
                     {card.index}. {card.barTitle}
                   </span>
                 </div>
@@ -404,7 +404,7 @@ export function AchievementsSection() {
                       <span className="truncate">{card.pill}</span>
                     </div>
                     <h3
-                      className="text-2xl sm:text-[32px] font-extrabold text-white tracking-tight leading-[1.15]"
+                      className="text-2xl sm:text-[32px] font-extrabold text-text-primary tracking-tight leading-[1.15]"
                       style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                     >
                       {card.heading}
@@ -414,7 +414,7 @@ export function AchievementsSection() {
                     </p>
                     <div className="grid grid-cols-2 gap-3 pt-1">
                       {card.stats.slice(0, 2).map((v, si) => (
-                        <div key={si} className="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                        <div key={si} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
                           <div className={`text-lg sm:text-xl font-bold font-mono-metric ${si === 0 ? card.accentText : 'text-text-primary'}`}>
                             {v}
                           </div>
@@ -426,7 +426,7 @@ export function AchievementsSection() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       {card.stats.slice(2).map((v, si) => (
-                        <div key={si} className="p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                        <div key={si} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
                           <div className="text-lg sm:text-xl font-bold font-mono-metric text-text-primary">
                             {v}
                           </div>
@@ -447,7 +447,7 @@ export function AchievementsSection() {
                       </a>
                       <button
                         onClick={next}
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider bg-white/[0.04] border border-white/15 text-text-secondary hover:text-white hover:border-white/30 transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider bg-slate-surface border border-slate-border text-text-secondary hover:text-text-primary hover:border-slate-border-highlight transition-all cursor-pointer"
                       >
                         <span>Inspect All Records</span>
                         <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
@@ -528,7 +528,7 @@ export function AchievementsSection() {
                       aria-label={`Go to card ${i + 1}`}
                       onClick={() => goTo(i)}
                       className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                        i === active ? `w-6 ${card.accentBg} border ${card.accentBorder}` : 'w-1.5 bg-white/15 hover:bg-white/30'
+                        i === active ? `w-6 ${card.accentBg} border ${card.accentBorder}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
                       }`}
                     />
                   ))}
@@ -536,14 +536,14 @@ export function AchievementsSection() {
                 <button
                   onClick={prev}
                   aria-label="Previous honor"
-                  className="w-9 h-9 rounded-lg border border-white/15 bg-white/[0.04] text-white flex items-center justify-center hover:bg-white/10 hover:border-white/30 transition-all cursor-pointer"
+                  className="w-9 h-9 rounded-lg border border-slate-border bg-slate-surface text-text-primary flex items-center justify-center hover:border-slate-border-highlight transition-all cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px]">chevron_left</span>
                 </button>
                 <button
                   onClick={next}
                   aria-label="Next honor"
-                  className="h-9 px-3.5 rounded-lg border border-white/15 bg-white/[0.04] text-text-secondary hover:text-white hover:border-white/30 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  className="h-9 px-3.5 rounded-lg border border-slate-border bg-slate-surface text-text-secondary hover:text-text-primary hover:border-slate-border-highlight flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer"
                 >
                   <span className="hidden sm:inline">Cycle Deck</span>
                   <span className="material-symbols-outlined text-[18px]">chevron_right</span>

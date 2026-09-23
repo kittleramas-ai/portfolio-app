@@ -19,7 +19,7 @@ export function QuoteSection() {
           className="tracking-tight leading-[1.18] md:leading-[1.15] text-2xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold"
           style={{ fontFamily: '"Space Grotesk", sans-serif' }}
         >
-          <span className="text-blue-100/70 inline">
+          <span className="text-teal-100/70 inline">
             “Technology without ecosystem is dormant; business without trust is
             fragile.”
           </span>
@@ -45,7 +45,7 @@ export function QuoteSection() {
             >
               Dr. S. K., Ph.D.
             </div>
-            <div className="text-[12px] md:text-[13px] text-blue-200/90 font-mono-metric font-medium tracking-wide mt-0.5">
+            <div className="text-[12px] md:text-[13px] text-teal-100/80 font-mono-metric font-medium tracking-wide mt-0.5">
               Founder &amp; CEO, Infodazz • BNI Madurai • SSRG
             </div>
           </div>

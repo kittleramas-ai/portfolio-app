@@ -42,7 +42,7 @@ export function PerspectivesSection() {
         {/* Article 01 */}
         <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
                 TECHNICAL MONOGRAPH
               </span>
@@ -51,7 +51,7 @@ export function PerspectivesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “The Resilient Enterprise: Why Multi-Cloud Fault Tolerance is an
@@ -63,7 +63,7 @@ export function PerspectivesSection() {
               industrial supply-chain backbones.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
             <span className="text-text-tertiary">Read Essay</span>
             <span className="material-symbols-outlined text-[18px] text-cyan-400 group-hover:translate-x-1 transition-transform">
               arrow_forward
@@ -74,7 +74,7 @@ export function PerspectivesSection() {
         {/* Article 02 */}
         <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider">
                 POLICY &amp; COMMERCE
               </span>
@@ -83,7 +83,7 @@ export function PerspectivesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 group-hover:text-accent-gold transition-colors leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 group-hover:text-accent-gold transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “Grassroots Capitalism: How High-Trust Referral Architectures Beat
@@ -95,7 +95,7 @@ export function PerspectivesSection() {
               outperform pure algorithmic intermediaries.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
             <span className="text-text-tertiary">Executive Memo</span>
             <span className="material-symbols-outlined text-[18px] text-accent-gold group-hover:translate-x-1 transition-transform">
               arrow_forward
@@ -106,7 +106,7 @@ export function PerspectivesSection() {
         {/* Article 03 */}
         <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-emerald-500/10 border-emerald-500/20 text-emerald-400 tracking-wider">
                 PEER REVIEWED
               </span>
@@ -115,7 +115,7 @@ export function PerspectivesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “A Survey on Distributed Consensus Protocols in Heterogeneous Edge
@@ -127,7 +127,7 @@ export function PerspectivesSection() {
               dispersed IoT edge systems.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
             <span className="text-text-tertiary">Double-Blind Peer Reviewed</span>
             <span className="material-symbols-outlined text-[18px] text-emerald-400 group-hover:translate-x-1 transition-transform">
               arrow_forward

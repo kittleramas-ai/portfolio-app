@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useRef } from 'react'
+import { ThemeToggle } from './ThemeToggle'
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -37,11 +37,11 @@ function NavLink({
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`group relative flex items-center justify-center w-10 h-8 transition-colors ${isActive ? 'text-white' : 'text-text-secondary hover:text-white'
+      className={`group relative flex items-center justify-center w-10 h-8 transition-colors ${isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
         }`}
     >
       {/* Centered Number — Locked precisely onto the vertical hairline container axis */}
-      <span className={`text-[11px] font-mono-metric transition-colors tracking-wider z-10 ${isActive ? 'text-white font-bold' : 'text-text-tertiary/70'
+      <span className={`text-[11px] font-mono-metric transition-colors tracking-wider z-10 ${isActive ? 'text-text-primary font-bold' : 'text-text-tertiary/70'
         }`}>
         {num}
       </span>
@@ -49,8 +49,8 @@ function NavLink({
       {/* Floating Animated Text Label — Reveals toward the LEFT side of the numbers */}
       <span
         className={`absolute right-full mr-4 text-[14px] whitespace-nowrap transition-all duration-300 ease-out origin-right pointer-events-none ${isActive
-            ? 'font-bold text-white underline underline-offset-4 decoration-2 decoration-white'
-            : 'font-medium text-text-secondary group-hover:text-white'
+            ? 'font-bold text-text-primary underline underline-offset-4 decoration-2 decoration-current'
+            : 'font-medium text-text-secondary group-hover:text-text-primary'
           } ${showLabel
             ? 'opacity-100 translate-x-0 scale-100'
             : 'opacity-0 translate-x-2 scale-95 overflow-hidden'
@@ -149,6 +149,8 @@ export function Navbar() {
           </a>
 
           <div className="flex items-center gap-3 ml-auto">
+            {/* Theme toggle — light (white) default, dark optional, persisted */}
+            <ThemeToggle />
             {/* Trailing Action CTA Button (Desktop) */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
               <a
@@ -166,7 +168,7 @@ export function Navbar() {
             <button
               type="button"
               aria-label="Toggle Navigation Menu"
-              className="lg:hidden p-2 text-text-secondary hover:text-white focus:outline-none cursor-pointer"
+              className="lg:hidden p-2 text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="material-symbols-outlined text-[26px]">
@@ -193,13 +195,13 @@ export function Navbar() {
                     onClick={() => handleNavClick(link.href)}
                     className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left no-underline transition-colors ${
                       isActive
-                        ? 'bg-white/[0.06] text-white'
-                        : 'text-text-secondary hover:bg-white/[0.04] hover:text-white'
+                        ? 'bg-slate-surface text-text-primary'
+                        : 'text-text-secondary hover:bg-slate-surface/70 hover:text-text-primary'
                     }`}
                   >
                     <span
                       className={`text-[11px] font-mono-metric tracking-wider shrink-0 ${
-                        isActive ? 'text-white font-bold' : 'text-text-tertiary/70'
+                        isActive ? 'text-text-primary font-bold' : 'text-text-tertiary/70'
                       }`}
                     >
                       {num}
@@ -238,7 +240,7 @@ export function Navbar() {
           }`}
       >
         {/* Top hair segment line */}
-        <div className="w-[1px] flex-1 bg-black/60 dark:bg-white/10" />
+        <div className="w-[1px] flex-1 bg-slate-border" />
 
         {/* Navigation Core Wrapper */}
         <nav className="flex flex-col items-center py-6 my-2 gap-3 pointer-events-auto">
@@ -261,7 +263,7 @@ export function Navbar() {
         </nav>
 
         {/* Bottom hair segment line */}
-        <div className="w-[1px] flex-1 bg-black/60 dark:bg-white/10" />
+        <div className="w-[1px] flex-1 bg-slate-border" />
       </aside>
     </>
   )

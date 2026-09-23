@@ -36,7 +36,7 @@ export function KeynotesSection() {
             forums, industry summits, and academic convocations.
           </p>
           <a
-            className="relative z-10 inline-flex w-fit max-w-full items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-label-badge font-label-badge bg-white text-black no-underline font-bold uppercase tracking-wider hover:bg-slate-200 transition-all shadow-md"
+            className="relative z-10 inline-flex w-fit max-w-full items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-label-badge font-label-badge bg-text-primary text-obsidian-base no-underline font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md"
             href="#advisory"
           >
             <span>Request Keynote Availability</span>
@@ -53,7 +53,7 @@ export function KeynotesSection() {
         {/* Keynote 01 */}
         <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider">
                 PLENARY KEYNOTE
               </span>
@@ -62,7 +62,7 @@ export function KeynotesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “Next-Decade Industrial Digitization: Scaling Tier-2 Tech Capitals
@@ -77,7 +77,7 @@ export function KeynotesSection() {
               tier-1 capitals into emerging tier-2 clusters.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
             <span className="flex items-center gap-1.5 text-text-primary font-semibold">
               <span className="material-symbols-outlined text-[16px] text-accent-gold">
                 groups
@@ -91,7 +91,7 @@ export function KeynotesSection() {
         {/* Keynote 02 */}
         <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider">
                 ECONOMIC CONCLAVE
               </span>
@@ -100,7 +100,7 @@ export function KeynotesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “Ecosystem Synergy: How Structured Referral Networks Catalyze
@@ -115,7 +115,7 @@ export function KeynotesSection() {
               directly accelerate transactional velocity.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
             <span className="flex items-center gap-1.5 text-text-primary font-semibold">
               <span className="material-symbols-outlined text-[16px] text-accent-gold">
                 military_tech
@@ -129,7 +129,7 @@ export function KeynotesSection() {
         {/* Keynote 03 */}
         <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
           <div>
-            <div className="card-head-row border-slate-800">
+            <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
                 GLOBAL KEYNOTE
               </span>
@@ -138,7 +138,7 @@ export function KeynotesSection() {
               </span>
             </div>
             <h3
-              className="text-xl font-bold text-white mb-3 leading-snug"
+              className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               “High-Throughput Distributed Architectures &amp; Resilient Cloud
@@ -153,7 +153,7 @@ export function KeynotesSection() {
               global cloud infrastructure resilience.
             </p>
           </div>
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
             <span className="flex items-center gap-1.5 text-text-primary font-semibold">
               <span className="material-symbols-outlined text-[16px] text-emerald-400">
                 school
