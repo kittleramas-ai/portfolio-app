@@ -1,5 +1,5 @@
 {
-  "name": "portfolio-app-ceo",
+  "name": "portfolio",
   "private": true,
   "type": "module",
   "imports": {
@@ -13,7 +13,7 @@
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run build && npx wrangler deploy",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -39,6 +39,7 @@
     "cn": "^0.3.0",
     "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
+    "gsap": "^3.15.0",
     "lucide-react": "^0.577.0",
     "radix-ui": "^1.6.7",
     "react": "^19.2.0",

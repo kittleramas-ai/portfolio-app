@@ -6,9 +6,10 @@ export function Footer() {
 
   return (
     <footer
-      className="w-full max-w-7xl mx-auto px-6 md:px-12 py-16 bg-obsidian-base border-t border-slate-border"
-      style={{ backgroundColor: 'rgb(0, 0, 0)' }}
+      className="w-full py-16 bg-obsidian-base border-t border-slate-border"
+      style={{ backgroundColor: 'var(--portfolio-black)' }}
     >
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-slate-border">
         {/* Brand & Executive Metadata */}
         <div className="md:col-span-5 space-y-4">
@@ -149,6 +150,7 @@ export function Footer() {
           <span>Back to Top</span>
           <span className="material-symbols-outlined text-[16px]">north</span>
         </a>
+      </div>
       </div>
     </footer>
   )

@@ -1,11 +1,13 @@
 import { Reveal } from './Reveal'
+import { AnimatedText } from './AnimatedText'
 
 export function HeroSection() {
   return (
     <section
-      className="relative pt-24 sm:pt-32 md:pt-44 pb-16 md:pb-28 max-w-7xl mx-auto px-4 sm:px-6 md:px-12 border-b border-slate-border/50 section-hairline"
+      className="relative w-full pt-24 sm:pt-32 md:pt-44 pb-16 md:pb-28 border-b border-slate-border/50 section-hairline"
       id="hero"
     >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
       {/* Diagnostic / Status Pill */}
       <Reveal>
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
@@ -33,22 +35,31 @@ export function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end">
         {/* Left Column: Hero Typography, CTAs, & Trust Badges */}
         <div className="lg:col-span-7 flex flex-col justify-between space-y-6 sm:space-y-8 z-10">
-          {/* Headline & Subtitle */}
-          <Reveal delay={90}>
+          {/* Headline & Subtitle — GSAP word stagger on load (no nested Reveal: avoids double-hide above fold) */}
           <div className="space-y-4 sm:space-y-6">
-            <h1
-              className="headline-glow text-3xl sm:text-5xl lg:text-[64px] font-display-hero text-white tracking-tight leading-tight"
-              style={{
-                fontFamily: 'Anton, "Bebas Neue", sans-serif',
-                letterSpacing: '0.02em',
-                textTransform: 'uppercase',
-              }}
+            <AnimatedText
+              as="h1"
+              split="words"
+              mode="load"
+              stagger={0.05}
+              duration={0.7}
+              y={28}
+              delay={0.1}
+              className="headline-glow text-3xl sm:text-5xl lg:text-[64px] font-display-hero text-text-primary tracking-tight leading-tight"
             >
-              Architecting Next-Gen Enterprise Technology. <br className="hidden sm:inline" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-tertiary to-secondary">
-                Catalyzing Regional Business Networks.
+              <span
+                style={{
+                  fontFamily: 'Anton, "Bebas Neue", sans-serif',
+                  letterSpacing: '0.02em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Architecting Next-Gen Enterprise Technology.{' '}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-tertiary to-secondary">
+                  Catalyzing Regional Business Networks.
+                </span>
               </span>
-            </h1>
+            </AnimatedText>
             <p className="text-body-md md:text-body-lg font-body-md md:font-body-lg text-text-secondary max-w-2xl leading-relaxed line-clamp-3 md:line-clamp-none">
               Founder &amp; CEO of{' '}
               <strong className="text-text-primary font-semibold">Infodazz</strong>,{' '}
@@ -59,14 +70,13 @@ export function HeroSection() {
               regional business ecosystems to power exponential scale.
             </p>
           </div>
-          </Reveal>
 
           {/* Primary Action CTA Button Group + Micro-caption */}
           <Reveal delay={160}>
           <div className="space-y-4 pt-1 sm:pt-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
               <a
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl text-base sm:text-[16px] text-text-primary font-semibold bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-95 shadow-[0_0_24px_rgba(14,165,233,0.35)] transition-all duration-200"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl text-base sm:text-[16px] text-white font-semibold bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-95 shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-all duration-200"
                 href="#ventures"
               >
                 <span>Explore Infodazz Solutions</span>
@@ -137,8 +147,11 @@ export function HeroSection() {
 
               {/* Badge 3: SSRG & Enterprise AI */}
               <div className="flex items-center gap-3 group">
-                <div className="w-12 h-12 rounded-full bg-slate-surface border-2 border-secondary/40 flex items-center justify-center text-secondary shadow-md relative shrink-0 group-hover:border-secondary transition-colors">
-                  <span className="material-symbols-outlined text-[24px]">
+                <div className="w-12 h-12 rounded-full bg-indigo-500/15 border-2 border-indigo-400/60 dark:border-indigo-300/60 flex items-center justify-center text-indigo-600 dark:text-indigo-200 shadow-[0_0_18px_var(--portfolio-glow-indigo-strong)] relative shrink-0 group-hover:border-indigo-500 dark:group-hover:border-indigo-200 transition-colors">
+                  <span
+                    className="material-symbols-outlined text-[24px]"
+                    style={{ fontVariationSettings: '"FILL" 1' }}
+                  >
                     verified
                   </span>
                 </div>
@@ -162,7 +175,7 @@ export function HeroSection() {
           <div className="absolute -top-10 right-4 w-72 h-72 bg-primary-container/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
           <div className="absolute bottom-0 right-10 w-64 h-64 bg-secondary/15 rounded-full blur-2xl pointer-events-none -z-10"></div>
 
-          <div className="relative w-full max-w-md executive-card rounded-2xl p-3 pb-0 border border-slate-800/80 group overflow-hidden shadow-2xl ring-1 ring-white/10 hover:ring-cyan-400/30 transition-all duration-300">
+          <div className="relative w-full max-w-md executive-card rounded-2xl p-3 pb-0 border border-slate-border group overflow-hidden shadow-2xl ring-1 ring-slate-border hover:ring-cyan-400/30 transition-all duration-300">
             <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden">
               <img
                 className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
@@ -174,6 +187,7 @@ export function HeroSection() {
           </div>
         </div>
         </Reveal>
+      </div>
       </div>
     </section>
   )

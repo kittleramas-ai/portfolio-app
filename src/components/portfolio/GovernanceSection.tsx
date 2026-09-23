@@ -3,10 +3,11 @@ import { Reveal } from './Reveal'
 export function GovernanceSection() {
   return (
     <section
-      className="py-24 max-w-7xl mx-auto px-6 md:px-12 border-b border-slate-border relative section-hairline"
+      className="py-24 w-full border-b border-slate-border relative section-hairline"
       id="governance"
-      style={{ backgroundColor: '#000000' }}
+      style={{ backgroundColor: 'var(--portfolio-black)' }}
     >
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
       <Reveal>
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-slate-border gap-6 relative z-10">
         <div>
@@ -48,7 +49,7 @@ export function GovernanceSection() {
               ROLE 01 // ENTERPRISE ARCHITECTURE
             </div>
             <h3
-              className="text-2xl font-bold text-white mb-3"
+              className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               Enterprise Technology Board Advisor
@@ -73,7 +74,7 @@ export function GovernanceSection() {
               </li>
             </ul>
           </div>
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
               Entity: Infodazz Strategic Mandates
             </span>
@@ -92,7 +93,7 @@ export function GovernanceSection() {
               ROLE 02 // REGIONAL EXPANSION
             </div>
             <h3
-              className="text-2xl font-bold text-white mb-3"
+              className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               Regional Economic Policy &amp; MSME Growth Mentor
@@ -117,7 +118,7 @@ export function GovernanceSection() {
               </li>
             </ul>
           </div>
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
               Entity: BNI Madurai Executive Board
             </span>
@@ -134,7 +135,7 @@ export function GovernanceSection() {
               ROLE 03 // ACADEMIC GOVERNANCE
             </div>
             <h3
-              className="text-2xl font-bold text-white mb-3"
+              className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
               Academic Senate &amp; Research Advisory Committee
@@ -159,7 +160,7 @@ export function GovernanceSection() {
               </li>
             </ul>
           </div>
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
               Entity: SSRG Research Group Senate
             </span>
@@ -167,6 +168,7 @@ export function GovernanceSection() {
         </div>
       </div>
       </Reveal>
+      </div>
     </section>
   )
 }

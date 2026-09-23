@@ -4,9 +4,10 @@ import { Reveal } from './Reveal'
 export function VenturesSection() {
   return (
     <section
-      className="py-24 max-w-7xl mx-auto px-6 md:px-12 border-b border-slate-border section-hairline"
+      className="py-24 w-full border-b border-slate-border section-hairline"
       id="ventures"
     >
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
       <Reveal>
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 relative z-10">
         <div>
@@ -44,20 +45,20 @@ export function VenturesSection() {
         >
           <path
             d="M 380 220 C 440 130, 410 70, 480 80 C 530 90, 470 210, 520 230 C 540 240, 570 240, 590 230"
-            stroke="#38bdf8"
+            stroke="var(--portfolio-sky-400)"
             strokeDasharray="4 4"
             strokeLinecap="round"
             strokeWidth="1.5"
           />
-          <circle cx="480" cy="80" fill="#38bdf8" r="3" />
+          <circle cx="480" cy="80" fill="var(--portfolio-sky-400)" r="3" />
           <path
             d="M 780 260 C 850 180, 830 110, 890 120 C 940 130, 890 240, 940 260 C 960 270, 980 270, 1000 260"
-            stroke="#f59e0b"
+            stroke="var(--portfolio-amber-500)"
             strokeDasharray="4 4"
             strokeLinecap="round"
             strokeWidth="1.5"
           />
-          <circle cx="890" cy="120" fill="#f59e0b" r="3" />
+          <circle cx="890" cy="120" fill="var(--portfolio-amber-500)" r="3" />
         </svg>
 
         {/* Grid of 3 Cards */}
@@ -65,9 +66,9 @@ export function VenturesSection() {
           {/* CARD 01: Infodazz Technologies */}
           <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-cyan-400 relative lg:-rotate-1">
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
-                  className="text-stat-counter font-stat-counter text-white/90 tracking-tighter"
+                  className="text-stat-counter font-stat-counter text-text-primary tracking-tighter"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     fontSize: '64px',
@@ -77,7 +78,7 @@ export function VenturesSection() {
                   01
                 </span>
                 <div className="flex flex-col items-end gap-1">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-mono-metric font-semibold bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 uppercase tracking-wider">
+                  <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
                     FLAGSHIP TECH
                   </span>
                   <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
@@ -111,7 +112,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Deployments
                   </div>
@@ -119,7 +120,7 @@ export function VenturesSection() {
                     <CountUp target={100} suffix="+" /> Enterprise
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Architecture
                   </div>
@@ -127,7 +128,7 @@ export function VenturesSection() {
                     Hybrid &amp; AI Cloud
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Clientele
                   </div>
@@ -135,7 +136,7 @@ export function VenturesSection() {
                     Mid-Market &amp; Enterprise
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Footprint
                   </div>
@@ -165,7 +166,7 @@ export function VenturesSection() {
             id="bni"
           >
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
                   className="text-stat-counter font-stat-counter text-accent-gold tracking-tighter"
                   style={{
@@ -177,7 +178,7 @@ export function VenturesSection() {
                   02
                 </span>
                 <div className="flex flex-col items-end gap-1">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-mono-metric font-semibold bg-accent-gold/10 border border-accent-gold/20 text-accent-gold uppercase tracking-wider">
+                  <span className="badge-pill text-[11px] font-mono-metric bg-accent-gold/10 border-accent-gold/20 text-accent-gold tracking-wider">
                     REGIONAL NETWORK
                   </span>
                   <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
@@ -211,7 +212,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Facilitated Value
                   </div>
@@ -219,7 +220,7 @@ export function VenturesSection() {
                     ₹<CountUp target={120} suffix="+" /> Crores
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Mentored Scope
                   </div>
@@ -227,7 +228,7 @@ export function VenturesSection() {
                     <CountUp target={500} suffix="+" /> Founders
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Trade Conclaves
                   </div>
@@ -235,7 +236,7 @@ export function VenturesSection() {
                     <CountUp target={12} suffix="+" /> Major Summits
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Honor Standing
                   </div>
@@ -260,7 +261,7 @@ export function VenturesSection() {
           {/* CARD 03: SSRG International Journals */}
           <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-indigo-400 relative lg:rotate-1">
             <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-800/80">
+              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
                 <span
                   className="text-stat-counter font-stat-counter text-indigo-400 tracking-tighter"
                   style={{
@@ -272,7 +273,7 @@ export function VenturesSection() {
                   03
                 </span>
                 <div className="flex flex-col items-end gap-1">
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-mono-metric font-semibold bg-indigo-500/10 border border-indigo-400/20 text-indigo-300 uppercase tracking-wider">
+                  <span className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider">
                     ACADEMIC RESEARCH
                   </span>
                   <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
@@ -306,7 +307,7 @@ export function VenturesSection() {
               </p>
 
               <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Published Papers
                   </div>
@@ -314,7 +315,7 @@ export function VenturesSection() {
                     <CountUp target={10000} format="comma" suffix="+" /> Works
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Global Networks
                   </div>
@@ -322,7 +323,7 @@ export function VenturesSection() {
                     <CountUp target={45} suffix="+" /> Universities
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Disciplinary Range
                   </div>
@@ -330,7 +331,7 @@ export function VenturesSection() {
                     <CountUp target={14} /> Journals
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                     Peer Protocol
                   </div>
@@ -356,6 +357,7 @@ export function VenturesSection() {
         </div>
       </div>
       </Reveal>
+      </div>
     </section>
   )
 }

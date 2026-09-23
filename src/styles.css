@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
@@ -7,6 +6,80 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Portfolio palette: update these tokens to retheme the full experience. */
+  --portfolio-white: #f8fafc;
+  --portfolio-black: #0a0d14;
+  --portfolio-slate-100: #f1f5f9;
+  --portfolio-slate-300: #cbd5e1;
+  --portfolio-slate-400: #94a3b8;
+  --portfolio-slate-500: #64748b;
+  --portfolio-slate-700: #334155;
+  --portfolio-slate-800: #1e293b;
+  --portfolio-slate-900: #0f172a;
+  --portfolio-blue-100: #dbeafe;
+  --portfolio-blue-200: #bfdbfe;
+  --portfolio-blue-300: #93c5fd;
+  --portfolio-blue-400: #60a5fa;
+  --portfolio-blue-500: #3b82f6;
+  --portfolio-blue-600: #2563eb;
+  --portfolio-blue-900: #1e3a8a;
+  --portfolio-blue-950: #172554;
+  --portfolio-cyan-300: #67e8f9;
+  --portfolio-cyan-400: #22d3ee;
+  --portfolio-cyan-500: #06b6d4;
+  --portfolio-cyan-600: #0891b2;
+  --portfolio-sky-400: #38bdf8;
+  --portfolio-indigo-300: #a5b4fc;
+  --portfolio-indigo-200: #c7d2fe;
+  --portfolio-indigo-400: #818cf8;
+  --portfolio-indigo-500: #6366f1;
+  --portfolio-indigo-600: #4f46e5;
+  --portfolio-amber-400: #fbbf24;
+  --portfolio-amber-500: #f59e0b;
+  --portfolio-amber-200: #fde68a;
+  --portfolio-amber-300: #fcd34d;
+  --portfolio-emerald-400: #34d399;
+  --portfolio-emerald-300: #6ee7b7;
+  --portfolio-emerald-500: #10b981;
+  --portfolio-slate-950: #020617;
+  --portfolio-purple-400: #c084fc;
+  --portfolio-red-500: #ef4444;
+  --portfolio-glow-cyan: rgb(14 165 233 / 0.12);
+  --portfolio-glow-cyan-hover: rgb(14 165 233 / 0.2);
+  --portfolio-glow-blue: rgb(59 130 246 / 0.12);
+  --portfolio-glow-blue-hover: rgb(59 130 246 / 0.18);
+  --portfolio-glow-indigo: rgb(99 102 241 / 0.12);
+  --portfolio-glow-indigo-hover: rgb(99 102 241 / 0.18);
+  --portfolio-glow-cta: rgb(14 165 233 / 0.35);
+  --portfolio-glow-cta-hover: rgb(14 165 233 / 0.8);
+  --portfolio-glow-indigo-strong: rgb(129 140 248 / 0.45);
+  --portfolio-terminal-bg: #1d2e45;
+  --portfolio-terminal-text: #e8efff;
+  --portfolio-about-bg: #05070c;
+  --portfolio-about-blue-deep: #1e3a5f;
+  --portfolio-about-blue-mid: #0f1d30;
+  --portfolio-about-blue: #1e40af;
+  --portfolio-about-purple: #a855f7;
+  --portfolio-quote-bg: #0e4a46;
+  --portfolio-quote-glint: rgb(255 255 255 / 0.14);
+  --portfolio-quote-shadow: rgb(0 0 0 / 0.35);
+  --portfolio-achievement-1-card: #0d1017;
+  --portfolio-achievement-1-head: rgb(20 25 38 / 0.9);
+  --portfolio-achievement-1-body-start: rgb(20 25 38 / 0.95);
+  --portfolio-achievement-1-body-end: rgb(11 14 23 / 0.95);
+  --portfolio-achievement-2-card: #0c1018;
+  --portfolio-achievement-2-head: rgb(18 26 40 / 0.9);
+  --portfolio-achievement-2-body-start: rgb(18 25 41 / 0.95);
+  --portfolio-achievement-2-body-end: rgb(10 13 22 / 0.95);
+  --portfolio-achievement-3-card: #0a1215;
+  --portfolio-achievement-3-head: rgb(16 30 26 / 0.9);
+  --portfolio-achievement-3-body-start: rgb(16 27 26 / 0.95);
+  --portfolio-achievement-3-body-end: rgb(9 14 18 / 0.95);
+  --portfolio-achievement-4-card: #120f1d;
+  --portfolio-achievement-4-head: rgb(27 21 43 / 0.9);
+  --portfolio-achievement-4-body-start: rgb(24 19 38 / 0.95);
+  --portfolio-achievement-4-body-end: rgb(11 8 22 / 0.95);
+
   --sea-ink: #173a40;
   --sea-ink-soft: #416166;
   --lagoon: #4fb8b2;
@@ -83,6 +156,9 @@
   --hero-a: rgba(96, 215, 207, 0.18);
   --hero-b: rgba(110, 200, 154, 0.12);
 
+  --portfolio-white: #f8fafc;
+  --portfolio-black: #0a0d14;
+
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.141 0.005 285.823);
@@ -131,6 +207,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-primary-container: var(--primary-container);
   --color-secondary-container: var(--secondary-container);
+  --color-tertiary: var(--tertiary);
+  --color-glow-cyan: var(--glow-cyan);
   --color-obsidian-base: var(--obsidian-base);
   --color-slate-surface: var(--slate-surface);
   --color-slate-card: var(--slate-card);
@@ -163,6 +241,45 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Keep Tailwind utilities variable-backed instead of embedding palette values. */
+  --color-white: var(--portfolio-white);
+  --color-black: var(--portfolio-black);
+  --color-slate-100: var(--portfolio-slate-100);
+  --color-slate-300: var(--portfolio-slate-300);
+  --color-slate-400: var(--portfolio-slate-400);
+  --color-slate-500: var(--portfolio-slate-500);
+  --color-slate-700: var(--portfolio-slate-700);
+  --color-slate-800: var(--portfolio-slate-800);
+  --color-slate-900: var(--portfolio-slate-900);
+  --color-blue-100: var(--portfolio-blue-100);
+  --color-blue-200: var(--portfolio-blue-200);
+  --color-blue-300: var(--portfolio-blue-300);
+  --color-blue-400: var(--portfolio-blue-400);
+  --color-blue-500: var(--portfolio-blue-500);
+  --color-blue-600: var(--portfolio-blue-600);
+  --color-blue-900: var(--portfolio-blue-900);
+  --color-blue-950: var(--portfolio-blue-950);
+  --color-cyan-300: var(--portfolio-cyan-300);
+  --color-cyan-400: var(--portfolio-cyan-400);
+  --color-cyan-500: var(--portfolio-cyan-500);
+  --color-cyan-600: var(--portfolio-cyan-600);
+  --color-sky-400: var(--portfolio-sky-400);
+  --color-indigo-300: var(--portfolio-indigo-300);
+  --color-indigo-200: var(--portfolio-indigo-200);
+  --color-indigo-400: var(--portfolio-indigo-400);
+  --color-indigo-500: var(--portfolio-indigo-500);
+  --color-indigo-600: var(--portfolio-indigo-600);
+  --color-amber-400: var(--portfolio-amber-400);
+  --color-amber-500: var(--portfolio-amber-500);
+  --color-amber-200: var(--portfolio-amber-200);
+  --color-amber-300: var(--portfolio-amber-300);
+  --color-emerald-400: var(--portfolio-emerald-400);
+  --color-emerald-300: var(--portfolio-emerald-300);
+  --color-emerald-500: var(--portfolio-emerald-500);
+  --color-slate-950: var(--portfolio-slate-950);
+  --color-purple-400: var(--portfolio-purple-400);
+  --color-red-500: var(--portfolio-red-500);
 }
 
 html,
@@ -205,23 +322,28 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.14;
+  opacity: 0.35;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(var(--backdrop-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--backdrop-grid-line) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
 }
-
-a {
-  color: var(--lagoon-deep);
-  text-decoration-color: rgba(50, 143, 151, 0.4);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+.dark body::after {
+  opacity: 0.5;
 }
 
-a:hover {
-  color: #246f76;
+@layer base {
+  a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']) {
+    color: var(--lagoon-deep);
+    text-decoration-color: rgba(50, 143, 151, 0.4);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']):hover {
+    color: #246f76;
+  }
 }
 
 code {
@@ -244,8 +366,8 @@ pre code {
 .prose pre {
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #1d2e45;
-  color: #e8efff;
+  background: var(--portfolio-terminal-bg);
+  color: var(--portfolio-terminal-text);
 }
 
 .page-wrap {
@@ -310,7 +432,7 @@ a {
   height: 2px;
   transform: scaleX(0);
   transform-origin: left;
-  background: linear-gradient(90deg, var(--lagoon), #7ed3bf);
+  background: linear-gradient(90deg, var(--lagoon), var(--lagoon-highlight));
   transition: transform 170ms ease;
 }
 
@@ -356,8 +478,76 @@ a {
 
 /* ========================================================================= */
 /* EXECUTIVE PORTFOLIO DESIGN SYSTEM & THEME TOKENS                          */
+/* :root = LIGHT / WHITE theme (default). .dark overrides below.            */
+/* All text / border / surface utilities resolve through these tokens so    */
+/* switching the `dark` class on <html> re-themes the whole portfolio.      */
 /* ========================================================================= */
 :root {
+  color-scheme: light;
+  --obsidian-base: #ffffff;
+  --slate-surface: #f1f5f9;
+  --slate-card: #ffffff;
+  --slate-border: #e2e8f0;
+  --slate-border-highlight: #cbd5e1;
+  --surface-container-low: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+  --accent-gold: #d97706;
+  --glow-cyan: rgba(14, 165, 233, 0.1);
+  --glow-indigo: rgba(99, 102, 241, 0.1);
+  --primary-container: #0ea5e9;
+  --secondary-container: #3131c0;
+  --lagoon-highlight: #0e7490;
+  --tertiary: var(--portfolio-indigo-500);
+
+  /* Toggle switch */
+  --toggle-track: #e2e8f0;
+  --toggle-border: #cbd5e1;
+  --toggle-thumb: #0f172a;
+  --toggle-thumb-border: #0f172a;
+
+  /* Section surfaces that were hard black in dark mode */
+  --portfolio-black: #ffffff;
+  --portfolio-about-bg: #ffffff;
+
+  /* Achievement deck — light paper cards */
+  --portfolio-achievement-1-card: #ffffff;
+  --portfolio-achievement-1-head: rgb(248 250 252 / 0.95);
+  --portfolio-achievement-1-body-start: rgb(255 255 255 / 0.98);
+  --portfolio-achievement-1-body-end: rgb(248 250 252 / 0.98);
+  --portfolio-achievement-2-card: #ffffff;
+  --portfolio-achievement-2-head: rgb(248 250 252 / 0.95);
+  --portfolio-achievement-2-body-start: rgb(255 255 255 / 0.98);
+  --portfolio-achievement-2-body-end: rgb(248 250 252 / 0.98);
+  --portfolio-achievement-3-card: #ffffff;
+  --portfolio-achievement-3-head: rgb(248 250 252 / 0.95);
+  --portfolio-achievement-3-body-start: rgb(255 255 255 / 0.98);
+  --portfolio-achievement-3-body-end: rgb(248 250 252 / 0.98);
+  --portfolio-achievement-4-card: #ffffff;
+  --portfolio-achievement-4-head: rgb(248 250 252 / 0.95);
+  --portfolio-achievement-4-body-start: rgb(255 255 255 / 0.98);
+  --portfolio-achievement-4-body-end: rgb(248 250 252 / 0.98);
+
+  /* Cards / inputs */
+  --executive-card-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+  --executive-card-border: rgba(15, 23, 42, 0.1);
+  --executive-card-inset: rgba(255, 255, 255, 0.9);
+  --executive-card-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.18);
+  --executive-card-shadow-hover: 0 20px 40px -12px rgba(15, 23, 42, 0.22), 0 0 30px rgba(14, 165, 233, 0.12);
+  --executive-input-bg: rgba(255, 255, 255, 0.95);
+  --executive-input-border: rgba(15, 23, 42, 0.14);
+  --executive-input-text: #0f172a;
+
+  /* Backdrop */
+  --backdrop-base: #ffffff;
+  --backdrop-grid-line: rgba(15, 23, 42, 0.07);
+  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(15, 23, 42, 0.08) 100%);
+
+}
+
+.dark {
+  color-scheme: dark;
   --obsidian-base: #0A0D14;
   --slate-surface: #121826;
   --slate-card: #182234;
@@ -372,6 +562,46 @@ a {
   --glow-indigo: rgba(99, 102, 241, 0.18);
   --primary-container: #0ea5e9;
   --secondary-container: #3131c0;
+  --lagoon-highlight: #7ed3bf;
+  --tertiary: var(--portfolio-indigo-400);
+
+  --toggle-track: #1e293b;
+  --toggle-border: #334155;
+  --toggle-thumb: #f8fafc;
+  --toggle-thumb-border: #f8fafc;
+
+  --portfolio-black: #0A0D14;
+  --portfolio-about-bg: #05070c;
+
+  --portfolio-achievement-1-card: #0d1017;
+  --portfolio-achievement-1-head: rgb(20 25 38 / 0.9);
+  --portfolio-achievement-1-body-start: rgb(20 25 38 / 0.95);
+  --portfolio-achievement-1-body-end: rgb(11 14 23 / 0.95);
+  --portfolio-achievement-2-card: #0c1018;
+  --portfolio-achievement-2-head: rgb(18 26 40 / 0.9);
+  --portfolio-achievement-2-body-start: rgb(18 25 41 / 0.95);
+  --portfolio-achievement-2-body-end: rgb(10 13 22 / 0.95);
+  --portfolio-achievement-3-card: #0a1215;
+  --portfolio-achievement-3-head: rgb(16 30 26 / 0.9);
+  --portfolio-achievement-3-body-start: rgb(16 27 26 / 0.95);
+  --portfolio-achievement-3-body-end: rgb(9 14 18 / 0.95);
+  --portfolio-achievement-4-card: #120f1d;
+  --portfolio-achievement-4-head: rgb(27 21 43 / 0.9);
+  --portfolio-achievement-4-body-start: rgb(24 19 38 / 0.95);
+  --portfolio-achievement-4-body-end: rgb(11 8 22 / 0.95);
+
+  --executive-card-bg: linear-gradient(145deg, rgba(16, 22, 34, 0.88) 0%, rgba(10, 13, 20, 0.95) 100%);
+  --executive-card-border: rgba(255, 255, 255, 0.09);
+  --executive-card-inset: rgba(255, 255, 255, 0.1);
+  --executive-card-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65);
+  --executive-card-shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(14, 165, 233, 0.1);
+  --executive-input-bg: rgba(14, 20, 32, 0.9);
+  --executive-input-border: rgba(255, 255, 255, 0.12);
+  --executive-input-text: #F8FAFC;
+
+  --backdrop-base: #000;
+  --backdrop-grid-line: rgba(0, 0, 0, 0.9);
+  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(0,0,0,0.55) 100%);
 }
 
 /* Custom Executive Fonts */
@@ -395,12 +625,12 @@ a {
   font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Custom Background Grids & Spots */
+/* Custom Background Grids & Spots — theme-adaptive */
 .bg-tech-grid {
   background-size: 64px 64px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, var(--backdrop-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--backdrop-grid-line) 1px, transparent 1px);
 }
 
 .radial-cyan-spot {
@@ -411,27 +641,56 @@ a {
   background: radial-gradient(circle at 80% 90%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
 }
 
-/* Executive Glass Card Elevation & Dark Theme System */
+/* Executive Glass Card Elevation — theme-adaptive via tokens */
 .executive-card {
-  background: linear-gradient(145deg, rgba(16, 22, 34, 0.88) 0%, rgba(10, 13, 20, 0.95) 100%);
+  background: var(--executive-card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 16px 36px -8px rgba(0, 0, 0, 0.65);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--executive-card-border);
+  box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow);
+  /* NOTE: keep this to cheap, hover-relevant props only. `transition: all`
+     would also animate every theme-variable flip on all cards at once. */
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .executive-card:hover {
   border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.18), 0 20px 40px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(14, 165, 233, 0.1);
+  box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow-hover);
   transform: translateY(-3px);
 }
 
-/* Custom Executive Input States */
+/* Resting border glow for philosophy pillar cards (static — no perf cost).
+   Hover state above still wins via higher specificity. */
+.executive-card-glow-blue {
+  border-color: rgba(59, 130, 246, 0.38);
+  box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
+    0 0 30px -6px rgba(59, 130, 246, 0.35);
+}
+.executive-card-glow-amber {
+  border-color: rgba(245, 158, 11, 0.38);
+  box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
+    0 0 30px -6px rgba(245, 158, 11, 0.35);
+}
+.executive-card-glow-cyan {
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
+    0 0 30px -6px rgba(34, 211, 238, 0.35);
+}
+
+/* Soft resting halo for prompt bubbles (opaque bg, so no backdrop cost). */
+.bubble-glow {
+  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.18), 0 0 26px -8px var(--portfolio-glow-cta);
+}
+.dark .bubble-glow {
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.6), 0 0 26px -8px var(--portfolio-glow-cta);
+}
+
+/* Custom Executive Input States — theme-adaptive */
 .executive-input {
-  background-color: rgba(14, 20, 32, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #F8FAFC;
-  transition: all 0.15s ease-in-out;
+  background-color: var(--executive-input-bg);
+  border: 1px solid var(--executive-input-border);
+  color: var(--executive-input-text);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .executive-input:focus {
   border-color: #38BDF8;
@@ -493,7 +752,8 @@ a {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background: #000;
+  background: var(--backdrop-base);
+  transition: background-color 300ms ease;
 }
 .site-backdrop-aurora {
   position: absolute;
@@ -501,8 +761,130 @@ a {
   height: 56vmax;
   border-radius: 9999px;
   filter: blur(90px);
-  opacity: 0.5;
+  opacity: 0.32;
   will-change: transform;
+}
+.dark .site-backdrop-aurora {
+  opacity: 0.5;
+}
+
+/* Theme switching is intentionally instant (see paintThemeInstant): animating
+   background/color on full-viewport layers forces hundreds of repaints.
+   While the flip is applied, kill transitions app-wide for a single frame so
+   the switch collapses into one repaint. The toggle itself keeps animating. */
+.theme-no-transitions *:not(.theme-toggle):not(.theme-toggle *),
+.theme-no-transitions *::before,
+.theme-no-transitions *::after {
+  transition: none !important;
+}
+
+/* ========================================================================= */
+/* GOLDEN-RATIO SPIRAL BACKDROP (philosophy section)                         */
+/* Pure CSS: percentage-nested squares + 200% circle pseudos clipped by      */
+/* overflow:hidden into seamless 90° arcs. Exact φ tiling (% of width):      */
+/* 61.80 · 38.20 · 23.61 · 14.59 · 9.02 · 5.57 · 3.44 · 2.13 · 1.32 · 0.81   */
+/* (= Fibonacci 89·55·34·21·13·8·5·3·2·1 scaled; container aspect 1.618:1).  */
+/* Arc centres cycle TL → TR → BR → BL so seams join flawlessly.             */
+/* ========================================================================= */
+:root {
+  --gr-grid: rgba(15, 23, 42, 0.1);
+  --gr-spiral: #64748b;
+  --gr-arc: clamp(1px, 0.2vw, 2px);
+  --gr-opacity: 0.7;
+}
+.dark {
+  --gr-grid: rgba(148, 163, 184, 0.2);
+  --gr-spiral: #94a3b8;
+  --gr-opacity: 0.9;
+}
+/* Pinned backdrop: a full-viewport layer as the FIRST child of the section.
+   The -100vh margin pulls the content up over it, so it costs zero layout
+   space. Pinning mechanism per device (see below) holds it fixed while the
+   section's content scrolls past, then releases at the section end.
+   NOTE: position:fixed can't be used — ScrollSmoother transforms the content,
+   which breaks fixed positioning. And the section must stay overflow-x:clip
+   (NOT hidden): overflow:hidden would turn the section into a scroll
+   container and disable sticky pinning. */
+.gr-bg {
+  position: relative;
+  height: 100vh;
+  margin-bottom: -100vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Desktop: shift the whole composition left so the spiral eye lands ~30%
+   from the viewport's left edge (translate is viewport-relative, so this
+   holds on any screen size). Size and zoom untouched. Mobile keeps the
+   eye centred so it never slides off-screen. */
+@media (min-width: 769px) {
+  .gr-frame { transform: translateX(-20vw); }
+}
+/* Sizing + mask frame. Wide enough to always cover the viewport
+   (object-cover-like: height derived from width always >= 100vh). */
+.gr-frame {
+  position: relative;
+  width: min(2400px, max(160%, 162vh));
+  aspect-ratio: 1.618 / 1;
+  flex-shrink: 0;
+  opacity: var(--gr-opacity);
+  mask-image: radial-gradient(ellipse 74% 84% at 50% 46%, black 32%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 74% 84% at 50% 46%, black 32%, transparent 78%);
+}
+/* Inner pattern layer, statically zoomed/shifted so the spiral eye sits
+   dead-centre of the frame. Kept separate from .gr-frame so GSAP's parallax
+   transform never clobbers this framing. */
+.gr {
+  position: absolute;
+  inset: 0;
+  transform: translate(-42.8%, -42.8%) scale(1.9);
+}
+.gr-box {
+  position: absolute;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--gr-grid);
+}
+.gr-box::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  border: var(--gr-arc) solid var(--gr-spiral);
+  border-radius: 50%;
+}
+.gr-b1 { left: 0; top: 0; width: 61.8%; }
+.gr-b1::before { left: -100%; top: -100%; }
+.gr-b2 { left: 61.8%; top: 0; width: 38.2%; }
+.gr-b2::before { left: 0; top: -100%; }
+.gr-b3 { left: 76.39%; top: 61.8%; width: 23.61%; }
+.gr-b3::before { left: 0; top: 0; }
+.gr-b4 { left: 61.8%; top: 76.39%; width: 14.59%; }
+.gr-b4::before { left: -100%; top: 0; }
+.gr-b5 { left: 61.8%; top: 61.8%; width: 9.02%; }
+.gr-b5::before { left: -100%; top: -100%; }
+.gr-b6 { left: 70.82%; top: 61.8%; width: 5.57%; }
+.gr-b6::before { left: 0; top: -100%; }
+.gr-b7 { left: 72.95%; top: 70.82%; width: 3.44%; }
+.gr-b7::before { left: 0; top: 0; }
+.gr-b8 { left: 70.82%; top: 72.95%; width: 2.13%; }
+.gr-b8::before { left: -100%; top: 0; }
+.gr-b9 { left: 70.82%; top: 70.82%; width: 1.32%; }
+.gr-b9::before { left: -100%; top: -100%; }
+.gr-b10 { left: 72.14%; top: 70.82%; width: 0.81%; }
+.gr-b10::before { left: 0; top: -100%; }
+.gr-dot {
+  position: absolute;
+  left: 72.54%;
+  top: 72.54%;
+  width: 0.8%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--gr-spiral);
 }
 .site-backdrop-aurora-a {
   left: -14vmax;
@@ -529,15 +911,15 @@ a {
   inset: 0;
   background-size: 64px 64px;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
+    linear-gradient(to right, var(--backdrop-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--backdrop-grid-line) 1px, transparent 1px);
   mask-image: radial-gradient(ellipse 90% 62% at 50% 0%, black 30%, transparent 78%);
   opacity: 0.9;
 }
 .site-backdrop-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(0,0,0,0.55) 100%);
+  background: var(--backdrop-vignette);
 }
 
 @keyframes drift-a {
@@ -579,8 +961,11 @@ a {
 }
 .executive-card:hover::after { opacity: 1; transform: translateX(30%); }
 
-/* Gradient headline helper */
+/* Gradient headline helper — softer on white, glowing on dark */
 .headline-glow {
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+.dark .headline-glow {
   text-shadow: 0 0 32px rgba(14,165,233,0.28);
 }
 
@@ -593,4 +978,119 @@ a {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), rgba(245,158,11,0.28), transparent);
   pointer-events: none;
+}
+
+/* ========================================================================= */
+/* APP-WIDE BADGE / PILL SYSTEM — consistent circle borders                */
+/* Card header pills must stay single-line with fixed height so            */
+/* rounded-full borders render identically across all sections.            */
+/* ========================================================================= */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border-width: 1px;
+  border-style: solid;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.card-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--slate-border);
+}
+.card-head-meta {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-top: 5px;
+  text-align: right;
+  line-height: 1.35;
+  max-width: 38%;
+}
+/* ========================================================================= */
+/* GSAP ScrollSmoother + AnimatedText (GSAP only)                             */
+/* ========================================================================= */
+#smooth-wrapper {
+  overflow-x: hidden;
+  position: relative;
+}
+#smooth-content {
+  will-change: transform;
+  position: relative;
+}
+/* kill native smooth-scroll which fights ScrollSmoother */
+html.gsap-smoothing,
+html.gsap-smoothing body {
+  scroll-behavior: auto !important;
+}
+.gsap-animated-text {
+  overflow-wrap: break-word;
+  overflow: visible;
+}
+.gsap-animated-text [data-split],
+.gsap-animated-text .split-char,
+.gsap-animated-text .split-word,
+.gsap-animated-text .split-line {
+  will-change: transform, opacity;
+}
+/* SplitText wraps words/chars in inline-blocks which breaks parent
+   bg-clip-text gradients (children inherit transparent color but lose bg).
+   Re-apply the gradient on split children inside a gradient span. */
+.gsap-animated-text .bg-clip-text div,
+.gsap-animated-text .bg-clip-text span {
+  background-image: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  #smooth-wrapper { overflow: visible; }
+  #smooth-content { will-change: auto; transform: none !important; }
+}
+
+/* ========================================================================= */
+/* MOBILE PERF — kill per-frame animations + heavy blurs on small screens    */
+/* (mobile uses native scroll + IO reveals; visuals stay static & cheap)     */
+/* ========================================================================= */
+@media (max-width: 768px) {
+  .site-backdrop-aurora {
+    animation: none;
+    will-change: auto;
+  }
+
+  .site-backdrop-grid { opacity: 0.5; }
+  .executive-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .executive-card::after { display: none; }
+  .float-pill-1,
+  .float-pill-2,
+  .float-pill-3,
+  .float-pill-4,
+  .float-pill-5,
+  .float-pill-6 { animation: none; }
+  .reveal { transition-duration: 500ms; }
+  [class*='backdrop-blur'] {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* Mobile has no ScrollSmoother (ids stripped), so native sticky pinning
+     works here — no JS needed. */
+  .gr-bg {
+    position: sticky;
+    top: 0;
+  }
 }
