@@ -205,7 +205,7 @@ export function ContactSection() {
                 {/* Submit Button */}
                 <div className="pt-4 flex items-center justify-between">
                   <button
-                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-text-primary text-obsidian-base hover:opacity-90 font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer"
+                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-primary-container text-white hover:opacity-95 font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer"
                     style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                     type="submit"
                   >

@@ -6,155 +6,158 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Portfolio palette: update these tokens to retheme the full experience. */
-  --portfolio-white: #f8fafc;
-  --portfolio-black: #0a0d14;
-  --portfolio-slate-100: #f1f5f9;
-  --portfolio-slate-300: #cbd5e1;
-  --portfolio-slate-400: #94a3b8;
-  --portfolio-slate-500: #64748b;
-  --portfolio-slate-700: #334155;
-  --portfolio-slate-800: #1e293b;
-  --portfolio-slate-900: #0f172a;
-  --portfolio-blue-100: #dbeafe;
-  --portfolio-blue-200: #bfdbfe;
-  --portfolio-blue-300: #93c5fd;
-  --portfolio-blue-400: #60a5fa;
-  --portfolio-blue-500: #3b82f6;
-  --portfolio-blue-600: #2563eb;
-  --portfolio-blue-900: #1e3a8a;
-  --portfolio-blue-950: #172554;
-  --portfolio-cyan-300: #67e8f9;
-  --portfolio-cyan-400: #22d3ee;
-  --portfolio-cyan-500: #06b6d4;
-  --portfolio-cyan-600: #0891b2;
-  --portfolio-sky-400: #38bdf8;
-  --portfolio-indigo-300: #a5b4fc;
-  --portfolio-indigo-200: #c7d2fe;
-  --portfolio-indigo-400: #818cf8;
-  --portfolio-indigo-500: #6366f1;
-  --portfolio-indigo-600: #4f46e5;
-  --portfolio-amber-400: #fbbf24;
-  --portfolio-amber-500: #f59e0b;
-  --portfolio-amber-200: #fde68a;
-  --portfolio-amber-300: #fcd34d;
-  --portfolio-emerald-400: #34d399;
-  --portfolio-emerald-300: #6ee7b7;
-  --portfolio-emerald-500: #10b981;
-  --portfolio-slate-950: #020617;
-  --portfolio-purple-400: #c084fc;
+  /* Portfolio palette: Executive Emerald & Bronze (private-banking luxury).
+     Deep obsidian-green #071A12 / #0D281E + metallic champagne-bronze #D4AF37 / #E5C07B.
+     Blue/cyan/indigo utility names are intentionally remapped to emerald/bronze
+     so existing components retheme without edits. */
+  --portfolio-white: #f5efe0;
+  --portfolio-black: #071a12;
+  --portfolio-slate-100: #ede8d8;
+  --portfolio-slate-300: #cbc4ad;
+  --portfolio-slate-400: #8a9a90;
+  --portfolio-slate-500: #64746a;
+  --portfolio-slate-700: #33413a;
+  --portfolio-slate-800: #1a2e24;
+  --portfolio-slate-900: #0d281e;
+  --portfolio-blue-100: #dde8e0;
+  --portfolio-blue-200: #b9cfc0;
+  --portfolio-blue-300: #8fb09a;
+  --portfolio-blue-400: #4a7a5e;
+  --portfolio-blue-500: #1a4a35;
+  --portfolio-blue-600: #0d281e;
+  --portfolio-blue-900: #071a12;
+  --portfolio-blue-950: #04100b;
+  --portfolio-cyan-300: #f0dc9a;
+  --portfolio-cyan-400: #e5c07b;
+  --portfolio-cyan-500: #d4af37;
+  --portfolio-cyan-600: #8c6d1f;
+  --portfolio-sky-400: #e5c07b;
+  --portfolio-indigo-300: #e5c07b;
+  --portfolio-indigo-200: #f3e6be;
+  --portfolio-indigo-400: #c9a227;
+  --portfolio-indigo-500: #8c6d1f;
+  --portfolio-indigo-600: #5c4a12;
+  --portfolio-amber-400: #d4af37;
+  --portfolio-amber-500: #8c6d1f;
+  --portfolio-amber-200: #f9edc8;
+  --portfolio-amber-300: #eed88a;
+  --portfolio-emerald-400: #2e7d5b;
+  --portfolio-emerald-300: #7bc9a3;
+  --portfolio-emerald-500: #0d281e;
+  --portfolio-slate-950: #04100b;
+  --portfolio-purple-400: #c9a227;
   --portfolio-red-500: #ef4444;
-  --portfolio-glow-cyan: rgb(14 165 233 / 0.12);
-  --portfolio-glow-cyan-hover: rgb(14 165 233 / 0.2);
-  --portfolio-glow-blue: rgb(59 130 246 / 0.12);
-  --portfolio-glow-blue-hover: rgb(59 130 246 / 0.18);
-  --portfolio-glow-indigo: rgb(99 102 241 / 0.12);
-  --portfolio-glow-indigo-hover: rgb(99 102 241 / 0.18);
-  --portfolio-glow-cta: rgb(14 165 233 / 0.35);
-  --portfolio-glow-cta-hover: rgb(14 165 233 / 0.8);
-  --portfolio-glow-indigo-strong: rgb(129 140 248 / 0.45);
-  --portfolio-terminal-bg: #1d2e45;
-  --portfolio-terminal-text: #e8efff;
-  --portfolio-about-bg: #05070c;
-  --portfolio-about-blue-deep: #1e3a5f;
-  --portfolio-about-blue-mid: #0f1d30;
-  --portfolio-about-blue: #1e40af;
-  --portfolio-about-purple: #a855f7;
-  --portfolio-quote-bg: #0e4a46;
-  --portfolio-quote-glint: rgb(255 255 255 / 0.14);
-  --portfolio-quote-shadow: rgb(0 0 0 / 0.35);
-  --portfolio-achievement-1-card: #0d1017;
-  --portfolio-achievement-1-head: rgb(20 25 38 / 0.9);
-  --portfolio-achievement-1-body-start: rgb(20 25 38 / 0.95);
-  --portfolio-achievement-1-body-end: rgb(11 14 23 / 0.95);
-  --portfolio-achievement-2-card: #0c1018;
-  --portfolio-achievement-2-head: rgb(18 26 40 / 0.9);
-  --portfolio-achievement-2-body-start: rgb(18 25 41 / 0.95);
-  --portfolio-achievement-2-body-end: rgb(10 13 22 / 0.95);
-  --portfolio-achievement-3-card: #0a1215;
-  --portfolio-achievement-3-head: rgb(16 30 26 / 0.9);
-  --portfolio-achievement-3-body-start: rgb(16 27 26 / 0.95);
-  --portfolio-achievement-3-body-end: rgb(9 14 18 / 0.95);
-  --portfolio-achievement-4-card: #120f1d;
-  --portfolio-achievement-4-head: rgb(27 21 43 / 0.9);
-  --portfolio-achievement-4-body-start: rgb(24 19 38 / 0.95);
-  --portfolio-achievement-4-body-end: rgb(11 8 22 / 0.95);
+  --portfolio-glow-cyan: rgb(212 175 55 / 0.14);
+  --portfolio-glow-cyan-hover: rgb(212 175 55 / 0.22);
+  --portfolio-glow-blue: rgb(13 40 30 / 0.14);
+  --portfolio-glow-blue-hover: rgb(26 74 53 / 0.2);
+  --portfolio-glow-indigo: rgb(140 109 31 / 0.14);
+  --portfolio-glow-indigo-hover: rgb(140 109 31 / 0.2);
+  --portfolio-glow-cta: rgb(212 175 55 / 0.35);
+  --portfolio-glow-cta-hover: rgb(212 175 55 / 0.8);
+  --portfolio-glow-indigo-strong: rgb(229 192 123 / 0.45);
+  --portfolio-terminal-bg: #0d281e;
+  --portfolio-terminal-text: #f5efe0;
+  --portfolio-about-bg: #071a12;
+  --portfolio-about-blue-deep: #0d281e;
+  --portfolio-about-blue-mid: #071a12;
+  --portfolio-about-blue: #1a4a35;
+  --portfolio-about-purple: #d4af37;
+  --portfolio-quote-bg: #0d281e;
+  --portfolio-quote-glint: rgb(229 192 123 / 0.14);
+  --portfolio-quote-shadow: rgb(0 0 0 / 0.4);
+  --portfolio-achievement-1-card: #0d281e;
+  --portfolio-achievement-1-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-1-body-start: rgb(13 40 30 / 0.95);
+  --portfolio-achievement-1-body-end: rgb(7 26 18 / 0.95);
+  --portfolio-achievement-2-card: #0d281e;
+  --portfolio-achievement-2-head: rgb(16 44 33 / 0.9);
+  --portfolio-achievement-2-body-start: rgb(15 42 32 / 0.95);
+  --portfolio-achievement-2-body-end: rgb(7 26 18 / 0.95);
+  --portfolio-achievement-3-card: #0a2018;
+  --portfolio-achievement-3-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-3-body-start: rgb(12 38 28 / 0.95);
+  --portfolio-achievement-3-body-end: rgb(6 22 15 / 0.95);
+  --portfolio-achievement-4-card: #0d281e;
+  --portfolio-achievement-4-head: rgb(28 42 30 / 0.9);
+  --portfolio-achievement-4-body-start: rgb(24 38 28 / 0.95);
+  --portfolio-achievement-4-body-end: rgb(7 26 18 / 0.95);
 
-  --sea-ink: #173a40;
-  --sea-ink-soft: #416166;
-  --lagoon: #4fb8b2;
-  --lagoon-deep: #328f97;
-  --palm: #2f6a4a;
-  --sand: #e7f0e8;
-  --foam: #f3faf5;
-  --surface: rgba(255, 255, 255, 0.74);
-  --surface-strong: rgba(255, 255, 255, 0.9);
-  --line: rgba(23, 58, 64, 0.14);
+  --sea-ink: #071a12;
+  --sea-ink-soft: #4a5a51;
+  --lagoon: #0d281e;
+  --lagoon-deep: #071a12;
+  --palm: #0d281e;
+  --sand: #fdfbf5;
+  --foam: #f3ede0;
+  --surface: rgba(255, 253, 246, 0.74);
+  --surface-strong: rgba(253, 251, 245, 0.9);
+  --line: rgba(7, 26, 18, 0.14);
   --inset-glint: rgba(255, 255, 255, 0.82);
-  --kicker: rgba(47, 106, 74, 0.9);
-  --bg-base: #e7f3ec;
-  --header-bg: rgba(251, 255, 248, 0.84);
-  --chip-bg: rgba(255, 255, 255, 0.8);
-  --chip-line: rgba(47, 106, 74, 0.18);
-  --link-bg-hover: rgba(255, 255, 255, 0.9);
-  --hero-a: rgba(79, 184, 178, 0.36);
-  --hero-b: rgba(47, 106, 74, 0.2);
+  --kicker: #8c6d1f;
+  --bg-base: #fdfbf5;
+  --header-bg: rgba(253, 251, 245, 0.84);
+  --chip-bg: rgba(243, 237, 224, 0.8);
+  --chip-line: rgba(140, 109, 31, 0.22);
+  --link-bg-hover: rgba(243, 237, 224, 0.9);
+  --hero-a: rgba(212, 175, 55, 0.12);
+  --hero-b: rgba(13, 40, 30, 0.08);
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  --background: #fdfbf5;
+  --foreground: #071a12;
+  --card: #fffdf6;
+  --card-foreground: #071a12;
+  --popover: #fffdf6;
+  --popover-foreground: #071a12;
+  --primary: #0d281e;
+  --primary-foreground: #fdfbf5;
+  --secondary: #f3ede0;
+  --secondary-foreground: #071a12;
+  --muted: #f3ede0;
+  --muted-foreground: #6b7263;
+  --accent: #f3ede0;
+  --accent-foreground: #071a12;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.871 0.006 286.286);
+  --border: #e5dcc8;
+  --input: #e5dcc8;
+  --ring: #8c6d1f;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.871 0.006 286.286);
+  --sidebar: #fffdf6;
+  --sidebar-foreground: #071a12;
+  --sidebar-primary: #0d281e;
+  --sidebar-primary-foreground: #fdfbf5;
+  --sidebar-accent: #f3ede0;
+  --sidebar-accent-foreground: #071a12;
+  --sidebar-border: #e5dcc8;
+  --sidebar-ring: #8c6d1f;
 }
 
 .dark {
-  --sea-ink: #d7ece8;
-  --sea-ink-soft: #afcdc8;
-  --lagoon: #60d7cf;
-  --lagoon-deep: #8de5db;
-  --palm: #6ec89a;
-  --sand: #0f1a1e;
-  --foam: #101d22;
-  --surface: rgba(16, 30, 34, 0.8);
-  --surface-strong: rgba(15, 27, 31, 0.92);
-  --line: rgba(141, 229, 219, 0.18);
-  --inset-glint: rgba(194, 247, 238, 0.14);
-  --kicker: #b8efe5;
-  --bg-base: #0a1418;
-  --header-bg: rgba(10, 20, 24, 0.8);
-  --chip-bg: rgba(13, 28, 32, 0.9);
-  --chip-line: rgba(141, 229, 219, 0.24);
-  --link-bg-hover: rgba(24, 44, 49, 0.8);
-  --hero-a: rgba(96, 215, 207, 0.18);
-  --hero-b: rgba(110, 200, 154, 0.12);
+  --sea-ink: #f5efe0;
+  --sea-ink-soft: #a8b5ad;
+  --lagoon: #d4af37;
+  --lagoon-deep: #e5c07b;
+  --palm: #d4af37;
+  --sand: #071a12;
+  --foam: #0d281e;
+  --surface: rgba(13, 40, 30, 0.8);
+  --surface-strong: rgba(7, 26, 18, 0.92);
+  --line: #1c3a2e;
+  --inset-glint: rgba(229, 192, 123, 0.14);
+  --kicker: #e5c07b;
+  --bg-base: #071a12;
+  --header-bg: rgba(7, 26, 18, 0.8);
+  --chip-bg: rgba(13, 40, 30, 0.9);
+  --chip-line: rgba(212, 175, 55, 0.24);
+  --link-bg-hover: rgba(13, 40, 30, 0.9);
+  --hero-a: rgba(212, 175, 55, 0.18);
+  --hero-b: rgba(13, 40, 30, 0.4);
 
   --portfolio-white: #f8fafc;
   --portfolio-black: #0a0d14;
@@ -296,7 +299,7 @@ body {
   background:
     radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
     radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
-    radial-gradient(720px 380px at 50% 115%, rgba(79, 184, 178, 0.1), transparent 68%),
+    radial-gradient(720px 380px at 50% 115%, rgba(140, 109, 31, 0.06), transparent 68%),
     linear-gradient(180deg, color-mix(in oklab, var(--sand) 68%, white) 0%, var(--foam) 44%, var(--bg-base) 100%);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -312,8 +315,8 @@ body::before {
   opacity: 0.28;
   background:
     radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.8), transparent 34%),
-    radial-gradient(circle at 78% 26%, rgba(79, 184, 178, 0.2), transparent 42%),
-    radial-gradient(circle at 42% 82%, rgba(47, 106, 74, 0.14), transparent 36%);
+    radial-gradient(circle at 78% 26%, rgba(212, 175, 55, 0.12), transparent 42%),
+    radial-gradient(circle at 42% 82%, rgba(13, 40, 30, 0.08), transparent 36%);
 }
 
 body::after {
@@ -335,15 +338,21 @@ body::after {
 
 @layer base {
   a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']) {
-    color: var(--lagoon-deep);
-    text-decoration-color: rgba(50, 143, 151, 0.4);
+    color: #0D281E;
+    text-decoration-color: rgba(140, 109, 31, 0.45);
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
   }
 
   a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']):hover {
-    color: #246f76;
+    color: #8C6D1F;
   }
+}
+.dark a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']) {
+  color: #E5C07B;
+}
+.dark a:not([class*='bg-']):not([class*='rounded-full']):not([class*='rounded-xl']):not([class*='rounded-lg']):hover {
+  color: #D4AF37;
 }
 
 code {
@@ -384,8 +393,8 @@ pre code {
   background: linear-gradient(165deg, var(--surface-strong), var(--surface));
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
-    0 22px 44px rgba(30, 90, 72, 0.1),
-    0 6px 18px rgba(23, 58, 64, 0.08);
+    0 22px 44px rgba(34, 34, 34, 0.08),
+    0 6px 18px rgba(34, 34, 34, 0.06);
   backdrop-filter: blur(4px);
 }
 
@@ -393,8 +402,8 @@ pre code {
   background: linear-gradient(165deg, color-mix(in oklab, var(--surface-strong) 93%, white 7%), var(--surface));
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
-    0 18px 34px rgba(30, 90, 72, 0.1),
-    0 4px 14px rgba(23, 58, 64, 0.06);
+    0 18px 34px rgba(34, 34, 34, 0.08),
+    0 4px 14px rgba(34, 34, 34, 0.05);
 }
 
 .feature-card:hover {
@@ -484,124 +493,204 @@ a {
 /* ========================================================================= */
 :root {
   color-scheme: light;
-  --obsidian-base: #ffffff;
-  --slate-surface: #f1f5f9;
-  --slate-card: #ffffff;
-  --slate-border: #e2e8f0;
-  --slate-border-highlight: #cbd5e1;
-  --surface-container-low: #f8fafc;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-tertiary: #64748b;
-  --accent-gold: #d97706;
-  --glow-cyan: rgba(14, 165, 233, 0.1);
-  --glow-indigo: rgba(99, 102, 241, 0.1);
-  --primary-container: #0ea5e9;
-  --secondary-container: #3131c0;
-  --lagoon-highlight: #0e7490;
-  --tertiary: var(--portfolio-indigo-500);
+  /* Executive Emerald & Bronze — institutional luxury (light: warm ivory paper).
+     Base ink: deep obsidian-green #071A12 · Surface: champagne paper
+     Accent (light): antique bronze #8C6D1F · CTA: emerald #0D281E → bronze */
+  --obsidian-base: #FDFBF5;
+  --slate-surface: #F3EDE0;
+  --slate-card: #FFFDF6;
+  --slate-border: #E5DCC8;
+  --slate-border-highlight: #C9B78C;
+  --surface-container-low: #F7F2E7;
+  --text-primary: #071A12;
+  --text-secondary: #3A4A42;
+  --text-tertiary: #8A8474;
+  --accent-gold: #8C6D1F;
+  --glow-cyan: rgba(212, 175, 55, 0.14);
+  --glow-indigo: rgba(13, 40, 30, 0.1);
+  --primary-container: #0D281E;
+  --secondary-container: #8C6D1F;
+  --lagoon-highlight: #8C6D1F;
+  --tertiary: #B08D2E;
+
+  /* Light-mode utility remap: blue → deep emerald scale, cyan/sky → champagne
+     bronze, indigo → bronze-deep, amber → metallic bronze, slate → warm paper.
+     Emerald keeps semantic meaning. Dark mode restores full color below. */
+  --color-slate-100: #F3EDE0;
+  --color-slate-300: #E5DCC8;
+  --color-slate-400: #9AA194;
+  --color-slate-500: #64746A;
+  --color-slate-700: #33413A;
+  --color-slate-800: #1A2E24;
+  --color-slate-900: #071A12;
+  --color-slate-950: #04100B;
+  --color-blue-100: #DDE8E0;
+  --color-blue-200: #B9CFC0;
+  --color-blue-300: #8FB09A;
+  --color-blue-400: #4A7A5E;
+  --color-blue-500: #1A4A35;
+  --color-blue-600: #0D281E;
+  --color-blue-900: #071A12;
+  --color-blue-950: #04100B;
+  --color-cyan-300: #F0DC9A;
+  --color-cyan-400: #E5C07B;
+  --color-cyan-500: #D4AF37;
+  --color-cyan-600: #8C6D1F;
+  --color-sky-400: #E5C07B;
+  --color-indigo-200: #F3E6BE;
+  --color-indigo-300: #E5C07B;
+  --color-indigo-400: #C9A227;
+  --color-indigo-500: #8C6D1F;
+  --color-indigo-600: #5C4A12;
+  --color-amber-200: #F9EDC8;
+  --color-amber-300: #EED88A;
+  --color-amber-400: #D4AF37;
+  --color-amber-500: #8C6D1F;
+  --color-emerald-300: #7BC9A3;
+  --color-emerald-400: #2E7D5B;
+  --color-emerald-500: #0D281E;
+  --color-purple-400: #C9A227;
+  --color-red-500: #EF4444;
 
   /* Toggle switch */
-  --toggle-track: #e2e8f0;
-  --toggle-border: #cbd5e1;
-  --toggle-thumb: #0f172a;
-  --toggle-thumb-border: #0f172a;
+  --toggle-track: #E9E0C9;
+  --toggle-border: #C9B78C;
+  --toggle-thumb: #0D281E;
+  --toggle-thumb-border: #0D281E;
 
   /* Section surfaces that were hard black in dark mode */
-  --portfolio-black: #ffffff;
-  --portfolio-about-bg: #ffffff;
+  --portfolio-black: #FDFBF5;
+  --portfolio-about-bg: #FDFBF5;
 
-  /* Achievement deck — light paper cards */
-  --portfolio-achievement-1-card: #ffffff;
-  --portfolio-achievement-1-head: rgb(248 250 252 / 0.95);
-  --portfolio-achievement-1-body-start: rgb(255 255 255 / 0.98);
-  --portfolio-achievement-1-body-end: rgb(248 250 252 / 0.98);
-  --portfolio-achievement-2-card: #ffffff;
-  --portfolio-achievement-2-head: rgb(248 250 252 / 0.95);
-  --portfolio-achievement-2-body-start: rgb(255 255 255 / 0.98);
-  --portfolio-achievement-2-body-end: rgb(248 250 252 / 0.98);
-  --portfolio-achievement-3-card: #ffffff;
-  --portfolio-achievement-3-head: rgb(248 250 252 / 0.95);
-  --portfolio-achievement-3-body-start: rgb(255 255 255 / 0.98);
-  --portfolio-achievement-3-body-end: rgb(248 250 252 / 0.98);
-  --portfolio-achievement-4-card: #ffffff;
-  --portfolio-achievement-4-head: rgb(248 250 252 / 0.95);
-  --portfolio-achievement-4-body-start: rgb(255 255 255 / 0.98);
-  --portfolio-achievement-4-body-end: rgb(248 250 252 / 0.98);
+  /* Achievement deck — light champagne paper cards */
+  --portfolio-achievement-1-card: #FFFDF6;
+  --portfolio-achievement-1-head: rgb(247 242 231 / 0.95);
+  --portfolio-achievement-1-body-start: rgb(255 253 246 / 0.98);
+  --portfolio-achievement-1-body-end: rgb(243 237 224 / 0.98);
+  --portfolio-achievement-2-card: #FFFDF6;
+  --portfolio-achievement-2-head: rgb(247 242 231 / 0.95);
+  --portfolio-achievement-2-body-start: rgb(255 253 246 / 0.98);
+  --portfolio-achievement-2-body-end: rgb(243 237 224 / 0.98);
+  --portfolio-achievement-3-card: #FFFDF6;
+  --portfolio-achievement-3-head: rgb(247 242 231 / 0.95);
+  --portfolio-achievement-3-body-start: rgb(255 253 246 / 0.98);
+  --portfolio-achievement-3-body-end: rgb(243 237 224 / 0.98);
+  --portfolio-achievement-4-card: #FFFDF6;
+  --portfolio-achievement-4-head: rgb(247 242 231 / 0.95);
+  --portfolio-achievement-4-body-start: rgb(255 253 246 / 0.98);
+  --portfolio-achievement-4-body-end: rgb(243 237 224 / 0.98);
 
   /* Cards / inputs */
-  --executive-card-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
-  --executive-card-border: rgba(15, 23, 42, 0.1);
+  --executive-card-bg: linear-gradient(145deg, rgba(255, 253, 246, 0.98) 0%, rgba(243, 237, 224, 0.98) 100%);
+  --executive-card-border: rgba(140, 109, 31, 0.18);
   --executive-card-inset: rgba(255, 255, 255, 0.9);
-  --executive-card-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.18);
-  --executive-card-shadow-hover: 0 20px 40px -12px rgba(15, 23, 42, 0.22), 0 0 30px rgba(14, 165, 233, 0.12);
-  --executive-input-bg: rgba(255, 255, 255, 0.95);
-  --executive-input-border: rgba(15, 23, 42, 0.14);
-  --executive-input-text: #0f172a;
+  --executive-card-shadow: 0 16px 36px -12px rgba(7, 26, 18, 0.18);
+  --executive-card-shadow-hover: 0 20px 40px -12px rgba(7, 26, 18, 0.24), 0 0 30px rgba(212, 175, 55, 0.18);
+  --executive-input-bg: rgba(255, 253, 246, 0.95);
+  --executive-input-border: rgba(140, 109, 31, 0.28);
+  --executive-input-text: #071A12;
 
   /* Backdrop */
-  --backdrop-base: #ffffff;
-  --backdrop-grid-line: rgba(15, 23, 42, 0.07);
-  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(15, 23, 42, 0.08) 100%);
+  --backdrop-base: #FDFBF5;
+  --backdrop-grid-line: rgba(140, 109, 31, 0.1);
+  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(7, 26, 18, 0.07) 100%);
 
 }
 
 .dark {
   color-scheme: dark;
-  --obsidian-base: #0A0D14;
-  --slate-surface: #121826;
-  --slate-card: #182234;
-  --slate-border: #1E293B;
-  --slate-border-highlight: #334155;
-  --surface-container-low: #191b23;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-tertiary: #64748B;
-  --accent-gold: #F59E0B;
-  --glow-cyan: rgba(14, 165, 233, 0.15);
-  --glow-indigo: rgba(99, 102, 241, 0.18);
-  --primary-container: #0ea5e9;
-  --secondary-container: #3131c0;
-  --lagoon-highlight: #7ed3bf;
-  --tertiary: var(--portfolio-indigo-400);
+  --obsidian-base: #071A12;
+  --slate-surface: #0D281E;
+  --slate-card: #0D281E;
+  --slate-border: #1C3A2E;
+  --slate-border-highlight: #2E5744;
+  --surface-container-low: #0A2018;
+  --text-primary: #F5EFE0;
+  --text-secondary: #B8C4BB;
+  --text-tertiary: #7A8A80;
+  --accent-gold: #D4AF37;
+  --glow-cyan: rgba(212, 175, 55, 0.18);
+  --glow-indigo: rgba(46, 125, 91, 0.18);
+  --primary-container: #1E4A38;
+  --secondary-container: #8C6D1F;
+  --lagoon-highlight: #E5C07B;
+  --tertiary: #D4AF37;
 
-  --toggle-track: #1e293b;
-  --toggle-border: #334155;
-  --toggle-thumb: #f8fafc;
-  --toggle-thumb-border: #f8fafc;
+  --toggle-track: #1C3A2E;
+  --toggle-border: #2E5744;
+  --toggle-thumb: #E5C07B;
+  --toggle-thumb-border: #E5C07B;
 
-  --portfolio-black: #0A0D14;
-  --portfolio-about-bg: #05070c;
+  --portfolio-black: #071A12;
+  --portfolio-about-bg: #071A12;
 
-  --portfolio-achievement-1-card: #0d1017;
-  --portfolio-achievement-1-head: rgb(20 25 38 / 0.9);
-  --portfolio-achievement-1-body-start: rgb(20 25 38 / 0.95);
-  --portfolio-achievement-1-body-end: rgb(11 14 23 / 0.95);
-  --portfolio-achievement-2-card: #0c1018;
-  --portfolio-achievement-2-head: rgb(18 26 40 / 0.9);
-  --portfolio-achievement-2-body-start: rgb(18 25 41 / 0.95);
-  --portfolio-achievement-2-body-end: rgb(10 13 22 / 0.95);
-  --portfolio-achievement-3-card: #0a1215;
-  --portfolio-achievement-3-head: rgb(16 30 26 / 0.9);
-  --portfolio-achievement-3-body-start: rgb(16 27 26 / 0.95);
-  --portfolio-achievement-3-body-end: rgb(9 14 18 / 0.95);
-  --portfolio-achievement-4-card: #120f1d;
-  --portfolio-achievement-4-head: rgb(27 21 43 / 0.9);
-  --portfolio-achievement-4-body-start: rgb(24 19 38 / 0.95);
-  --portfolio-achievement-4-body-end: rgb(11 8 22 / 0.95);
+  --portfolio-achievement-1-card: #0D281E;
+  --portfolio-achievement-1-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-1-body-start: rgb(13 40 30 / 0.95);
+  --portfolio-achievement-1-body-end: rgb(7 26 18 / 0.95);
+  --portfolio-achievement-2-card: #0D281E;
+  --portfolio-achievement-2-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-2-body-start: rgb(13 40 30 / 0.95);
+  --portfolio-achievement-2-body-end: rgb(7 26 18 / 0.95);
+  --portfolio-achievement-3-card: #0D281E;
+  --portfolio-achievement-3-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-3-body-start: rgb(13 40 30 / 0.95);
+  --portfolio-achievement-3-body-end: rgb(7 26 18 / 0.95);
+  --portfolio-achievement-4-card: #0D281E;
+  --portfolio-achievement-4-head: rgb(13 40 30 / 0.9);
+  --portfolio-achievement-4-body-start: rgb(13 40 30 / 0.95);
+  --portfolio-achievement-4-body-end: rgb(7 26 18 / 0.95);
 
-  --executive-card-bg: linear-gradient(145deg, rgba(16, 22, 34, 0.88) 0%, rgba(10, 13, 20, 0.95) 100%);
-  --executive-card-border: rgba(255, 255, 255, 0.09);
-  --executive-card-inset: rgba(255, 255, 255, 0.1);
+  --executive-card-bg: linear-gradient(145deg, rgba(13, 40, 30, 0.88) 0%, rgba(7, 26, 18, 0.95) 100%);
+  --executive-card-border: #1E3A2E;
+  --executive-card-inset: rgba(229, 192, 123, 0.12);
   --executive-card-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65);
-  --executive-card-shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(14, 165, 233, 0.1);
-  --executive-input-bg: rgba(14, 20, 32, 0.9);
-  --executive-input-border: rgba(255, 255, 255, 0.12);
-  --executive-input-text: #F8FAFC;
+  --executive-card-shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(212, 175, 55, 0.18);
+  --executive-input-bg: rgba(13, 40, 30, 0.9);
+  --executive-input-border: #1E3A2E;
+  --executive-input-text: #F5EFE0;
 
-  --backdrop-base: #000;
-  --backdrop-grid-line: rgba(0, 0, 0, 0.9);
-  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(0,0,0,0.55) 100%);
+  --backdrop-base: #071A12;
+  --backdrop-grid-line: rgba(212, 175, 55, 0.09);
+  --backdrop-vignette: radial-gradient(ellipse 120% 90% at 50% 10%, transparent 55%, rgba(4,16,11,0.7) 100%);
+
+  /* Restore full color utilities in dark mode (light :root above remaps
+     them to grayscale). Must stay in sync with --portfolio-* tokens. */
+  --color-slate-100: var(--portfolio-slate-100);
+  --color-slate-300: var(--portfolio-slate-300);
+  --color-slate-400: var(--portfolio-slate-400);
+  --color-slate-500: var(--portfolio-slate-500);
+  --color-slate-700: var(--portfolio-slate-700);
+  --color-slate-800: var(--portfolio-slate-800);
+  --color-slate-900: var(--portfolio-slate-900);
+  --color-slate-950: var(--portfolio-slate-950);
+  --color-blue-100: var(--portfolio-blue-100);
+  --color-blue-200: var(--portfolio-blue-200);
+  --color-blue-300: var(--portfolio-blue-300);
+  --color-blue-400: var(--portfolio-blue-400);
+  --color-blue-500: var(--portfolio-blue-500);
+  --color-blue-600: var(--portfolio-blue-600);
+  --color-blue-900: var(--portfolio-blue-900);
+  --color-blue-950: var(--portfolio-blue-950);
+  --color-cyan-300: var(--portfolio-cyan-300);
+  --color-cyan-400: var(--portfolio-cyan-400);
+  --color-cyan-500: var(--portfolio-cyan-500);
+  --color-cyan-600: var(--portfolio-cyan-600);
+  --color-sky-400: var(--portfolio-sky-400);
+  --color-indigo-200: var(--portfolio-indigo-200);
+  --color-indigo-300: var(--portfolio-indigo-300);
+  --color-indigo-400: var(--portfolio-indigo-400);
+  --color-indigo-500: var(--portfolio-indigo-500);
+  --color-indigo-600: var(--portfolio-indigo-600);
+  --color-amber-200: var(--portfolio-amber-200);
+  --color-amber-300: var(--portfolio-amber-300);
+  --color-amber-400: var(--portfolio-amber-400);
+  --color-amber-500: var(--portfolio-amber-500);
+  --color-emerald-300: var(--portfolio-emerald-300);
+  --color-emerald-400: var(--portfolio-emerald-400);
+  --color-emerald-500: var(--portfolio-emerald-500);
+  --color-purple-400: var(--portfolio-purple-400);
+  --color-red-500: var(--portfolio-red-500);
 }
 
 /* Custom Executive Fonts */
@@ -634,11 +723,11 @@ a {
 }
 
 .radial-cyan-spot {
-  background: radial-gradient(circle at 50% 10%, rgba(14, 165, 233, 0.16) 0%, rgba(99, 102, 241, 0.06) 40%, transparent 75%);
+  background: radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.14) 0%, rgba(229, 192, 123, 0.06) 40%, transparent 75%);
 }
 
 .radial-indigo-corner {
-  background: radial-gradient(circle at 80% 90%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+  background: radial-gradient(circle at 80% 90%, rgba(13, 40, 30, 0.12) 0%, transparent 60%);
 }
 
 /* Executive Glass Card Elevation — theme-adaptive via tokens */
@@ -654,7 +743,7 @@ a {
     box-shadow 0.3s ease;
 }
 .executive-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
+  border-color: rgba(212, 175, 55, 0.45);
   box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow-hover);
   transform: translateY(-3px);
 }
@@ -662,24 +751,24 @@ a {
 /* Resting border glow for philosophy pillar cards (static — no perf cost).
    Hover state above still wins via higher specificity. */
 .executive-card-glow-blue {
-  border-color: rgba(59, 130, 246, 0.38);
+  border-color: rgba(46, 125, 91, 0.42);
   box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
-    0 0 30px -6px rgba(59, 130, 246, 0.35);
+    0 0 30px -6px rgba(46, 125, 91, 0.35);
 }
 .executive-card-glow-amber {
-  border-color: rgba(245, 158, 11, 0.38);
+  border-color: rgba(212, 175, 55, 0.38);
   box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
-    0 0 30px -6px rgba(245, 158, 11, 0.35);
+    0 0 30px -6px rgba(212, 175, 55, 0.3);
 }
 .executive-card-glow-cyan {
-  border-color: rgba(34, 211, 238, 0.38);
+  border-color: rgba(212, 175, 55, 0.42);
   box-shadow: inset 0 1px 0 0 var(--executive-card-inset), var(--executive-card-shadow),
-    0 0 30px -6px rgba(34, 211, 238, 0.35);
+    0 0 30px -6px rgba(212, 175, 55, 0.35);
 }
 
 /* Soft resting halo for prompt bubbles (opaque bg, so no backdrop cost). */
 .bubble-glow {
-  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.18), 0 0 26px -8px var(--portfolio-glow-cta);
+  box-shadow: 0 12px 28px -10px rgba(7, 26, 18, 0.16), 0 0 26px -8px rgba(212, 175, 55, 0.14);
 }
 .dark .bubble-glow {
   box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.6), 0 0 26px -8px var(--portfolio-glow-cta);
@@ -693,9 +782,13 @@ a {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .executive-input:focus {
-  border-color: #38BDF8;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25);
+  border-color: #8C6D1F;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
   outline: none;
+}
+.dark .executive-input:focus {
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
 }
 
 /* Stacked Animated Cards Deck Styling */
@@ -787,15 +880,23 @@ a {
 /* Arc centres cycle TL → TR → BR → BL so seams join flawlessly.             */
 /* ========================================================================= */
 :root {
-  --gr-grid: rgba(15, 23, 42, 0.1);
-  --gr-spiral: #64748b;
+  --gr-grid: rgba(140, 109, 31, 0.12);
+  --gr-spiral: #8C6D1F;
   --gr-arc: clamp(1px, 0.2vw, 2px);
-  --gr-opacity: 0.7;
+  --gr-opacity: 0.5;
 }
 .dark {
-  --gr-grid: rgba(148, 163, 184, 0.2);
-  --gr-spiral: #94a3b8;
-  --gr-opacity: 0.9;
+  --gr-grid: rgba(212, 175, 55, 0.07);
+  --gr-spiral: rgba(212, 175, 55, 0.38);
+  --gr-arc: 1px;
+  --gr-opacity: 0.32;
+}
+.dark .gr-frame {
+  mask-image: radial-gradient(ellipse 68% 76% at 50% 46%, black 18%, transparent 68%);
+  -webkit-mask-image: radial-gradient(ellipse 68% 76% at 50% 46%, black 18%, transparent 68%);
+}
+.dark .gr-dot {
+  opacity: 0.5;
 }
 /* Pinned backdrop: a full-viewport layer as the FIRST child of the section.
    The -100vh margin pulls the content up over it, so it costs zero layout
@@ -889,13 +990,13 @@ a {
 .site-backdrop-aurora-a {
   left: -14vmax;
   top: -16vmax;
-  background: radial-gradient(circle at 35% 35%, rgba(14,165,233,0.34), rgba(14,165,233,0) 62%);
+  background: radial-gradient(circle at 35% 35%, rgba(212,175,55,0.14), rgba(212,175,55,0) 62%);
   animation: drift-a 16s ease-in-out infinite alternate;
 }
 .site-backdrop-aurora-b {
   right: -16vmax;
   top: -10vmax;
-  background: radial-gradient(circle at 60% 40%, rgba(99,102,241,0.32), rgba(99,102,241,0) 62%);
+  background: radial-gradient(circle at 60% 40%, rgba(13,40,30,0.12), rgba(13,40,30,0) 62%);
   animation: drift-b 19s ease-in-out infinite alternate;
 }
 .site-backdrop-aurora-c {
@@ -903,8 +1004,17 @@ a {
   bottom: -24vmax;
   width: 62vmax;
   height: 62vmax;
-  background: radial-gradient(circle at 50% 50%, rgba(245,158,11,0.12), rgba(245,158,11,0) 60%);
+  background: radial-gradient(circle at 50% 50%, rgba(140,109,31,0.08), rgba(140,109,31,0) 60%);
   animation: drift-a 22s ease-in-out infinite alternate-reverse;
+}
+.dark .site-backdrop-aurora-a {
+  background: radial-gradient(circle at 35% 35%, rgba(212,175,55,0.3), rgba(212,175,55,0) 62%);
+}
+.dark .site-backdrop-aurora-b {
+  background: radial-gradient(circle at 60% 40%, rgba(26,74,53,0.4), rgba(26,74,53,0) 62%);
+}
+.dark .site-backdrop-aurora-c {
+  background: radial-gradient(circle at 50% 50%, rgba(212,175,55,0.16), rgba(212,175,55,0) 60%);
 }
 .site-backdrop-grid {
   position: absolute;
@@ -961,22 +1071,22 @@ a {
 }
 .executive-card:hover::after { opacity: 1; transform: translateX(30%); }
 
-/* Gradient headline helper — softer on white, glowing on dark */
+/* Gradient headline helper — softer on ivory, glowing bronze on dark */
 .headline-glow {
-  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  text-shadow: 0 1px 2px rgba(7, 26, 18, 0.1);
 }
 .dark .headline-glow {
-  text-shadow: 0 0 32px rgba(14,165,233,0.28);
+  text-shadow: 0 0 32px rgba(212,175,55,0.3);
 }
 
-/* Soft top hairline for sections */
+/* Soft top hairline for sections — champagne-bronze rule */
 .section-hairline { position: relative; }
 .section-hairline::before {
   content: '';
   position: absolute;
   top: 0; left: 8%; right: 8%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), rgba(245,158,11,0.28), transparent);
+  background: linear-gradient(90deg, transparent, rgba(140,109,31,0.45), rgba(212,175,55,0.35), transparent);
   pointer-events: none;
 }
 

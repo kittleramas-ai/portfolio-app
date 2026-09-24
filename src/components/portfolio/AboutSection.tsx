@@ -82,7 +82,7 @@ export function AboutSection() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
       <div className="w-full max-w-6xl mx-auto mb-16 relative z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-label-badge font-label-badge bg-slate-surface border border-blue-500/30 text-blue-400 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-label-badge font-label-badge bg-slate-surface border border-blue-500/30 text-blue-600 dark:text-[#E5C07B] mb-4">
             <span className="material-symbols-outlined text-[14px]">cognition</span>
             <span>STRATEGIC PHILOSOPHY • CORE THESIS</span>
           </div>
@@ -134,11 +134,11 @@ export function AboutSection() {
                 unifying academic precision
               </span>
               <span className="text-text-secondary font-normal">, </span>
-              <span className="text-blue-600 dark:text-blue-400 font-bold">
+              <span className="text-[#0D281E] dark:text-[#E5C07B] font-bold">
                 fault-tolerant enterprise code
               </span>
               <span className="text-text-secondary font-normal">, and </span>
-              <span className="text-cyan-600 dark:text-cyan-400 font-bold">
+              <span className="text-[#8C6D1F] dark:text-[#D4AF37] font-bold">
                 high-trust commerce
               </span>
               <span className="text-text-secondary font-normal">
@@ -146,7 +146,7 @@ export function AboutSection() {
                 to craft business engines that solve mission-critical scale.
               </span>
             </h2>
-            <p className="text-body-md font-body-md text-text-tertiary mt-6 leading-relaxed max-w-xl mx-auto">
+            <p className="text-body-md font-body-md text-text-secondary mt-6 leading-relaxed max-w-xl mx-auto">
               Synthesizing scientific discovery, enterprise technology, and regional
               business into a singular commercial flywheel.
             </p>
@@ -215,7 +215,7 @@ export function AboutSection() {
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-300"></span>
               </div>
-              <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-blue-600 dark:text-blue-300 uppercase">
+              <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase">
                 INFODAZZ • PILLAR I
               </span>
             </div>
@@ -228,9 +228,9 @@ export function AboutSection() {
               clients. Turning complex distributed code into mission-critical
               business engines.
             </p>
-            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
               <span>Specialties: Distributed Systems • SaaS &amp; Cloud Infrastructure</span>
-              <span className="material-symbols-outlined text-blue-500 dark:text-blue-400 text-[16px]">
+              <span className="material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]">
                 terminal
               </span>
             </div>
@@ -249,10 +249,10 @@ export function AboutSection() {
         <div className="flex justify-start w-full">
           <div className="w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-amber relative group transition-all duration-300 hover:border-blue-400/40">
             <div className="flex items-center gap-3 mb-3.5">
-              <div className="w-6 h-6 rounded-md bg-blue-500/15 border border-blue-400/35 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <div className="w-6 h-6 rounded-md bg-blue-500/15 border border-blue-400/35 flex items-center justify-center text-[#0D281E] dark:text-[#E5C07B] shrink-0">
                 <span className="material-symbols-outlined text-[15px]">hub</span>
               </div>
-              <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-blue-600 dark:text-blue-300 uppercase">
+              <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase">
                 BNI MADURAI • PILLAR II
               </span>
             </div>
@@ -265,9 +265,9 @@ export function AboutSection() {
               mentoring founders to break regional boundaries into national and
               global markets.
             </p>
-            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
               <span>Focus: ₹120+ Cr Facilitated • Tier-2 High-Trust Networks</span>
-              <span className="material-symbols-outlined text-blue-500 dark:text-blue-400 text-[16px]">
+              <span className="material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]">
                 payments
               </span>
             </div>
@@ -303,7 +303,7 @@ export function AboutSection() {
               SSRG International Journals (Seventh Sense Research Group), indexing
               10,000+ scientific publications across 45+ international universities.
             </p>
-            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
+            <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
               <span>Indexed: Global Open Access • Double-Blind Peer Review</span>
               <span className="material-symbols-outlined text-cyan-600 dark:text-cyan-400 text-[16px]">
                 menu_book

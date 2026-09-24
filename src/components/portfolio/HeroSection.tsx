@@ -76,7 +76,7 @@ export function HeroSection() {
           <div className="space-y-4 pt-1 sm:pt-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
               <a
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl text-base sm:text-[16px] text-white font-semibold bg-gradient-to-r from-primary-container to-secondary-container hover:opacity-95 shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-all duration-200"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl text-base sm:text-[16px] text-white font-semibold bg-primary-container hover:opacity-95 shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-all duration-200"
                 href="#ventures"
               >
                 <span>Explore Infodazz Solutions</span>

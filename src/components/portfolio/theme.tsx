@@ -4,7 +4,7 @@ export type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'portfolio-theme'
 
-function getInitialTheme(): Theme {
+function getStoredTheme(): Theme {
   if (typeof window === 'undefined') return 'light'
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
@@ -59,15 +59,32 @@ const ThemeContext = React.createContext<{
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>(() => getInitialTheme())
-  const themeRef = React.useRef(theme)
+  // Always render 'light' on the first pass so client hydration matches the
+  // SSR HTML exactly. Reading localStorage here would render 'dark' on the
+  // client while the server sent 'light' (ThemeToggle aria-attributes differ),
+  // which is the hydration mismatch in the console. The stored theme is
+  // applied in the mount effect below, after hydration completes. The inline
+  // THEME_INIT_SCRIPT in __root already paints the correct `.dark` class
+  // pre-hydration, so there is no visual flash in between.
+  const [theme, setThemeState] = React.useState<Theme>('light')
+  const themeRef = React.useRef<Theme>('light')
   themeRef.current = theme
+  const didMountRef = React.useRef(false)
 
-  // Re-assert the painted theme on mount / state change (idempotent: when
-  // classes already match, no transition is triggered). The actual animated
-  // switch happens synchronously in `commit` below, before paint.
+  // Sync stored theme post-hydration, then re-assert on every change.
+  // (idempotent: when classes already match, no transition is triggered).
+  // The actual animated switch happens synchronously in `commit` below.
   React.useEffect(() => {
     if (typeof document === 'undefined') return
+    if (!didMountRef.current) {
+      didMountRef.current = true
+      const stored = getStoredTheme()
+      if (stored !== themeRef.current) {
+        themeRef.current = stored
+        setThemeState(stored)
+      }
+      return
+    }
     paintTheme(theme)
   }, [theme])
 

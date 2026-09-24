@@ -154,7 +154,7 @@ export function Navbar() {
             {/* Trailing Action CTA Button (Desktop) */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
               <a
-                className="relative z-10 my-auto inline-flex max-w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/20 bg-gradient-to-r bg-linear-to-r from-primary-container to-secondary-container px-4 py-2 text-[13px] leading-none font-semibold tracking-tight text-white no-underline shadow-[0_8px_24px_-8px_var(--portfolio-glow-cta),inset_0_1px_0_var(--portfolio-inset-glint)] transition-all duration-150 hover:brightness-110 hover:shadow-[0_8px_28px_-6px_var(--portfolio-glow-cta-hover),inset_0_1px_0_var(--portfolio-inset-glint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
+                className="relative z-10 my-auto inline-flex max-w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/20 bg-primary-container px-4 py-2 text-[13px] leading-none font-semibold tracking-tight text-white no-underline shadow-[0_8px_24px_-8px_var(--portfolio-glow-cta),inset_0_1px_0_var(--portfolio-inset-glint)] transition-all duration-150 hover:brightness-110 hover:shadow-[0_8px_28px_-6px_var(--portfolio-glow-cta-hover),inset_0_1px_0_var(--portfolio-inset-glint)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
                 href="#advisory"
               >
                 <span className="material-symbols-outlined shrink-0 text-[16px] leading-none">
@@ -218,7 +218,7 @@ export function Navbar() {
             </nav>
             <div className="pt-2 border-t border-slate-border">
               <a
-                className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap px-4 py-3 rounded-xl border border-white/20 bg-gradient-to-r bg-linear-to-r from-primary-container to-secondary-container text-sm leading-none font-semibold tracking-tight text-white no-underline shadow-[0_8px_24px_-8px_var(--portfolio-glow-cta),inset_0_1px_0_var(--inset-glint)] transition-all duration-150 hover:brightness-110"
+                className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap px-4 py-3 rounded-xl border border-white/20 bg-primary-container text-sm leading-none font-semibold tracking-tight text-white no-underline shadow-[0_8px_24px_-8px_var(--portfolio-glow-cta),inset_0_1px_0_var(--inset-glint)] transition-all duration-150 hover:brightness-110"
                 href="#advisory"
                 onClick={() => setMobileMenuOpen(false)}
               >

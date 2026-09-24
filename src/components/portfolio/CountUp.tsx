@@ -25,7 +25,7 @@ export function CountUp({
   prefix = '',
   suffix = '',
   format = 'standard',
-  duration = 2000,
+  duration = 1200,
   className = '',
 }: CountUpProps) {
   const [displayValue, setDisplayValue] = React.useState('0')
