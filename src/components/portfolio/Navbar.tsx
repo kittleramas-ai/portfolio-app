@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { ThemeToggle } from './ThemeToggle'
+import type { SignatureMedia } from './media-types'
 import { SignatureMark } from './SignatureMark'
 
 const NAV_LINKS = [
@@ -13,7 +14,7 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#advisory' },
 ]
 
-export function Navbar() {
+export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}) {
   const [activeHash, setActiveHash] = React.useState('#about')
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [scrolled, setScrolled] = React.useState(false)
@@ -84,7 +85,11 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 pt-6 pb-5 sm:pt-8 sm:pb-6 flex items-center justify-between gap-6">
           {/* Brand Identity — signature wordmark, matching the footer lockup */}
           <a className="group shrink-0" href="#hero">
-            <SignatureMark className="h-12 sm:h-14 lg:h-16" />
+            <SignatureMark
+              className="h-12 sm:h-14 lg:h-16"
+              src={signature?.url}
+              alt={signature?.altText || undefined}
+            />
           </a>
 
           <div className="flex items-center gap-6 ml-auto">

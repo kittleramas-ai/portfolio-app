@@ -6,13 +6,16 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import { cloudflare } from '@cloudflare/vite-plugin'
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
     devtools(),
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // NOTE: @cloudflare/vite-plugin was removed. It ran the SSR environment
+    // inside workerd, which has no writable filesystem — `node:fs` resolved but
+    // threw "[unenv] fs.writeFile is not implemented yet!", making on-disk
+    // image uploads impossible. The app now targets a Node server (VPS), where
+    // the filesystem is real.
     tailwindcss(),
     tanstackStart(),
     viteReact(),

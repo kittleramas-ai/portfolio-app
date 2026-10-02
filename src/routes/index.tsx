@@ -8,7 +8,11 @@ import { lazy, Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import { LoaderCircle } from 'lucide-react'
-import { getPublicSettingsFn } from '../../admin/server/public.ts'
+import {
+  getPublicMediaFn,
+  getPublicSettingsFn,
+} from '../../admin/server/public.ts'
+import type { SignatureMedia } from '../components/portfolio/media-types'
 
 
 //Lazy Dynamic import
@@ -56,7 +60,13 @@ function MainReadySignal({
   return null
 }
 
-function DeferredFooter({ enabled }: { enabled: boolean }) {
+function DeferredFooter({
+  enabled,
+  signature,
+}: {
+  enabled: boolean
+  signature?: SignatureMedia | null
+}) {
   const footerRef = useRef<HTMLDivElement>(null)
   const [shouldLoad, setShouldLoad] = useState(false)
 
@@ -89,7 +99,7 @@ function DeferredFooter({ enabled }: { enabled: boolean }) {
     <div ref={footerRef} className="relative z-10 min-h-px">
       {shouldLoad && (
         <Suspense fallback={<LoadingFallback />}>
-          <Footer />
+          <Footer signature={signature} />
         </Suspense>
       )}
     </div>
@@ -102,14 +112,25 @@ function DeferredFooter({ enabled }: { enabled: boolean }) {
 
 export const Route = createFileRoute('/')({
   /**
-   * Read editable settings server-side and hand them to the page as loader
-   * data, so the WhatsApp number and hero copy render on first paint. A client
-   * fetch would flash the default number first.
+   * Read editable settings and uploaded images server-side, and hand them to
+   * the page as loader data, so the WhatsApp number, hero copy and photos
+   * render on first paint. A client fetch would flash the defaults first.
    *
-   * Goes through a server function because admin/server/public.ts reaches D1,
-   * and this route file is also compiled into the client bundle.
+   * Goes through server functions because admin/server/public.ts reaches the
+   * database, and this route file is also compiled into the client bundle.
    */
-  loader: async () => ({ settings: await getPublicSettingsFn() }),
+  loader: async () => {
+    const [settings, media] = await Promise.all([
+      getPublicSettingsFn(),
+      getPublicMediaFn(),
+    ])
+    const bySlot = new Map(media.map((m) => [m.slot, m]))
+    return {
+      settings,
+      signature: bySlot.get('signature') ?? null,
+      portrait: bySlot.get('hero_portrait') ?? null,
+    }
+  },
   component: Home,
 })
 
@@ -118,20 +139,20 @@ export const Route = createFileRoute('/')({
 // apostrophe, which breaks TanStack Start's generated split-import quoting.
 export function Home() {
   const [mainReady, setMainReady] = useState(false)
-  const { settings } = Route.useLoaderData()
+  const { settings, signature, portrait } = Route.useLoaderData()
 
   return (
     <div className="min-h-screen bg-obsidian-base text-text-primary antialiased selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
       {/* Fixed elements stay OUTSIDE ScrollSmoother */}
 
       <SiteBackdrop />
-      <Navbar />
+      <Navbar signature={signature} />
       <WhatsAppFab contact={settings.contact} />
       <SmoothProvider>
 
         <main className="w-full relative z-10">
           <Suspense fallback={<LoadingFallback centered />}>
-          <HeroSection settings={settings.hero} />
+          <HeroSection settings={settings.hero} portrait={portrait} />
           <MilestonesSection />
           <AboutSection />
           <VenturesSection />
@@ -145,7 +166,7 @@ export function Home() {
           <MainReadySignal setReady={setMainReady} />
           </Suspense>
         </main>
-        <DeferredFooter enabled={mainReady} />
+        <DeferredFooter enabled={mainReady} signature={signature} />
 
 
       </SmoothProvider>

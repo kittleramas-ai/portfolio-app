@@ -9,6 +9,7 @@ import {
   saveHeroSettingsFn,
 } from '../server/api.ts'
 import type { ContactSettings, HeroSettings, SiteSettings } from '../server/settings-schema.ts'
+import { AdminMedia } from './AdminMedia.tsx'
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 
@@ -82,6 +83,13 @@ export function AdminShell() {
 
   return (
     <Shell who={who} onSignOut={signOut}>
+      <section className="mb-8">
+        <h2 className="mb-4 font-mono-metric text-[11px] uppercase tracking-[0.24em] text-[#d4af37]">
+          Images
+        </h2>
+        <AdminMedia />
+      </section>
+
       <ContactForm
         value={settings.contact}
         onChange={(contact) => setSettings((s) => (s ? { ...s, contact } : s))}
@@ -103,6 +111,14 @@ export function AdminShell() {
           <li>
             <strong className="text-[#f5efe0]">Hero statement</strong> → the
             opening line on the home page.
+          </li>
+          <li>
+            <strong className="text-[#f5efe0]">Hero portrait</strong> → the
+            standing photo on the home page.
+          </li>
+          <li>
+            <strong className="text-[#f5efe0]">Signature</strong> → the header
+            and the footer.
           </li>
         </ul>
         <a

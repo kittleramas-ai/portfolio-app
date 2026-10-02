@@ -1,37 +1,35 @@
-import { env } from 'cloudflare:workers'
-
 /**
- * Runtime configuration, read from Worker bindings + secrets.
+ * Runtime configuration, read from environment variables.
  *
  * `SESSION_TOKEN_PEPPER` is required in production and deliberately has no
- * default. A checked-in pepper would let anyone with a database dump compute
+ * default: a checked-in pepper would let anyone with a database dump compute
  * valid session hashes, which defeats the point of hashing them at all.
  *
- * `wrangler types` generates a precise `Env` interface for the bindings in
- * wrangler.jsonc, but secrets set via `wrangler secret put` are not in that
- * file — so secret reads go through a loosely-typed accessor by necessity.
+ * Set with: `wrangler secret put` previously, now a plain env var —
+ * see docs/VPS-DEPLOY.md for the systemd/pm2 setup.
  */
 
-type EnvBag = Record<string, unknown>
-
-function bag(): EnvBag {
-  return env as unknown as EnvBag
+function read(name: string): string | undefined {
+  const value = process.env[name]
+  return typeof value === 'string' && value.length > 0 ? value : undefined
 }
 
 const DEV_PEPPER = 'dev-only-pepper-not-for-production'
 
 export function getSessionPepper(): string {
-  const pepper = bag().SESSION_TOKEN_PEPPER
-  if (typeof pepper === 'string' && pepper.length > 0) return pepper
+  const pepper = read('SESSION_TOKEN_PEPPER')
+  if (pepper) return pepper
 
   if (isProduction()) {
     throw new Error(
-      'SESSION_TOKEN_PEPPER is not set. Add it with: wrangler secret put SESSION_TOKEN_PEPPER',
+      'SESSION_TOKEN_PEPPER is not set. Add it as an environment variable before starting the server in production.',
     )
   }
   return DEV_PEPPER
 }
 
 export function isProduction(): boolean {
-  return bag().ENVIRONMENT === 'production'
+  return (
+    read('NODE_ENV') === 'production' || read('ENVIRONMENT') === 'production'
+  )
 }

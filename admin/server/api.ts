@@ -24,6 +24,17 @@ import {
   SETTINGS_GROUPS,
 } from './settings-schema.ts'
 import { getSiteSettings, saveSettingsGroup } from './settings.ts'
+import {
+  deleteMedia,
+  listMedia,
+  saveMedia,
+  updateAltText,
+} from './media.ts'
+import {
+  altTextSchema,
+  mediaSlotKeySchema,
+  MEDIA_SLOTS,
+} from './media-schema.ts'
 
 const loginInput = z.object({
   email: z.string().trim().toLowerCase().min(1, 'Email is required'),
@@ -147,4 +158,62 @@ export const saveHeroSettingsFn = createServerFn({ method: 'POST' })
     const admin = await requireAdmin(getRequest())
     const saved = await saveSettingsGroup('hero', data.hero, admin.userId)
     return { ok: true as const, hero: saved, savedAt: new Date().toISOString() }
+  })
+
+// ---------------------------------------------------------------- media
+
+/** All slots + their current uploads. Admin-only. */
+export const getAdminMediaFn = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    await requireAdmin(getRequest())
+    return { entries: await listMedia(), slots: MEDIA_SLOTS }
+  },
+)
+
+/**
+ * Upload an image for a slot.
+ *
+ * Takes raw bytes rather than a multipart FormData: TanStack server functions
+ * serialise their input, and base64 in a JSON payload would inflate a 2 MB
+ * image to ~2.7 MB and copy it twice in memory. A dedicated POST route handles
+ * the multipart body natively.
+ *
+ * This function exists for the JSON path used by the admin UI; see
+ * `src/routes/api/admin/media.$slot.ts` for the streaming upload route.
+ */
+export const saveMediaFn = createServerFn({ method: 'POST' })
+  .validator(
+    z.object({
+      slot: mediaSlotKeySchema,
+      declaredType: z.string(),
+      altText: altTextSchema.default(''),
+      dataBase64: z.string(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    const admin = await requireAdmin(getRequest())
+    const bytes = Uint8Array.from(atob(data.dataBase64), (c) => c.charCodeAt(0))
+    return saveMedia({
+      slot: data.slot,
+      declaredType: data.declaredType,
+      bytes,
+      altText: data.altText,
+      updatedBy: admin.userId,
+    })
+  })
+
+/** Remove a slot's upload, restoring the bundled fallback asset. */
+export const deleteMediaFn = createServerFn({ method: 'POST' })
+  .validator(z.object({ slot: mediaSlotKeySchema }))
+  .handler(async ({ data }) => {
+    await requireAdmin(getRequest())
+    return deleteMedia(data.slot)
+  })
+
+/** Edit alt text without re-uploading. */
+export const updateAltTextFn = createServerFn({ method: 'POST' })
+  .validator(z.object({ slot: mediaSlotKeySchema, altText: altTextSchema }))
+  .handler(async ({ data }) => {
+    await requireAdmin(getRequest())
+    return updateAltText(data.slot, data.altText)
   })

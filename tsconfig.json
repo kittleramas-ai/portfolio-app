@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js", "worker-configuration.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js"],
 
   /* bookade-src/ is a 68k-line vendored REFERENCE project, not part of this
      build. It maps its own `@/*` to its internal src/, which does not exist

@@ -3,6 +3,7 @@ import { AnimatedText } from './AnimatedText'
 import heroImage from '../../asserts/hero-standing-cutout.png'
 import type { HeroSettings } from '../../../admin/server/settings-schema'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { SignatureMedia } from './media-types'
 
 const DEFAULT_HERO = DEFAULT_SITE_SETTINGS.hero
 
@@ -92,9 +93,12 @@ const NAME_CLASS =
  */
 export function HeroSection({
   settings = DEFAULT_HERO,
+  portrait,
 }: {
-  /** Editable copy, supplied by the route from D1. */
+  /** Editable copy, supplied by the route from the database. */
   settings?: HeroSettings
+  /** Admin-uploaded standing photo; falls back to the bundled asset. */
+  portrait?: SignatureMedia | null
 }) {
   return (
     <section
@@ -110,11 +114,14 @@ export function HeroSection({
           className="flex flex-wrap items-end gap-x-1 sm:gap-x-2 lg:flex-nowrap lg:gap-x-0"
         >
           <img
-            src={heroImage}
+            src={portrait?.url ?? heroImage}
             alt=""
             aria-hidden="true"
-            width={177}
-            height={423}
+            // Intrinsic size of the bundled fallback, used only to reserve
+            // layout space before the image decodes. An upload carries its own
+            // dimensions, so the box still reserves correctly.
+            width={portrait?.width ?? 177}
+            height={portrait?.height ?? 423}
             decoding="async"
             className={FIGURE_CLASS}
           />

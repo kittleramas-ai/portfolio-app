@@ -1,4 +1,5 @@
 import { SignatureMark } from './SignatureMark'
+import type { SignatureMedia } from './media-types'
 
 type FooterLink = {
   label: string
@@ -78,7 +79,7 @@ function LinkColumn({ heading, links }: FooterColumn) {
   )
 }
 
-export function Footer() {
+export function Footer({ signature }: { signature?: SignatureMedia | null } = {}) {
   const scrollToTop = (e: React.MouseEvent) => {
     e.preventDefault()
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -101,7 +102,7 @@ export function Footer() {
               href="#hero"
               aria-label="Back to top — Dr. R. Surendiran"
             >
-              <SignatureMark className="h-16 sm:h-20 md:h-24" />
+              <SignatureMark className="h-16 sm:h-20 md:h-24" src={signature?.url} alt={signature?.altText || undefined} />
             </a>
 
             <p className="mt-9 max-w-md text-[15px] leading-relaxed text-text-secondary">

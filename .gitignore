@@ -11,3 +11,17 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# SQLite database (moved off Cloudflare D1 — the app now runs on a Node server).
+# Holds the admin user row and saved settings, so it must not be committed.
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Manager-uploaded images. Written at runtime by the admin panel; committed
+# copies would bloat the repo and the files are server state, not source.
+public/uploads/
+
+# Generated Cloudflare runtime types (npm run cf:types)
+worker-configuration.d.ts

@@ -94,3 +94,39 @@ export const siteSetting = sqliteTable(
   },
   (t) => [index('site_setting_group_idx').on(t.groupKey)],
 )
+
+/**
+ * Uploaded images, one row per SLOT rather than one row per file.
+ *
+ * The slot is the primary key because the site's images are named positions
+ * ("the signature", "the hero portrait"), not a gallery. That keeps the admin
+ * UI finite — there is no "add another image" button, so the manager cannot
+ * upload a 4MB photo into a slot that renders at 300px — and makes replacing a
+ * slot a single upsert.
+ *
+ * Bytes live in R2 under `storageKey`; this table is metadata only. R2 has no
+ * writable local filesystem on workerd, so storing images as DB blobs is not an
+ * option (and D1 caps a row at ~1 MB anyway).
+ *
+ * `fallbackKey` lets a slot keep rendering the bundled asset in
+ * `src/asserts/` when no upload exists yet, so the site never shows a broken
+ * image on a fresh install.
+ */
+export const siteMedia = sqliteTable('site_media', {
+  /** Named position: hero_portrait, signature, og_image, favicon. */
+  slot: text('slot').primaryKey(),
+  /** R2 object key. Unique so two slots cannot point at one object. */
+  storageKey: text('storage_key').notNull().unique(),
+  contentType: text('content_type').notNull(),
+  sizeBytes: integer('size_bytes').notNull(),
+  /** Intrinsic dimensions, read from the file header at upload time. */
+  width: integer('width'),
+  height: integer('height'),
+  altText: text('alt_text').notNull().default(''),
+  updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+    .notNull()
+    .default(sql`(unixepoch()) * 1000`),
+  updatedBy: text('updated_by').references(() => adminUser.id, {
+    onDelete: 'set null',
+  }),
+})

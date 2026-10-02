@@ -6,8 +6,8 @@
  * Usage: npx tsx admin/guard-check.ts
  */
 
-import { spawnSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
+import { openDb } from './lib/sqlite.ts'
+import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -51,21 +51,26 @@ function check(label: string, ok: boolean, detail = '') {
   if (!ok) failures++
 }
 
-/** spawnSync types stdout as string, but it is null when the process is killed. */
-function out(res: { stdout: string | null; stderr: string | null }): string {
-  return `${res.stdout ?? ''}\n${res.stderr ?? ''}`
-}
+/** Run SQL against the app's own SQLite file. */
 function sql(stmt: string): string {
-  const file = join(dir, 'q.sql')
-  writeFileSync(file, stmt, 'utf8')
-  const args = ['wrangler', 'd1', 'execute', 'portfolio', '--file', file]
-  const res =
-    process.platform === 'win32'
-      ? spawnSync(process.env.ComSpec ?? 'cmd.exe', ['/d', '/s', '/c', 'npx', ...args], {
-          encoding: 'utf8',
-        })
-: spawnSync('npx', args, { encoding: 'utf8' })
-  return out(res)
+  const db = openDb()
+  try {
+    db.exec(stmt)
+    return 'ok'
+  } finally {
+    db.close()
+  }
+}
+
+/** Single-column scalar query, for assertions. */
+function count(stmt: string): number {
+  const db = openDb()
+  try {
+    const row = db.prepare(stmt).get() as { c?: number } | undefined
+    return Number(row?.c ?? 0)
+  } finally {
+    db.close()
+  }
 }
 
 // --- 1. no cookie -> redirect, no admin markup
@@ -98,10 +103,12 @@ sql(`
     FROM admin_user WHERE email = 'admin@portfolio.local';
 `)
 
-const exists = sql(
-  `SELECT COUNT(*) AS c FROM admin_session WHERE token_hash = '${tokenHash}';`,
+check(
+  'session row written to the database',
+  count(
+    `SELECT COUNT(*) AS c FROM admin_session WHERE token_hash = '${tokenHash}';`,
+  ) === 1,
 )
-check('session row written to D1', /"c":\s*1/.test(exists))
 
 // --- 4. with the cookie -> admin renders
 const cookie = buildSessionCookie(token, expires).split(';')[0]
