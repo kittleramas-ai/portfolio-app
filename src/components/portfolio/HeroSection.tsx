@@ -1,193 +1,187 @@
 import { Reveal } from './Reveal'
 import { AnimatedText } from './AnimatedText'
+import heroImage from '../../asserts/hero-standing-cutout.png'
 
+/* Shared shell — every section uses max-w-7xl + px-6/md:px-12, so the hero's
+   left/right edges line up with the content below it. */
+
+/* The oversized "D" that opens the name. A gold gradient clipped to the glyph
+   stands in for a 3D letterform render: it needs no extra asset, scales with
+   the viewport, and picks up the same champagne-bronze ramp as the palette.
+   Sized in vw (not vh) so the letterform is driven by viewport WIDTH, which is
+   the axis it actually competes on: it shares a horizontal row with the figure
+   and the name, so a tall/narrow phone would otherwise render a D far too wide
+   for its column. Anton's visual cap is ~0.73em and the line box is 0.78em, so
+   the painted height is ~0.57 x font-size. */
+const D_CLASS =
+  'block shrink-0 bg-clip-text font-display uppercase leading-[0.78] tracking-[-0.045em] text-[clamp(5rem,23vw,12rem)] lg:text-[clamp(8rem,40vh,28rem)]'
+
+/* Full-length standing figure, grounded on the same baseline as the D so he
+   reads as leaning against the letterform rather than floating in front of it.
+   The cut-out is 177x423 (0.418:1), so the height drives the width and `w-auto`
+   is left to preserve that ratio.
+   Width-scoped (vw) for the same reason as the D — on a 375px phone a vh-based
+   height of 28vh is only ~187px, which makes him small next to the letterform. */
+const FIGURE_CLASS =
+  'relative z-10 -mr-[1.5vw] h-[clamp(9.5rem,50vw,22rem)] w-auto shrink-0 object-contain object-bottom lg:h-[clamp(11rem,33vh,23rem)]'
+
+/* Shared champagne-bronze ramp. The glyphs are filled with this via
+   background-clip:text, so the D and the name are lit from the same angle and
+   read as one metallic treatment rather than two unrelated gold colours.
+   Stops run light->dark top-left to bottom-right, matching the light source on
+   the reference letterform. */
+const GOLD_RAMP =
+  'linear-gradient(150deg, #fdf3d4 0%, #f0d98d 14%, #d4af37 42%, #b08d2e 66%, #8a6a1c 88%, #6f5416 100%)'
+
+const D_STYLE = {
+  backgroundImage: GOLD_RAMP,
+  WebkitBackgroundClip: 'text',
+  backgroundClip: 'text',
+  color: 'transparent',
+  // Shadow tuned for the dark hero backdrop. Kept tight and slightly offset so
+  // it reads as the letterform casting onto the scene, not a blurred outline.
+  filter: 'drop-shadow(0 8px 14px rgba(4,16,11,0.45))',
+} as React.CSSProperties
+
+/* "R. SURENDIRAN". Set in solid gold rather than a gradient fill: this text is
+   animated by GSAP SplitText, which wraps each word in its own transformed
+   element. background-clip:text on an ancestor of transformed descendants is
+   fragile, and because the fill relies on `color:transparent`, a clip that
+   fails to resolve leaves the name invisible rather than merely ungradiented.
+   The gradient treatment stays on the static D, where it is safe. */
+const NAME_STYLE = {
+  color: '#C9A227',
+  // Warm highlight above, bronze shade below — fakes the bevel of the
+  // letterform without depending on a gradient fill.
+  textShadow:
+    '0 1px 0 rgba(255,255,255,0.28), 0 -1px 0 rgba(90,68,16,0.35), 0 4px 10px rgba(4,16,11,0.4)',
+} as React.CSSProperties
+
+/* "R. SURENDIRAN" needs ~5.46em of set size (11 caps @0.46em + period + space).
+   That figure is the whole reason the unit has to change per breakpoint:
+
+   - Below lg the name is width-constrained and sits on its OWN row beneath the
+     lockup, so 15vw keeps it inside a 327px content box on a 375px phone
+     (15vw of 375 = 56px -> ~306px wide, just inside the box).
+   - From lg the name shares a single non-wrapping row with the D, and the
+     composition is balanced by height rather than width, so vh takes over and
+     keeps the name locked to the D's cap height at any aspect ratio.
+
+   Using vh at both sizes overflowed the viewport by ~292px on an iPhone SE. */
+const NAME_CLASS =
+  'block font-display uppercase leading-[0.82] tracking-[-0.012em] text-[clamp(1.4rem,15vw,4.5rem)] lg:text-[clamp(1.35rem,15vh,10rem)]'
+
+/**
+ * Hero — editorial lockup: a full-length standing figure leaning against an
+ * oversized gold "D", with the name set to the right of the letterform.
+ *
+ * The figure and the D share one `items-end` flex row rather than being
+ * positioned independently. That single constraint is what makes the
+ * composition work: bottom-aligning them puts his feet on the same baseline as
+ * the D, so the letterform reads as the thing he is standing against. A negative
+ * right margin pulls his shoulder over the D's left stem, and `z-10` keeps him
+ * painted in front of it. Absolutely positioning either one would break that
+ * shared baseline and reintroduce the floating-figure problem.
+ *
+ * He leads the row in the DOM so on narrow viewports he sits under the name
+ * rather than beside it, where there is no room for a 0.418:1 figure.
+ */
 export function HeroSection() {
   return (
     <section
-      className="relative w-full pt-24 sm:pt-32 md:pt-44 pb-16 md:pb-28 border-b border-slate-border/50 section-hairline"
+      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden border-b border-slate-border/50 section-hairline lg:min-h-[96vh]"
       id="hero"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-      {/* Diagnostic / Status Pill */}
-      <Reveal>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] sm:text-[12px] font-label-badge bg-glow-cyan border border-primary/30 text-primary w-fit">
-          <span className="material-symbols-outlined text-[14px]">terminal</span>
-          <span className="tracking-tight sm:tracking-normal">
-            ENTERPRISE ARCHITECTURE • REGIONAL SCALE
-          </span>
-        </div>
-        <div className="hidden sm:inline text-text-tertiary text-mono-metric font-mono-metric">
-          |
-        </div>
-        <div className="inline-flex items-center gap-1.5 text-text-secondary text-mono-metric font-mono-metric text-[11px] sm:text-xs">
-          <span
-            className="material-symbols-outlined text-[14px] text-accent-gold"
-            style={{ fontVariationSettings: '"FILL" 1' }}
-          >
-            verified
-          </span>
-          <span>Doctorate in Computer Science &amp; Engineering</span>
-        </div>
-      </div>
-      </Reveal>
+      <div className="relative z-0 mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pt-24 sm:pt-28 md:px-12 lg:pt-32">
+        {/* Name lockup. h1 is labelled with the full name for assistive tech and
+            the visual pieces are hidden, so it reads "Dr. R. Surendiran"
+            rather than "D" + "R. Surendiran". */}
+        <h1
+          aria-label="Dr. R. Surendiran"
+          className="flex flex-wrap items-end gap-x-1 sm:gap-x-2 lg:flex-nowrap lg:gap-x-0"
+        >
+          <img
+            src={heroImage}
+            alt=""
+            aria-hidden="true"
+            width={177}
+            height={423}
+            decoding="async"
+            className={FIGURE_CLASS}
+          />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-end">
-        {/* Left Column: Hero Typography, CTAs, & Trust Badges */}
-        <div className="lg:col-span-7 flex flex-col justify-between space-y-6 sm:space-y-8 z-10">
-          {/* Headline & Subtitle — GSAP word stagger on load (no nested Reveal: avoids double-hide above fold) */}
-          <div className="space-y-4 sm:space-y-6">
+          <span aria-hidden="true" className={D_CLASS} style={D_STYLE}>
+            D
+          </span>
+
+          {/* basis-full forces the name onto its own row below lg, so the D and
+              the figure never have to share horizontal space with a 12-glyph
+              word. lg:basis-auto returns it to the single-row lockup. */}
+          <span
+            aria-hidden="true"
+            className="w-full min-w-0 basis-full pb-[0.08em] lg:w-auto lg:flex-1 lg:basis-auto lg:pl-[0.12em]"
+          >
             <AnimatedText
-              as="h1"
+              as="span"
               split="words"
               mode="load"
-              stagger={0.05}
-              duration={0.7}
-              y={28}
-              delay={0.1}
-              className="headline-glow text-3xl sm:text-5xl lg:text-[64px] font-display-hero text-text-primary tracking-tight leading-tight"
+              stagger={0.08}
+              duration={1.5}
+              y={90}
+              ease="elastic.out(1, 0.55)"
+              className={NAME_CLASS}
+              style={NAME_STYLE}
             >
-              <span
-                style={{
-                  fontFamily: 'Anton, "Bebas Neue", sans-serif',
-                  letterSpacing: '0.02em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Architecting Next-Gen Enterprise Technology.{' '}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-tertiary to-secondary">
-                  Catalyzing Regional Business Networks.
-                </span>
-              </span>
+              R. Surendiran
             </AnimatedText>
-            <p className="text-body-md md:text-body-lg font-body-md md:font-body-lg text-text-secondary max-w-2xl leading-relaxed line-clamp-3 md:line-clamp-none">
-              Founder &amp; CEO of{' '}
-              <strong className="text-text-primary font-semibold">Infodazz</strong>,{' '}
-              <strong className="text-text-primary font-semibold">
-                BNI Madurai
-              </strong>{' '}
-              Executive &amp; CS Ph.D. Bridging enterprise software engineering with
-              regional business ecosystems to power exponential scale.
-            </p>
+          </span>
+        </h1>
+
+        {/* Supporting copy. Offset to clear the standing figure on lg so the
+            statement aligns under the name instead of colliding with him. */}
+        <div className="relative z-20 mt-auto grid w-full grid-cols-1 items-end gap-8 pb-10 sm:gap-10 lg:grid-cols-12 lg:gap-6 lg:pb-12">
+          <div className="order-2 flex flex-col items-center gap-4 text-center sm:gap-5 lg:order-1 lg:col-span-5 lg:col-start-7 lg:items-start lg:text-left">
+            <Reveal delay={100}>
+              <p className="max-w-xs text-xl font-bold leading-tight text-text-primary sm:text-2xl lg:text-[1.75rem]">
+                Build the business{' '}
+                <span className="text-text-tertiary">you&apos;ve always</span>{' '}
+                <span className="text-primary font-light">dreamed about...</span>
+              </p>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
+                <a
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-container px-6 py-3 text-base font-semibold text-white shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-opacity hover:opacity-90"
+                  href="#ventures"
+                >
+                  Explore Solutions
+                  <span className="material-symbols-outlined text-[18px]">
+                    arrow_forward
+                  </span>
+                </a>
+                <a
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-border px-6 py-3 text-base font-semibold text-text-primary transition-colors hover:border-accent-gold hover:text-accent-gold"
+                  href="#about"
+                >
+                  Founder Journey
+                </a>
+              </div>
+            </Reveal>
           </div>
 
-          {/* Primary Action CTA Button Group + Micro-caption */}
-          <Reveal delay={160}>
-          <div className="space-y-4 pt-1 sm:pt-2">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
-              <a
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 rounded-xl text-base sm:text-[16px] text-white font-semibold bg-primary-container hover:opacity-95 shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-all duration-200"
-                href="#ventures"
-              >
-                <span>Explore Infodazz Solutions</span>
-                <span className="material-symbols-outlined text-[18px]">
-                  arrow_forward
-                </span>
-              </a>
-              <a
-                className="inline-flex items-center justify-center sm:justify-start gap-1.5 text-sm sm:text-base text-text-primary hover:text-primary transition-colors duration-150 group font-semibold py-1"
-                href="#bni"
-              >
-                <span>BNI Madurai Initiatives</span>
-                <span className="material-symbols-outlined text-[18px] sm:text-[20px] group-hover:translate-x-1 transition-transform">
-                  arrow_forward
-                </span>
-              </a>
-            </div>
-            <div className="flex items-start sm:items-center gap-2 text-mono-metric font-mono-metric text-text-tertiary text-[11px] sm:text-[12px] pt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0 mt-1 sm:mt-0"></span>
-              <span>
-                Direct Secretariat Line • Available for Board, Advisory &amp;
-                Enterprise Architecture Mandates
-              </span>
-            </div>
-          </div>
-          </Reveal>
-
-          {/* Credential / Certification Trust Badges */}
-          <Reveal delay={220}>
-          <div className="pt-6 border-t border-slate-border/80">
-            <div className="text-mono-metric font-mono-metric text-text-tertiary text-[10px] sm:text-[11px] uppercase tracking-wider mb-4">
-              Verified Credentials &amp; Institutional Governance
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-              {/* Badge 1: Ph.D. Doctorate */}
-              <div className="flex items-center gap-3 group">
-                <div className="w-12 h-12 rounded-full bg-slate-surface border-2 border-primary/40 flex items-center justify-center text-primary shadow-md relative shrink-0 group-hover:border-primary transition-colors">
-                  <span className="material-symbols-outlined text-[24px]">
-                    school
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[13px] font-bold text-text-primary tracking-tight">
-                    Ph.D. Doctorate
-                  </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Distributed Computing
-                  </span>
-                </div>
-              </div>
-
-              {/* Badge 2: BNI Madurai Leadership */}
-              <div className="flex items-center gap-3 group">
-                <div className="w-12 h-12 rounded-full bg-slate-surface border-2 border-accent-gold/40 flex items-center justify-center text-accent-gold shadow-md relative shrink-0 group-hover:border-accent-gold transition-colors">
-                  <span className="material-symbols-outlined text-[24px]">
-                    military_tech
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[13px] font-bold text-text-primary tracking-tight">
-                    BNI Gold Club
-                  </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Regional Leadership Council
-                  </span>
-                </div>
-              </div>
-
-              {/* Badge 3: SSRG & Enterprise AI */}
-              <div className="flex items-center gap-3 group">
-                <div className="w-12 h-12 rounded-full bg-indigo-500/15 border-2 border-indigo-400/60 dark:border-indigo-300/60 flex items-center justify-center text-indigo-600 dark:text-indigo-200 shadow-[0_0_18px_var(--portfolio-glow-indigo-strong)] relative shrink-0 group-hover:border-indigo-500 dark:group-hover:border-indigo-200 transition-colors">
-                  <span
-                    className="material-symbols-outlined text-[24px]"
-                    style={{ fontVariationSettings: '"FILL" 1' }}
-                  >
-                    verified
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[13px] font-bold text-text-primary tracking-tight">
-                    SSRG Managing Editor
-                  </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    10,000+ Research Papers
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          </Reveal>
-        </div>
-
-        {/* Right Column: Prominent CEO Portrait */}
-        <Reveal delay={140} className="lg:col-span-5">
-        <div className="relative flex justify-center lg:justify-end items-end">
-          <div className="absolute -top-10 right-4 w-72 h-72 bg-primary-container/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
-          <div className="absolute bottom-0 right-10 w-64 h-64 bg-secondary/15 rounded-full blur-2xl pointer-events-none -z-10"></div>
-
-          <div className="relative w-full max-w-md executive-card rounded-2xl p-3 pb-0 border border-slate-border group overflow-hidden shadow-2xl ring-1 ring-slate-border hover:ring-cyan-400/30 transition-all duration-300">
-            <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden">
-              <img
-                className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
-                alt="Executive portrait of Dr. S. K."
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHt-GFa9dNcxzSQIPTzFtGZugzZXCsvmWUvaqptV3qQcHQQYDqNzfMo7KKVdXQkA80dq9Nn4yb-_AlK94JMjQDCyVXNLPSrJs8y1rPtrLu7C7EuDrAnm3keIkJSnYgXalwhTBmHAPamsx5UZK_L4PJ0d359cuEDwQstjoUbJJDsHmNdpGtFtBjOu9RNrveJRQbHvZyhCDT77BNJcKE43ohJGvXLQDTWIc-L3795cw"
-              />
-              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-obsidian-base via-obsidian-base/60 to-transparent"></div>
-            </div>
+          {/* Counter-statement — hangs off the far right, bottom-aligned with
+              the statement block. */}
+          <div className="order-3 lg:order-2 lg:col-span-3 lg:col-start-10 lg:flex lg:items-end">
+            <Reveal delay={150}>
+              <p className="mx-auto max-w-xs text-center text-lg font-semibold leading-snug text-text-secondary sm:text-xl lg:mx-0 lg:text-left lg:text-[1.375rem]">
+                <span className="text-primary font-light">...without</span> losing
+                yourself in it along{' '}
+                <span className="text-text-tertiary">the way.</span>
+              </p>
+            </Reveal>
           </div>
         </div>
-        </Reveal>
-      </div>
       </div>
     </section>
   )

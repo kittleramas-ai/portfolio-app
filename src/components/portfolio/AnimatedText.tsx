@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { prefersReducedMotion, isMobileDevice } from '../../lib/gsap'
-import { loadGsap } from '../../lib/gsapLoader'
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
+import { loadGsap } from '../../routes/lib/gsapLoader'
 import type { SplitText as SplitTextType } from 'gsap/SplitText'
 
 type SplitKind = 'chars' | 'words' | 'lines' | 'chars,words' | 'words,lines' | 'chars,words,lines'

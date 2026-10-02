@@ -11,9 +11,15 @@ export function KeynotesSection() {
       <Reveal>
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-slate-border gap-6 relative z-10">
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="px-2.5 py-1 rounded-full text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-widest">
-              EXECUTIVE ENGAGEMENTS // KEYNOTES &amp; CONCLAVES
+          <div className="flex items-center gap-2 mb-4">
+            <span className="inline-flex items-center gap-2.5 max-w-full px-4 py-2.5 rounded-2xl text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-widest leading-relaxed text-left shadow-sm break-words">
+              <span className="material-symbols-outlined text-[16px] shrink-0">
+                public
+              </span>
+              <span className="min-w-0">
+                Global Vision <span className="opacity-50 mx-1">//</span> Motivational
+                Sessions &amp; Professional Interactions
+              </span>
             </span>
           </div>
           <h2
@@ -26,20 +32,20 @@ export function KeynotesSection() {
               lineHeight: 1.15,
             }}
           >
-            KEYNOTE ADDRESSES &amp; SUMMIT DIALOGUES
+            KNOWLEDGE SHARING &amp; GLOBAL EXPOSURE
           </h2>
         </div>
         <div className="flex flex-col md:items-end gap-3 max-w-md">
           <p className="text-mono-metric font-mono-metric text-text-tertiary text-xs md:text-right">
-            Delivering visionary perspectives on enterprise computing, grassroots
-            economic clusters, and resilient technological architectures to global
-            forums, industry summits, and academic convocations.
+            A passionate traveller and lifelong learner — Dr. Surendiran believes
+            global exposure creates new perspectives and shares knowledge through
+            motivational sessions and professional interactions.
           </p>
           <a
             className="relative z-10 inline-flex w-fit max-w-full items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-label-badge font-label-badge bg-text-primary text-obsidian-base no-underline font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md"
             href="#advisory"
           >
-            <span>Request Keynote Availability</span>
+            <span>Invite for Motivational Session</span>
             <span className="material-symbols-outlined text-[16px]">
               campaign
             </span>
@@ -51,30 +57,29 @@ export function KeynotesSection() {
       <Reveal delay={100}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
         {/* Keynote 01 */}
-        <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
+        <div className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="card-head-row border-slate-border">
-              <span className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider">
-                PLENARY KEYNOTE
+              <span className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/25 text-[#5B21B6] dark:text-indigo-300 tracking-wider">
+                MOTIVATIONAL SESSIONS
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Chennai / South India
+                Students &amp; Professionals
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “Next-Decade Industrial Digitization: Scaling Tier-2 Tech Capitals
-              into Domestic Corridors”
+              “From Farmer Family to Founder — Continuous Learning &amp; Innovation”
             </h3>
-            <div className="text-mono-metric font-mono-metric text-indigo-300 text-[13px] font-semibold mb-4">
-              Southern India Commerce &amp; IT Leadership Forum
+            <div className="text-mono-metric font-mono-metric text-[#5B21B6] dark:text-indigo-300 text-[13px] font-semibold mb-4">
+              Founder Journey &amp; Education Motivation
             </div>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Addressed over 800+ C-suite delegates, state policy makers, and
-              industrial manufacturers on decentralizing enterprise compute from
-              tier-1 capitals into emerging tier-2 clusters.
+              Sharing his journey from humble beginnings through education,
+              dedication and entrepreneurship — motivating students, researchers
+              and aspiring founders to create opportunities through learning.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
@@ -82,37 +87,36 @@ export function KeynotesSection() {
               <span className="material-symbols-outlined text-[16px] text-accent-gold">
                 groups
               </span>{' '}
-              800+ C-Suite &amp; Govt
+              Learning &amp; Inspiration
             </span>
-            <span className="text-indigo-300">Industrial Cloud</span>
+            <span className="text-[#5B21B6] dark:text-indigo-300 font-semibold">Founder Story</span>
           </div>
         </div>
 
         {/* Keynote 02 */}
-        <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
+        <div className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider">
-                ECONOMIC CONCLAVE
+                PROFESSIONAL INTERACTIONS
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Tamil Nadu Region
+                BNI • Rotary • Business Forums
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “Ecosystem Synergy: How Structured Referral Networks Catalyze
-              Regional GDP”
+              “Building Businesses, Research Networks &amp; Community Collaboration”
             </h3>
             <div className="text-mono-metric font-mono-metric text-accent-gold text-[13px] font-semibold mb-4">
-              BNI Regional &amp; National Executive Conclave
+              BNI Member since 2022 • Rotary Member since 2024
             </div>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Keynote delivered to 1,200+ founders showcasing empirical models
-              where structured social capital and high-trust peer protocols
-              directly accelerate transactional velocity.
+              Active in business and professional communities — supporting
+              entrepreneur relationships, collaboration and community contribution
+              through BNI and Rotary networks.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
@@ -120,37 +124,36 @@ export function KeynotesSection() {
               <span className="material-symbols-outlined text-[16px] text-accent-gold">
                 military_tech
               </span>{' '}
-              1,200+ SME Founders
+              BNI 2022 • Rotary 2024
             </span>
-            <span className="text-accent-gold">₹120Cr+ Facilitation</span>
+            <span className="text-accent-gold">Community Networks</span>
           </div>
         </div>
 
         {/* Keynote 03 */}
-        <div className="executive-card rounded-3xl p-8 flex flex-col justify-between">
+        <div className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="card-head-row border-slate-border">
-              <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
-                GLOBAL KEYNOTE
+              <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/25 text-[#075985] dark:text-cyan-400 tracking-wider">
+                GLOBAL TRAVEL
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Global Remote / Hybrid
+                National &amp; International
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “High-Throughput Distributed Architectures &amp; Resilient Cloud
-              Infrastructures for Sovereign Scale”
+              “Global Exposure Creates New Perspectives and Opportunities”
             </h3>
-            <div className="text-mono-metric font-mono-metric text-cyan-300 text-[13px] font-semibold mb-4">
-              Intl Conf on Advanced Computing &amp; Distributed Systems
+            <div className="text-mono-metric font-mono-metric text-[#075985] dark:text-cyan-300 text-[13px] font-semibold mb-4">
+              Traveller &amp; Lifelong Learner
             </div>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Synthesizing Ph.D. research in distributed fault tolerance into
-              production paradigms for high-concurrency enterprise workloads and
-              global cloud infrastructure resilience.
+              Travelled nationally and internationally — bringing global
+              perspectives into technology businesses, research platforms and
+              social initiatives for students and communities.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
@@ -158,9 +161,9 @@ export function KeynotesSection() {
               <span className="material-symbols-outlined text-[16px] text-emerald-400">
                 school
               </span>{' '}
-              45+ Universities
+              Lifelong Learning
             </span>
-            <span className="text-cyan-300">SSRG Research Senate</span>
+            <span className="text-[#075985] dark:text-cyan-300 font-semibold">Global Vision</span>
           </div>
         </div>
       </div>

@@ -12,8 +12,8 @@ export function GovernanceSection() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-slate-border gap-6 relative z-10">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="px-2.5 py-1 rounded-full text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-widest">
-              CORPORATE GOVERNANCE // FIDUCIARY &amp; ADVISORY ROLES
+            <span className="inline-block max-w-full px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-wider sm:tracking-widest leading-relaxed break-words whitespace-normal text-center sm:text-left">
+              LEADERSHIP &amp; NETWORK // FOUNDER ROLES
             </span>
           </div>
           <h2
@@ -26,13 +26,13 @@ export function GovernanceSection() {
               lineHeight: 1.15,
             }}
           >
-            EXECUTIVE ADVISORY &amp; BOARD GOVERNANCE
+            FOUNDER LEADERSHIP &amp; COMMUNITY ROLES
           </h2>
         </div>
         <p className="text-mono-metric font-mono-metric text-text-tertiary max-w-md">
-          Guiding growth-stage enterprises, industry bodies, and academic
-          institutions through architectural modernization, scaling bottlenecks,
-          and executive governance.
+          Leading technology companies, research publishing platforms and social
+          initiatives — combined with BNI and Rotary community leadership and
+          academic mentoring.
         </p>
       </div>
       </Reveal>
@@ -46,37 +46,38 @@ export function GovernanceSection() {
               <span className="material-symbols-outlined text-[26px]">memory</span>
             </div>
             <div className="text-mono-metric font-mono-metric text-cyan-400 text-[12px] uppercase tracking-wider mb-2 font-semibold">
-              ROLE 01 // ENTERPRISE ARCHITECTURE
+              ROLE 01 // TECHNOLOGY BUSINESSES
             </div>
             <h3
               className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Enterprise Technology Board Advisor
+              Founder &amp; CEO — Infodazz • Founder — Kittle
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Guiding industrial ERP migrations, zero-latency cloud redundancy,
-              and technical debt elimination for domestic enterprise accounts and
-              manufacturing conglomerates.
+              Building technology companies and digital ecosystems — Infodazz
+              (Estd 2022, Trichy HQ, Madurai / Karaikudi / Kumbakonam, 50+
+              professionals) and Kittle Pvt Ltd (Trichy, IT solutions &amp;
+              consulting).
             </p>
             <ul className="space-y-2 text-mono-metric font-mono-metric text-[12px] text-text-tertiary mb-6">
               <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Hybrid
-                Cloud &amp; High-Availability Strategy
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>ERP •
+                SaaS • Web &amp; Mobile Apps
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                Microservices Orchestration Audits
+                Digital Marketing • SEO • Design • VFX
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>CTO
-                &amp; VP Engineering Advisory
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Software
+                Solutions • Technology Consulting
               </li>
             </ul>
           </div>
           <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
-              Entity: Infodazz Strategic Mandates
+              Entities: Infodazz • Kittle Pvt Ltd
             </span>
           </div>
         </div>
@@ -90,37 +91,37 @@ export function GovernanceSection() {
               </span>
             </div>
             <div className="text-mono-metric font-mono-metric text-accent-gold text-[12px] uppercase tracking-wider mb-2 font-semibold">
-              ROLE 02 // REGIONAL EXPANSION
+              ROLE 02 // RESEARCH &amp; EDUCATION
             </div>
             <h3
               className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Regional Economic Policy &amp; MSME Growth Mentor
+              Founder — Seventh Sense Research Group
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Fostering SME scaling pathways, export corridor facilitation, and
-              commercial cluster resilience across Tamil Nadu &amp; South India
-              business ecosystems.
+              Supporting research, education and innovation — 30+ International
+              Journals including 5+ Scopus Indexed, plus research publications,
+              patents, academic mentoring and research guidance.
             </p>
             <ul className="space-y-2 text-mono-metric font-mono-metric text-[12px] text-text-tertiary mb-6">
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-gold"></span>
-                500+ Regional Founders Mentored
+                Ph.D — Madurai Kamaraj University
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-gold"></span>
-                Trade Conclave &amp; Summit Curation
+                MCA — Thiagarajar School of Management
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-gold"></span>
-                Cross-Chapter Strategic Referrals
+                B.Sc Mathematics — GAC Kumbakonam
               </li>
             </ul>
           </div>
           <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
-              Entity: BNI Madurai Executive Board
+              Entity: Seventh Sense Research Group
             </span>
           </div>
         </div>
@@ -132,37 +133,37 @@ export function GovernanceSection() {
               <span className="material-symbols-outlined text-[26px]">school</span>
             </div>
             <div className="text-mono-metric font-mono-metric text-emerald-400 text-[12px] uppercase tracking-wider mb-2 font-semibold">
-              ROLE 03 // ACADEMIC GOVERNANCE
+              ROLE 03 // SOCIAL IMPACT &amp; NETWORKS
             </div>
             <h3
               className="text-2xl font-bold text-text-primary mb-3"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Academic Senate &amp; Research Advisory Committee
+              Founder / Trustee — Kaster Trust
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Directing curriculum modernization, peer-review publishing
-              standards, and distributed systems PhD research grant frameworks
-              with international reach.
+              Helping students overcome educational barriers — fee support,
+              learning opportunities and student growth. BNI Member since 2022,
+              Rotary Member since 2024.
             </p>
             <ul className="space-y-2 text-mono-metric font-mono-metric text-[12px] text-text-tertiary mb-6">
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                Double-Blind Editorial Oversight
+                Educational fee support
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                10,000+ Works Indexed Worldwide
+                BNI since 2022 • Rotary since 2024
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                University Research Partnerships
+                Motivational sessions • Global travel
               </li>
             </ul>
           </div>
           <div className="pt-4 border-t border-slate-border">
             <span className="text-[11px] font-mono-metric text-text-secondary uppercase tracking-widest">
-              Entity: SSRG Research Group Senate
+              Entities: Kaster Trust • BNI • Rotary
             </span>
           </div>
         </div>

@@ -41,15 +41,14 @@ export function ContactSection() {
                   fontSize: 'clamp(36px, 4vw, 52px)',
                 }}
               >
-                If you're looking for an enterprise technology partner, let's
-                connect!
+                Let&apos;s build, research and create impact together!
               </h2>
               <p className="text-body-md font-body-md text-text-secondary leading-relaxed max-w-lg">
-                Dr. S. K. selectively accepts corporate board advisory roles,
-                high-concurrency cloud architecture mandates via Infodazz
-                Technologies, and keynote speaking engagements across regional and
-                global forums. Headquartered across Madurai, Chennai &amp; Global
-                Remote.
+                Dr. R. Surendiran — Founder &amp; CEO, Infodazz • Founder / Owner,
+                Kittle Pvt Ltd &amp; Seventh Sense Research Group • Founder /
+                Trustee, Kaster Trust. For business growth, research collaboration,
+                education support and motivational sessions. HQ Trichy — Madurai,
+                Karaikudi, Kumbakonam.
               </p>
             </div>
 
@@ -198,8 +197,8 @@ export function ContactSection() {
                   >
                     Privacy Policy
                   </a>{' '}
-                  and consent to receive communications from Infodazz Technologies and
-                  its executive entities.
+                  and consent to receive communications from Infodazz, Kittle Pvt
+                  Ltd, Seventh Sense Research Group and Kaster Trust.
                 </div>
 
                 {/* Submit Button */}

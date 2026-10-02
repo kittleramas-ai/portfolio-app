@@ -4,8 +4,8 @@ import {
   getSmoother,
   prefersReducedMotion,
   isMobileDevice,
-} from '../../lib/gsap'
-import { loadGsap } from '../../lib/gsapLoader'
+} from '../../routes/lib/gsap'
+import { loadGsap } from '../../routes/lib/gsapLoader'
 import type { ScrollSmoother } from 'gsap/ScrollSmoother'
 import type { ScrollTrigger as ScrollTriggerType } from 'gsap/ScrollTrigger'
 

@@ -9,6 +9,7 @@ interface CountUpProps {
   className?: string
 }
 
+
 function easeOutExpo(x: number): number {
   return x === 1 ? 1 : 1 - Math.pow(2, -10 * x)
 }
@@ -60,7 +61,7 @@ export function CountUp({
 
       requestAnimationFrame(update)
     }
-
+    
     if (typeof IntersectionObserver !== 'undefined') {
       const observer = new IntersectionObserver(
         (entries) => {

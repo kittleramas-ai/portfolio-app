@@ -40,9 +40,9 @@ const DECK: Accolade[] = [
   {
     id: 'accolade-card-1',
     index: '01',
-    barTitle: 'BNI REGIONAL & NATIONAL EXECUTIVE CONCLAVE',
-    badge: 'GOLD CLUB CITATION',
-    badgeIcon: 'military_tech',
+    barTitle: 'INFODAZZ • ESTD 2022 • TRICHY HQ',
+    badge: 'TECHNOLOGY BUSINESS',
+    badgeIcon: 'rocket_launch',
     accentText: 'text-accent-gold',
     accentBorder: 'border-amber-500/30',
     accentBg: 'bg-amber-500/15',
@@ -53,41 +53,39 @@ const DECK: Accolade[] = [
     headBorder: 'border-amber-500/20',
     bodyFrom: 'from-[var(--portfolio-achievement-1-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-1-body-end)]',
-    pill: 'EXECUTIVE BOARD CONFERRAL • TAMIL NADU REGION',
-    heading: 'Outstanding Chapter Director & Gold Club Milestone',
+    pill: 'FOUNDER & CEO • DIGITAL TRANSFORMATION',
+    heading: 'Infodazz — Helping Businesses Grow Through Technology',
     description:
-      "Awarded for steering one of Tamil Nadu's most prolific BNI regional chapters, attaining milestone member retention, and orchestrating unprecedented transaction velocity across high-trust SME networks.",
-    certNo: 'CERTIFICATE NO. // BNI-TN-984',
+      'Established in 2022. Headquarters Trichy, branches Madurai, Karaikudi, Kumbakonam. 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management.',
+    certNo: 'ESTD // INFODAZZ-2022',
     certStatus: 'VERIFIED',
     certIcon: 'award_star',
-    certTitle: 'Regional Growth Architect',
-    certSub: 'Southern India Leadership Conclave',
+    certTitle: 'Founder & CEO',
+    certSub: 'Infodazz • Trichy • Madurai • Karaikudi • Kumbakonam',
     quote:
-      '“Recognized for high-impact governance, continuous cross-chapter referrals, and institutional mentoring of emerging tier-2 entrepreneurs.”',
-    peekMeta: 'IMPACT: ₹120 Cr+ GENERATED',
-    tabShort: '01 BNI Leadership',
+      '“Vision: helping businesses grow through technology and digital transformation.”',
+    peekMeta: 'TEAM: 50+ PROFESSIONALS',
+    tabShort: '01 Infodazz',
     tabActive: 'bg-amber-500 border-amber-500 text-black',
-    fileName: 'bni_regional_telemetry.ts',
-    ctaLabel: 'BNI Executive Inquiries',
-    ctaHref: '#advisory',
+    fileName: 'infodazz_venture_profile.ts',
+    ctaLabel: 'infodazz.org',
+    ctaHref: 'https://infodazz.org',
     stats: [
       <>
-        ₹<CountUp target={120} suffix="+" /> Cr
+        <CountUp target={50} suffix="+" /> Team
       </>,
-      <>Gold Club</>,
+      <>4 Locations</>,
       <>
-        <CountUp target={98} suffix=".4%" />
+        <CountUp target={11} /> Services
       </>,
-      <>
-        <CountUp target={500} suffix="+" />
-      </>,
+      <>Estd 2022</>,
     ],
   },
   {
     id: 'accolade-card-2',
     index: '02',
-    barTitle: 'ENTERPRISE TECH SUMMIT • SOUTHERN INDIA',
-    badge: 'TECH EXCELLENCE',
+    barTitle: 'KITTLE PVT LTD • TRICHY • TECHNOLOGY INNOVATION',
+    badge: 'IT SOLUTIONS',
     badgeIcon: 'cloud_done',
     accentText: 'text-cyan-400',
     accentBorder: 'border-cyan-400/30',
@@ -99,39 +97,35 @@ const DECK: Accolade[] = [
     headBorder: 'border-cyan-400/20',
     bodyFrom: 'from-[var(--portfolio-achievement-2-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-2-body-end)]',
-    pill: 'ENTERPRISE CLOUD ARCHITECTURE • DOMESTIC LEADERSHIP',
-    heading: 'Infodazz: Premier Enterprise Cloud & AI Integration Partner',
+    pill: 'FOUNDER / OWNER • SOFTWARE & CONSULTING',
+    heading: 'Kittle Pvt Ltd — IT Solutions & Digital Platforms',
     description:
-      'Recognized for high-concurrency cloud orchestration, automated microservice pipelines, and robust industrial ERP architectures deployed across domestic enterprise clients and regional manufacturers in India.',
-    certNo: 'HONOR REF // TECH-SUM-042',
+      'Trichy-based technology company focused on Software Solutions, IT Services, Digital Platforms and Technology Consulting — building digital ecosystems for business growth.',
+    certNo: 'VENTURE // KITTLE-TRICHY',
     certStatus: 'VALIDATED',
     certIcon: 'workspace_premium',
-    certTitle: 'Cloud Innovator Seal',
-    certSub: 'Tamil Nadu Enterprise Tech Forum',
+    certTitle: 'Founder / Owner',
+    certSub: 'Kittle Pvt Ltd • Trichy',
     quote:
-      '“Conferred to Dr. S. K. and Infodazz for outstanding technical execution in real-time distributed data pipelines and regional manufacturing digitization.”',
-    peekMeta: 'ENTERPRISE: TIER-1 IT INFRASTRUCTURE',
-    tabShort: '02 Infodazz Cloud',
+      '“Focus: software solutions, IT services, digital platforms and technology consulting.”',
+    peekMeta: 'BASE: TRICHY',
+    tabShort: '02 Kittle',
     tabActive: 'bg-cyan-400 border-cyan-400 text-black',
-    fileName: 'infodazz_cloud_telemetry.ts',
-    ctaLabel: 'infodazz.org',
-    ctaHref: 'https://infodazz.org',
+    fileName: 'kittle_venture_profile.ts',
+    ctaLabel: 'Business Inquiries',
+    ctaHref: '#advisory',
     stats: [
-      <>
-        <CountUp target={100} suffix="+" /> Enterprise
-      </>,
-      <>Tier-1 Corridors</>,
-      <>&lt; 12ms High-Load</>,
-      <>
-        <CountUp target={99} suffix=".98%" />
-      </>,
+      <>Software Solutions</>,
+      <>IT Services</>,
+      <>Digital Platforms</>,
+      <>Tech Consulting</>,
     ],
   },
   {
     id: 'accolade-card-3',
     index: '03',
-    barTitle: 'SSRG GLOBAL ACADEMIC RESEARCH SENATE',
-    badge: 'DOCTORAL RECOGNITION',
+    barTitle: 'SEVENTH SENSE RESEARCH GROUP • PUBLISHING PLATFORM',
+    badge: 'RESEARCH PUBLISHER',
     badgeIcon: 'school',
     accentText: 'text-emerald-400',
     accentBorder: 'border-emerald-500/30',
@@ -143,40 +137,40 @@ const DECK: Accolade[] = [
     headBorder: 'border-emerald-500/20',
     bodyFrom: 'from-[var(--portfolio-achievement-3-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-3-body-end)]',
-    pill: 'PH.D. DOCTORATE • PEER-REVIEWED SCHOLARSHIP',
-    heading: 'Excellence in Distributed Systems & Scholarly Governance',
+    pill: 'FOUNDER / OWNER • ACADEMIC COLLABORATION',
+    heading: 'Seventh Sense — 30+ Journals, 5+ Scopus Indexed',
     description:
-      'Doctoral laurels conferred for pioneering contributions to distributed node scheduling, consensus fault recovery algorithms, and leadership of Seventh Sense Research Group publishing 10,000+ works globally.',
-    certNo: 'REG. DOCTORAL ID // CSE-9421',
-    certStatus: 'ACADEMIC CONFERRAL',
+      'International research publishing platform supporting researchers and academicians. Research publication ecosystem and academic collaboration support. Academic profile: Ph.D Madurai Kamaraj University, MCA Thiagarajar School of Management Madurai, B.Sc Mathematics GAC Kumbakonam — with research publications, patents, mentoring and guidance.',
+    certNo: 'PLATFORM // SSRG-JOURNALS',
+    certStatus: 'ACADEMIC PLATFORM',
     certIcon: 'menu_book',
-    certTitle: 'Managing Editor Laurels',
-    certSub: 'SSRG International Publishing Council',
+    certTitle: 'Founder / Owner',
+    certSub: 'Seventh Sense Research Group',
     quote:
-      '“Validating 11+ years of peer-reviewed editorial stewardship across computing, applied electronics, and enterprise software engineering.”',
-    peekMeta: 'ARCHIVE ID: 3064-2024',
-    tabShort: '03 SSRG Research',
+      '“Supporting researchers and academicians through publishing and collaboration.”',
+    peekMeta: '30+ JOURNALS • 5+ SCOPUS',
+    tabShort: '03 Seventh Sense',
     tabActive: 'bg-emerald-400 border-emerald-400 text-black',
-    fileName: 'ssrg_editorial_telemetry.ts',
+    fileName: 'seventh_sense_profile.ts',
     ctaLabel: 'SSRG Platform Portal',
     ctaHref: 'https://internationaljournalssrg.org',
     stats: [
-      <>Distributed Nodes</>,
       <>
-        <CountUp target={10000} format="comma" suffix="+" /> Works
+        <CountUp target={30} suffix="+" /> Journals
       </>,
       <>
-        <CountUp target={45} suffix="+" /> Global
+        <CountUp target={5} suffix="+" /> Scopus
       </>,
-      <>Double-Blind</>,
+      <>Publications</>,
+      <>Mentoring</>,
     ],
   },
   {
     id: 'accolade-card-4',
     index: '04',
-    barTitle: 'SOUTHERN INDIA COMMERCE & IT LEADERSHIP FORUM',
-    badge: 'KEYNOTE FELLOW',
-    badgeIcon: 'mic',
+    barTitle: 'KASTER TRUST • LEADERSHIP • GLOBAL VISION',
+    badge: 'SOCIAL IMPACT',
+    badgeIcon: 'volunteer_activism',
     accentText: 'text-indigo-400',
     accentBorder: 'border-indigo-400/30',
     accentBg: 'bg-indigo-500/15',
@@ -187,39 +181,37 @@ const DECK: Accolade[] = [
     headBorder: 'border-indigo-400/20',
     bodyFrom: 'from-[var(--portfolio-achievement-4-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-4-body-end)]',
-    pill: 'PLENARY ADDRESS • REGIONAL MSME ACCELERATION',
-    heading: 'Distinguished Enterprise Keynote & Advisory Recognition',
+    pill: 'FOUNDER / TRUSTEE • BNI 2022 • ROTARY 2024',
+    heading: 'Kaster Trust — Education Support & Community Leadership',
     description:
-      'Delivered the opening keynote on “Next-Decade Industrial Digitization: Scaling Tier-2 Tech Capitals into Domestic Corridors” before 800+ executive delegates, state dignitaries, and manufacturing owners.',
-    certNo: 'FORUM DISPATCH // TN-CON-800',
-    certStatus: 'KEYNOTE COMMENDATION',
+      'Founder / Trustee of Kaster Trust supporting education for economically disadvantaged students via fee support and learning opportunities. BNI Member since 2022, Rotary Member since 2024. From humble farmer family background — passionate traveller sharing knowledge through motivational sessions.',
+    certNo: 'TRUST // KASTER-EDUCATION',
+    certStatus: 'SOCIAL MISSION',
     certIcon: 'campaign',
-    certTitle: 'Distinguished Fellow',
-    certSub: 'Southern India Industrial Federation',
+    certTitle: 'Founder / Trustee',
+    certSub: 'Kaster Trust • BNI • Rotary',
     quote:
-      '“Recognizing visionary perspectives on unifying technical resilience and localized commerce to unlock tier-2 regional prosperity.”',
-    peekMeta: 'DELEGATES: 800+ LEADERS',
-    tabShort: '04 Keynote Fellow',
+      '“Technology creates possibilities, but people create impact.”',
+    peekMeta: 'MISSION: EDUCATION ACCESS',
+    tabShort: '04 Kaster & Networks',
     tabActive: 'bg-indigo-400 border-indigo-400 text-black',
-    fileName: 'keynote_dispatch_registry.ts',
-    ctaLabel: 'Request Keynote Availability',
+    fileName: 'kaster_trust_profile.ts',
+    ctaLabel: 'Support Education',
     ctaHref: '#advisory',
     stats: [
-      <>
-        <CountUp target={800} suffix="+" /> Leaders
-      </>,
-      <>MSME Cloud</>,
-      <>Regional BNI</>,
-      <>Plenary Stage</>,
+      <>Fee Support</>,
+      <>BNI 2022</>,
+      <>Rotary 2024</>,
+      <>Global Travel</>,
     ],
   },
 ]
 
 const STAT_LABELS = [
-  ['Facilitated Value', 'Deployments', 'Core Doctoral IP', 'Delegates'],
-  ['Honor Tier', 'Regional Scope', 'Papers Indexed', 'Focus Track'],
-  ['Retention', 'Latency SLA', 'Universities', 'Trust Networks'],
-  ['Founders Mentored', 'Uptime Standard', 'Review Protocol', 'Honor Tier'],
+  ['Team Strength', 'Focus Areas', 'Intl Journals', 'Mission Focus'],
+  ['Locations', 'Base', 'Scopus Indexed', 'BNI Membership'],
+  ['Service Verticals', 'Offerings', 'Ecosystem', 'Rotary Membership'],
+  ['Founded', 'Engagement', 'Mentorship', 'Vision'],
 ]
 
 export function AchievementsSection() {
@@ -307,7 +299,7 @@ export function AchievementsSection() {
                       : 'bg-slate-surface border-slate-border text-text-tertiary hover:text-text-primary hover:border-slate-border-highlight'
                   }`}
                 >
-                  <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${isActive ? 'bg-black' : `${d.accentText} bg-current`}`} />
+                  <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#071A12]' : `${d.accentText} bg-current`}`} />
                   {d.tabShort}
                 </button>
               )
@@ -457,7 +449,7 @@ export function AchievementsSection() {
 
                   {/* Registry terminal panel */}
                   <div className="lg:col-span-5 flex flex-col min-w-0">
-                    <div className="w-full rounded-xl bg-black border border-white/10 overflow-hidden shadow-xl">
+                    <div className="w-full rounded-xl bg-[#071A12] border border-white/10 overflow-hidden shadow-xl">
                       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/10 bg-white/[0.03]">
                         <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
                         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
@@ -536,14 +528,14 @@ export function AchievementsSection() {
                 <button
                   onClick={prev}
                   aria-label="Previous honor"
-                  className="w-9 h-9 rounded-lg border border-slate-border bg-slate-surface text-text-primary flex items-center justify-center hover:border-slate-border-highlight transition-all cursor-pointer"
+                  className="w-9 h-9 shrink-0 rounded-lg border border-slate-border bg-slate-surface text-text-primary flex items-center justify-center hover:border-slate-border-highlight transition-all cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px]">chevron_left</span>
                 </button>
                 <button
                   onClick={next}
                   aria-label="Next honor"
-                  className="h-9 px-3.5 rounded-lg border border-slate-border bg-slate-surface text-text-secondary hover:text-text-primary hover:border-slate-border-highlight flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  className="w-9 h-9 sm:w-auto sm:h-9 sm:px-3.5 rounded-lg border border-slate-border bg-slate-surface text-text-secondary hover:text-text-primary hover:border-slate-border-highlight flex items-center justify-center sm:justify-start gap-0 sm:gap-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
                 >
                   <span className="hidden sm:inline">Cycle Deck</span>
                   <span className="material-symbols-outlined text-[18px]">chevron_right</span>

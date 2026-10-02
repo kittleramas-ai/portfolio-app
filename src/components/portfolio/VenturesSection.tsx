@@ -1,6 +1,17 @@
 import { CountUp } from './CountUp'
 import { Reveal } from './Reveal'
 
+/* Shared band heights. Every card is built from the same four bands in the same
+   order — number/pill, title, blurb, services, chips — and each is pinned to a
+   fixed min-height, so a card with 4 services lines up with any other and all
+   four end up exactly the same height. Change one, change all.
+   SERVICES_H is 2 rows of the 2-column service list; CHIPS_H is 2 rows of
+   compact chips. Keep card 03's 2-line title within TITLE_H. */
+const TITLE_H = 'min-h-[4.75rem]'
+const BLURB_H = 'min-h-[6rem]'
+const SERVICES_H = 'min-h-[3.25rem]'
+const CHIPS_H = 'min-h-[7.5rem]'
+
 export function VenturesSection() {
   return (
     <section
@@ -12,7 +23,7 @@ export function VenturesSection() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 relative z-10">
         <div>
           <span className="text-label-badge font-label-badge text-primary block mb-2 tracking-wider">
-            VENTURE PORTFOLIO • 2014 — PRESENT
+            BUSINESS VENTURES • 2022 — PRESENT
           </span>
           <h2
             className="text-headline-lg font-headline-lg text-text-primary tracking-tight"
@@ -23,52 +34,50 @@ export function VenturesSection() {
               lineHeight: 1.15,
             }}
           >
-            Institutional Leadership &amp; Operational Directorships
+            Technology Businesses, Research Platforms &amp; Social Impact
           </h2>
         </div>
         <p className="text-mono-metric font-mono-metric text-text-tertiary max-w-md">
-          Active governance across enterprise technology engineering, regional
-          commerce acceleration, and global scientific publications.
+          Founded and led by Dr. R. Surendiran — from academic research into
+          entrepreneurship, creating opportunities for businesses, researchers,
+          students and communities.
         </p>
       </div>
       </Reveal>
 
-      {/* 3-Card Container with Linking SVG Connectors */}
+      {/* 4-Card Grid — real ventures from original content. items-stretch plus
+          h-full on each card is what makes the row equal-height; the band
+          min-heights above are what makes the contents line up. */}
       <Reveal delay={110}>
       <div className="relative w-full py-6 lg:py-12">
-        {/* SVG Connection Arcs */}
-        <svg
-          className="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-0 overflow-visible opacity-30"
-          fill="none"
-          preserveAspectRatio="none"
-          viewBox="0 0 1200 680"
+        {/* Decorative linework behind the card row. Column guides sit on the
+            same grid + gap as the cards so each guide lands exactly on a card
+            edge; the horizontal rules and the wash are masked top and bottom so
+            the whole thing dissolves before it reaches the section borders.
+            pointer-events-none + aria-hidden keeps it out of the way. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 overflow-hidden"
         >
-          <path
-            d="M 380 220 C 440 130, 410 70, 480 80 C 530 90, 470 210, 520 230 C 540 240, 570 240, 590 230"
-            stroke="var(--portfolio-sky-400)"
-            strokeDasharray="4 4"
-            strokeLinecap="round"
-            strokeWidth="1.5"
-          />
-          <circle cx="480" cy="80" fill="var(--portfolio-sky-400)" r="3" />
-          <path
-            d="M 780 260 C 850 180, 830 110, 890 120 C 940 130, 890 240, 940 260 C 960 270, 980 270, 1000 260"
-            stroke="var(--portfolio-amber-500)"
-            strokeDasharray="4 4"
-            strokeLinecap="round"
-            strokeWidth="1.5"
-          />
-          <circle cx="890" cy="120" fill="var(--portfolio-amber-500)" r="3" />
-        </svg>
+          <div className="absolute inset-0 hidden md:block bg-[repeating-linear-gradient(to_bottom,var(--slate-border)_0px,var(--slate-border)_1px,transparent_1px,transparent_3rem)] opacity-20 [mask-image:linear-gradient(to_bottom,transparent,#000_22%,#000_78%,transparent)]" />
+          <div className="absolute inset-y-0 left-0 right-0 hidden xl:grid grid-cols-4 gap-8">
+            {Array.from({ length: 4 }, (_, i) => (
+              <div key={i} className="border-l border-slate-border/40" />
+            ))}
+          </div>
+          <div className="absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-accent-gold/15 to-transparent md:block" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-gold/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-gold/20 to-transparent" />
+          <div className="absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-gold/[0.04] blur-3xl" />
+        </div>
 
-        {/* Grid of 3 Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start relative z-10">
-          {/* CARD 01: Infodazz Technologies */}
-          <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-cyan-400 relative lg:-rotate-1">
-            <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 items-stretch relative z-10">
+          {/* CARD 01: INFODAZZ */}
+          <div className="executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-cyan-400 relative lg:-rotate-1 min-w-0">
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-start justify-between gap-4 mb-6 pb-4 border-b border-slate-border">
                 <span
-                  className="text-stat-counter font-stat-counter text-text-primary tracking-tighter"
+                  className="text-stat-counter font-stat-counter text-text-primary tracking-tighter shrink-0"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     fontSize: '64px',
@@ -77,19 +86,22 @@ export function VenturesSection() {
                 >
                   01
                 </span>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
+                <div className="flex flex-col items-end gap-1 min-w-0">
+                  <span
+                    className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider text-center leading-snug"
+                    style={{ whiteSpace: 'normal' }}
+                  >
                     FLAGSHIP TECH
                   </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    2014 — Present • 11 Yrs
+                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] text-right">
+                    Estd 2022 • Trichy HQ
                   </span>
                 </div>
               </div>
 
-              <div className="mb-4">
+              <div className={`mb-4 ${TITLE_H}`}>
                 <h3
-                  className="text-headline-md font-headline-md text-text-primary mb-1"
+                  className="text-headline-md font-headline-md text-text-primary mb-1 break-words"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     letterSpacing: '0.02em',
@@ -97,78 +109,71 @@ export function VenturesSection() {
                     fontSize: '26px',
                   }}
                 >
-                  Infodazz Technologies
+                  Infodazz
                 </h3>
                 <div className="text-mono-metric font-mono-metric text-primary text-[13px] font-semibold">
-                  Founder &amp; Chief Executive Officer
+                  Founder &amp; CEO
                 </div>
               </div>
 
-              <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-                Enterprise digital engineering and cloud consultancy. Delivers
-                zero-latency microservices, custom industrial ERPs, and
-                high-throughput AI automation roadmaps for regional enterprises and
-                domestic industrial clients across India.
+              <p
+                className={`flex-1 text-[14px] font-body-sm text-text-secondary leading-relaxed mb-6 ${BLURB_H} break-words`}
+              >
+                Established in 2022 to help businesses grow through technology and digital
+                transformation.
               </p>
 
-              <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+              <ul
+                className={`grid grid-cols-2 gap-x-4 gap-y-1.5 text-mono-metric font-mono-metric text-[12px] leading-relaxed text-text-secondary mb-6 break-words ${SERVICES_H}`}
+              >
+                <li>• ERP Solutions • SaaS Platforms</li>
+                <li>• Web &amp; Mobile Applications</li>
+                <li>• IT Solutions • Digital Marketing</li>
+                <li>• Graphic Design • Animation &amp; VFX</li>
+              </ul>
+
+              <div className={`flex-1 grid auto-rows-min grid-cols-2 gap-2.5 mb-6 ${CHIPS_H}`}>
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Deployments
+                    Team
                   </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    <CountUp target={100} suffix="+" /> Enterprise
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    <CountUp target={50} suffix="+" /> Professionals
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Architecture
+                    Presence
                   </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    Hybrid &amp; AI Cloud
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Clientele
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    Mid-Market &amp; Enterprise
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Footprint
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    Tamil Nadu &amp; South
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    4 Locations
                   </div>
                 </div>
               </div>
             </div>
 
             <a
-              className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 hover:bg-cyan-500/20 transition-all font-mono-metric text-mono-metric group"
+              className="inline-flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl bg-sky-800/10 border border-sky-800/25 text-[#075985] dark:bg-cyan-500/10 dark:border-cyan-400/20 dark:text-cyan-300 hover:bg-sky-800/20 dark:hover:bg-cyan-500/20 transition-all font-mono-metric text-mono-metric font-semibold group min-w-0"
               href="https://infodazz.org"
               rel="noopener noreferrer"
               target="_blank"
             >
-              <span>infodazz.org</span>
-              <span className="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+              <span className="min-w-0 flex-1 truncate">infodazz.org</span>
+              <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
                 arrow_outward
               </span>
             </a>
           </div>
 
-          {/* CARD 02: BNI Madurai */}
+          {/* CARD 02: KITTLE PVT LTD */}
           <div
-            className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-amber-500 relative lg:rotate-1 lg:-mt-2"
-            id="bni"
+            className="executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-amber-500 relative lg:rotate-1 min-w-0"
+            id="kittle"
           >
-            <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-start justify-between gap-4 mb-6 pb-4 border-b border-slate-border">
                 <span
-                  className="text-stat-counter font-stat-counter text-accent-gold tracking-tighter"
+                  className="text-stat-counter font-stat-counter text-accent-gold tracking-tighter shrink-0"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     fontSize: '64px',
@@ -177,19 +182,22 @@ export function VenturesSection() {
                 >
                   02
                 </span>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="badge-pill text-[11px] font-mono-metric bg-accent-gold/10 border-accent-gold/20 text-accent-gold tracking-wider">
-                    REGIONAL NETWORK
+                <div className="flex flex-col items-end gap-1 min-w-0">
+                  <span
+                    className="badge-pill text-[11px] font-mono-metric bg-accent-gold/10 border-accent-gold/20 text-accent-gold tracking-wider text-center leading-snug"
+                    style={{ whiteSpace: 'normal' }}
+                  >
+                    TECH INNOVATION
                   </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Executive Leadership
+                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] text-right">
+                    Trichy Based
                   </span>
                 </div>
               </div>
 
-              <div className="mb-4">
+              <div className={`mb-4 ${TITLE_H}`}>
                 <h3
-                  className="text-headline-md font-headline-md text-text-primary mb-1"
+                  className="text-headline-md font-headline-md text-text-primary mb-1 break-words"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     letterSpacing: '0.02em',
@@ -197,73 +205,70 @@ export function VenturesSection() {
                     fontSize: '26px',
                   }}
                 >
-                  BNI Madurai
+                  Kittle Pvt Ltd
                 </h3>
                 <div className="text-mono-metric font-mono-metric text-accent-gold text-[13px] font-semibold">
-                  Senior Leadership &amp; Regional Growth Architect
+                  Founder / Owner
                 </div>
               </div>
 
-              <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-                Key force in BNI Madurai regional executive infrastructure.
-                Spearheading structured referral frameworks, organizing landmark
-                trade conclaves, and scaling tier-2 city entrepreneurs to achieve
-                national and global market penetration.
+              <p
+                className={`flex-1 text-[14px] font-body-sm text-text-secondary leading-relaxed mb-6 ${BLURB_H} break-words`}
+              >
+                Based in Trichy, focused on IT solutions and technology
+                innovation — software solutions and digital platforms for
+                business growth.
               </p>
 
-              <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+              <ul
+                className={`grid grid-cols-2 gap-x-4 gap-y-1.5 text-mono-metric font-mono-metric text-[12px] leading-relaxed text-text-secondary mb-6 break-words ${SERVICES_H}`}
+              >
+                <li>• Software Solutions</li>
+                <li>• IT Services &amp; Support</li>
+                <li>• Digital Platforms</li>
+                <li>• Technology Consulting</li>
+              </ul>
+
+              <div className={`flex-1 grid auto-rows-min grid-cols-2 gap-2.5 mb-6 ${CHIPS_H}`}>
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Facilitated Value
+                    Base
                   </div>
-                  <div className="text-body-sm font-bold text-accent-gold">
-                    ₹<CountUp target={120} suffix="+" /> Crores
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    Trichy, Tamil Nadu
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Mentored Scope
+                    Focus
                   </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    <CountUp target={500} suffix="+" /> Founders
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Trade Conclaves
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    <CountUp target={12} suffix="+" /> Major Summits
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Honor Standing
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    Gold Club Member
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    Technology Innovation
                   </div>
                 </div>
               </div>
             </div>
 
             <a
-              className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-accent-gold/10 border border-accent-gold/20 text-accent-gold hover:bg-accent-gold/20 transition-all font-mono-metric text-mono-metric group"
-              href="#advisory"
+              className="inline-flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl bg-accent-gold/10 border border-accent-gold/25 text-[#8C6D1F] dark:text-accent-gold hover:bg-accent-gold/20 transition-all font-mono-metric text-mono-metric font-semibold group min-w-0"
+              href="https://kittle.ltd/"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="kittle.ltd"
             >
-              <span>BNI Executive Inquiries</span>
-              <span className="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                groups
+              <span className="min-w-0 flex-1 truncate">kittle.ltd</span>
+              <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                arrow_outward
               </span>
             </a>
           </div>
 
-          {/* CARD 03: SSRG International Journals */}
-          <div className="executive-card rounded-3xl p-6 sm:p-8 md:p-9 flex flex-col justify-between border-l-4 border-l-indigo-400 relative lg:rotate-1">
-            <div>
-              <div className="flex items-start justify-between mb-6 pb-4 border-b border-slate-border">
+          {/* CARD 03: SEVENTH SENSE RESEARCH GROUP */}
+          <div className="executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-indigo-400 relative lg:-rotate-1 min-w-0">
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-start justify-between gap-4 mb-6 pb-4 border-b border-slate-border">
                 <span
-                  className="text-stat-counter font-stat-counter text-indigo-400 tracking-tighter"
+                  className="text-stat-counter font-stat-counter text-indigo-400 tracking-tighter shrink-0"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     fontSize: '64px',
@@ -272,19 +277,22 @@ export function VenturesSection() {
                 >
                   03
                 </span>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider">
-                    ACADEMIC RESEARCH
+                <div className="flex flex-col items-end gap-1 min-w-0">
+                  <span
+                    className="badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider text-center leading-snug"
+                    style={{ whiteSpace: 'normal' }}
+                  >
+                    RESEARCH
                   </span>
-                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Global Open-Access
+                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] text-right">
+                    International Platform
                   </span>
                 </div>
               </div>
 
-              <div className="mb-4">
+              <div className={`mb-4 ${TITLE_H}`}>
                 <h3
-                  className="text-headline-md font-headline-md text-text-primary mb-1"
+                  className="text-headline-md font-headline-md text-text-primary mb-1 break-words"
                   style={{
                     fontFamily: 'Anton, "Bebas Neue", sans-serif',
                     letterSpacing: '0.02em',
@@ -292,65 +300,155 @@ export function VenturesSection() {
                     fontSize: '26px',
                   }}
                 >
-                  SSRG International Journals
+                  Seventh Sense Research Group
                 </h3>
                 <div className="text-mono-metric font-mono-metric text-indigo-300 text-[13px] font-semibold">
-                  Founder &amp; Managing Editor
+                  Founder / Owner
                 </div>
               </div>
 
-              <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-                Seventh Sense Research Group fosters scholarly dissemination across
-                computer science, electronics, and engineering. Anchored in Ph.D.
-                research rigor, publishing double-blind peer-reviewed
-                contributions from 60+ countries.
+              <p
+                className={`flex-1 text-[14px] font-body-sm text-text-secondary leading-relaxed mb-6 ${BLURB_H} break-words`}
+              >
+                International research publishing platform supporting researchers
+                and academicians through publication and academic collaboration.
               </p>
 
-              <div className="grid grid-cols-2 gap-2.5 mb-6">
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+              <ul
+                className={`grid grid-cols-2 gap-x-4 gap-y-1.5 text-mono-metric font-mono-metric text-[12px] leading-relaxed text-text-secondary mb-6 break-words ${SERVICES_H}`}
+              >
+                <li>• Research Publishing</li>
+                <li>• Peer Review &amp; Editing</li>
+                <li>• Scopus Indexing Support</li>
+                <li>• Academic Collaboration</li>
+              </ul>
+
+              <div className={`flex-1 grid auto-rows-min grid-cols-2 gap-2.5 mb-6 ${CHIPS_H}`}>
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Published Papers
+                    Journals
                   </div>
-                  <div className="text-body-sm font-bold text-indigo-300">
-                    <CountUp target={10000} format="comma" suffix="+" /> Works
+                  <div className="text-[13px] font-body-sm font-bold text-indigo-300 leading-snug break-words">
+                    <CountUp target={30} suffix="+" /> International
                   </div>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
                   <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Global Networks
+                    Scopus Indexed
                   </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    <CountUp target={45} suffix="+" /> Universities
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Disciplinary Range
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    <CountUp target={14} /> Journals
-                  </div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border">
-                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                    Peer Protocol
-                  </div>
-                  <div className="text-body-sm font-bold text-text-primary">
-                    Double-Blind
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    <CountUp target={5} suffix="+" /> Journals
                   </div>
                 </div>
               </div>
             </div>
 
             <a
-              className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-indigo-500/10 border border-indigo-400/20 text-indigo-300 hover:bg-indigo-500/20 transition-all font-mono-metric text-mono-metric group"
+              className="inline-flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl bg-violet-800/10 border border-violet-800/25 text-[#5B21B6] dark:bg-indigo-500/10 dark:border-indigo-400/20 dark:text-indigo-300 hover:bg-violet-800/20 dark:hover:bg-indigo-500/20 transition-all font-mono-metric text-mono-metric font-semibold group min-w-0"
               href="https://internationaljournalssrg.org"
               rel="noopener noreferrer"
               target="_blank"
+              title="internationaljournalssrg.org"
             >
-              <span>internationaljournalssrg.org</span>
-              <span className="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+              <span className="min-w-0 flex-1 truncate">
+                internationaljournalssrg.org
+              </span>
+              <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
                 arrow_outward
+              </span>
+            </a>
+          </div>
+
+          {/* CARD 04: KASTER TRUST */}
+          <div className="executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-emerald-500 relative lg:rotate-1 min-w-0">
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex items-start justify-between gap-4 mb-6 pb-4 border-b border-slate-border">
+                <span
+                  className="text-stat-counter font-stat-counter text-emerald-400 tracking-tighter shrink-0"
+                  style={{
+                    fontFamily: 'Anton, "Bebas Neue", sans-serif',
+                    fontSize: '64px',
+                    lineHeight: '0.9',
+                  }}
+                >
+                  04
+                </span>
+                <div className="flex flex-col items-end gap-1 min-w-0">
+                  <span
+                    className="badge-pill text-[11px] font-mono-metric bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 tracking-wider text-center leading-snug"
+                    style={{ whiteSpace: 'normal' }}
+                  >
+                    SOCIAL IMPACT
+                  </span>
+                  <span className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] text-right">
+                    Education Support
+                  </span>
+                </div>
+              </div>
+
+              <div className={`mb-4 ${TITLE_H}`}>
+                <h3
+                  className="text-headline-md font-headline-md text-text-primary mb-1 break-words"
+                  style={{
+                    fontFamily: 'Anton, "Bebas Neue", sans-serif',
+                    letterSpacing: '0.02em',
+                    textTransform: 'uppercase',
+                    fontSize: '26px',
+                  }}
+                >
+                  Kaster Trust
+                </h3>
+                <div className="text-mono-metric font-mono-metric text-emerald-400 text-[13px] font-semibold">
+                  Founder / Trustee
+                </div>
+              </div>
+
+              <p
+                className={`flex-1 text-[14px] font-body-sm text-text-secondary leading-relaxed mb-6 ${BLURB_H} break-words`}
+              >
+                Supporting education for students from economically disadvantaged
+                backgrounds — reducing financial barriers so deserving students
+                can continue.
+              </p>
+
+              <ul
+                className={`grid grid-cols-2 gap-x-4 gap-y-1.5 text-mono-metric font-mono-metric text-[12px] leading-relaxed text-text-secondary mb-6 break-words ${SERVICES_H}`}
+              >
+                <li>• Fee Payment Assistance</li>
+                <li>• Scholarship Guidance</li>
+                <li>• Learning Material Access</li>
+                <li>• Student Mentoring</li>
+              </ul>
+
+              <div className={`flex-1 grid auto-rows-min grid-cols-2 gap-2.5 mb-6 ${CHIPS_H}`}>
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
+                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
+                    Mission
+                  </div>
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    Reduce financial barriers
+                  </div>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-surface border border-slate-border min-w-0">
+                  <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
+                    Focus
+                  </div>
+                  <div className="text-[13px] font-body-sm font-bold text-text-primary leading-snug break-words">
+                    Student Growth
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <a
+              className="inline-flex items-center justify-between gap-3 w-full px-4 py-3 rounded-xl bg-emerald-700/10 border border-emerald-700/25 text-[#047857] dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-300 hover:bg-emerald-700/20 dark:hover:bg-emerald-500/20 transition-all font-mono-metric text-mono-metric font-semibold group min-w-0"
+              href="#advisory"
+            >
+              <span className="min-w-0 flex-1 truncate">
+                Support Student Education
+              </span>
+              <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                volunteer_activism
               </span>
             </a>
           </div>

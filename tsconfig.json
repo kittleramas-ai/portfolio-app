@@ -1,6 +1,12 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js"],
-  
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js", "worker-configuration.d.ts"],
+
+  /* bookade-src/ is a 68k-line vendored REFERENCE project, not part of this
+     build. It maps its own `@/*` to its internal src/, which does not exist
+     here, so every @/server/... import in it is unresolved and typecheck drowns
+     in hundreds of phantom errors. Excluded so `tsc` reports only our code. */
+  "exclude": ["node_modules", "dist", ".tanstack", ".wrangler", "bookade-src"],
+
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

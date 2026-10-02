@@ -20,20 +20,18 @@ export function QuoteSection() {
           style={{ fontFamily: '"Space Grotesk", sans-serif' }}
         >
           <span className="text-teal-100/70 inline">
-            “Technology without ecosystem is dormant; business without trust is
-            fragile.”
+            “Technology creates possibilities,
           </span>
           <span className="text-white inline">
             {' '}
-            Infodazz and BNI Madurai are our proof that when you engineer resilient
-            tech and nurture relentless trust, exponential scale follows.
+            but people create impact.”
           </span>
         </AnimatedText>
         <Reveal>
         <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg shrink-0">
             <img
-              alt="Dr. S. K."
+              alt="Dr. R. Surendiran"
               className="w-full h-full object-cover grayscale contrast-125"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHt-GFa9dNcxzSQIPTzFtGZugzZXCsvmWUvaqptV3qQcHQQYDqNzfMo7KKVdXQkA80dq9Nn4yb-_AlK94JMjQDCyVXNLPSrJs8y1rPtrLu7C7EuDrAnm3keIkJSnYgXalwhTBmHAPamsx5UZK_L4PJ0d359cuEDwQstjoUbJJDsHmNdpGtFtBjOu9RNrveJRQbHvZyhCDT77BNJcKE43ohJGvXLQDTWIc-L3795cw"
             />
@@ -43,13 +41,17 @@ export function QuoteSection() {
               className="text-[16px] md:text-[18px] font-bold text-white leading-snug"
               style={{ fontFamily: '"Space Grotesk", sans-serif' }}
             >
-              Dr. S. K., Ph.D.
+              Dr. R. Surendiran — Leadership Philosophy
             </div>
             <div className="text-[12px] md:text-[13px] text-teal-100/80 font-mono-metric font-medium tracking-wide mt-0.5">
-              Founder &amp; CEO, Infodazz • BNI Madurai • SSRG
+              Founder &amp; CEO, Infodazz • Kittle • Seventh Sense • Kaster Trust
             </div>
           </div>
         </div>
+        <p className="mt-6 text-[13px] md:text-sm text-teal-100/70 font-mono-metric leading-relaxed max-w-2xl mx-auto">
+          Vision: to build organizations that combine innovation, business growth,
+          education and social responsibility.
+        </p>
         </Reveal>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { prefersReducedMotion, isMobileDevice } from '../../lib/gsap'
-import { loadGsap } from '../../lib/gsapLoader'
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
+import { loadGsap } from '../../routes/lib/gsapLoader'
 
 export function AboutSection() {
   const sectionRef = React.useRef<HTMLElement | null>(null)
@@ -80,7 +80,7 @@ export function AboutSection() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-      <div className="w-full max-w-6xl mx-auto mb-16 relative z-10">
+      <div className="w-full mb-16 relative z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-label-badge font-label-badge bg-slate-surface border border-blue-500/30 text-blue-600 dark:text-[#E5C07B] mb-4">
             <span className="material-symbols-outlined text-[14px]">cognition</span>
@@ -96,7 +96,7 @@ export function AboutSection() {
                 <span className="material-symbols-outlined text-[16px]">cloud</span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Enterprise Cloud &amp; AI
+                Infodazz • Estd 2022
               </span>
             </div>
 
@@ -105,7 +105,7 @@ export function AboutSection() {
                 <span className="material-symbols-outlined text-[16px]">bolt</span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Distributed Systems &amp; ERP
+                Kittle Pvt Ltd • Trichy
               </span>
             </div>
 
@@ -116,7 +116,7 @@ export function AboutSection() {
                 </span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Enterprise Governance
+                BNI since 2022 • Rotary since 2024
               </span>
             </div>
           </div>
@@ -128,27 +128,28 @@ export function AboutSection() {
               style={{ fontFamily: '"Space Grotesk", sans-serif' }}
             >
               <span className="text-text-secondary font-normal">
-                My focus is on{' '}
+                Coming from a humble farmer family, my journey is about{' '}
               </span>
               <span className="text-text-primary font-bold">
-                unifying academic precision
+                continuous learning and innovation
               </span>
               <span className="text-text-secondary font-normal">, </span>
               <span className="text-[#0D281E] dark:text-[#E5C07B] font-bold">
-                fault-tolerant enterprise code
+                building technology businesses
               </span>
               <span className="text-text-secondary font-normal">, and </span>
               <span className="text-[#8C6D1F] dark:text-[#D4AF37] font-bold">
-                high-trust commerce
+                creating opportunities for others
               </span>
               <span className="text-text-secondary font-normal">
                 {' '}
-                to craft business engines that solve mission-critical scale.
+                — from academic research into entrepreneurship.
               </span>
             </h2>
             <p className="text-body-md font-body-md text-text-secondary mt-6 leading-relaxed max-w-xl mx-auto">
-              Synthesizing scientific discovery, enterprise technology, and regional
-              business into a singular commercial flywheel.
+              Technology entrepreneur, research contributor and business leader across
+              technology solutions, digital transformation, academic publishing and
+              social responsibility.
             </p>
           </div>
 
@@ -161,7 +162,7 @@ export function AboutSection() {
                 </span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Ecosystem Scale (BNI)
+                30+ Intl Journals • 5+ Scopus
               </span>
             </div>
 
@@ -172,7 +173,7 @@ export function AboutSection() {
                 </span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Regional High-Trust Commerce
+                Kaster Trust • Education Support
               </span>
             </div>
 
@@ -183,7 +184,7 @@ export function AboutSection() {
                 </span>
               </div>
               <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-                Scholarly Rigor (SSRG)
+                Ph.D • MCA • B.Sc Mathematics
               </span>
             </div>
           </div>
@@ -195,8 +196,8 @@ export function AboutSection() {
         {/* 1. Prompt Bubble */}
         <div className="flex justify-end w-full">
           <div className="max-w-xl px-6 py-4 rounded-2xl md:rounded-3xl bg-slate-surface border border-slate-border text-text-secondary text-[15px] md:text-[16px] leading-relaxed bubble-glow transition-all duration-300 hover:border-blue-400/35">
-            &ldquo;How do you connect high-throughput enterprise cloud engineering with
-            grassroots regional commerce and peer-reviewed academic rigor?&rdquo;
+            &ldquo;How did your journey move from academic research into building
+            technology companies?&rdquo;
           </div>
         </div>
 
@@ -216,20 +217,22 @@ export function AboutSection() {
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-300"></span>
               </div>
               <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase">
-                INFODAZZ • PILLAR I
+                INFODAZZ + KITTLE • PILLAR I — ENTREPRENEURSHIP
               </span>
             </div>
             <p className="text-[15px] md:text-[16px] text-text-secondary leading-relaxed mb-4">
               <strong className="text-text-primary font-semibold">
-                Enterprise Cloud &amp; AI Architecture
+                Helping businesses grow through technology and digital transformation
               </strong>{' '}
-              — Delivering zero-latency fault tolerance, microservice systems, and
-              high-throughput AI automation across regional &amp; domestic enterprise
-              clients. Turning complex distributed code into mission-critical
-              business engines.
+              — Infodazz was established in 2022 with HQ in Trichy and branches in
+              Madurai, Karaikudi and Kumbakonam, with 50+ professionals across ERP,
+              SaaS, Web &amp; Mobile Apps, IT Solutions, Digital Marketing, SEO,
+              Design, Animation/VFX, Photography/Videography and Event Management.
+              Kittle Pvt Ltd, Trichy focuses on Software Solutions, IT Services,
+              Digital Platforms and Technology Consulting.
             </p>
             <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
-              <span>Specialties: Distributed Systems • SaaS &amp; Cloud Infrastructure</span>
+              <span>Estd 2022 • Trichy HQ • 50+ Professionals • 11 Service Verticals</span>
               <span className="material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]">
                 terminal
               </span>
@@ -240,8 +243,7 @@ export function AboutSection() {
         {/* 3. Prompt Bubble */}
         <div className="flex justify-end w-full">
           <div className="max-w-xl px-6 py-4 rounded-2xl md:rounded-3xl bg-slate-surface border border-slate-border text-text-secondary text-[15px] md:text-[16px] leading-relaxed bubble-glow transition-all duration-300 hover:border-blue-400/35">
-            &ldquo;And how does that technical leverage translate into real economic scale
-            for regional business leaders?&rdquo;
+            &ldquo;How do you support researchers, academicians and students?&rdquo;
           </div>
         </div>
 
@@ -253,20 +255,24 @@ export function AboutSection() {
                 <span className="material-symbols-outlined text-[15px]">hub</span>
               </div>
               <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase">
-                BNI MADURAI • PILLAR II
+                SEVENTH SENSE + ACADEMICS • PILLAR II — KNOWLEDGE
               </span>
             </div>
             <p className="text-[15px] md:text-[16px] text-text-secondary leading-relaxed mb-4">
               <strong className="text-text-primary font-semibold">
-                High-Trust Economic Synergy
+                International research publishing platform for researchers and
+                academicians
               </strong>{' '}
-              — Spearheading regional commercial acceleration through structured
-              referral systems, organizing flagship trade conclaves, and actively
-              mentoring founders to break regional boundaries into national and
-              global markets.
+              — Seventh Sense Research Group supports 30+ International Journals
+              including 5+ Scopus Indexed Journals, with research publication
+              ecosystem and academic collaboration support. Academic background:
+              Ph.D — Madurai Kamaraj University, MCA — Thiagarajar School of
+              Management Madurai, B.Sc Mathematics — Govt. College of Arts and
+              Science Kumbakonam. Contributions include research publications,
+              patents, academic mentoring and research guidance.
             </p>
             <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
-              <span>Focus: ₹120+ Cr Facilitated • Tier-2 High-Trust Networks</span>
+              <span>30+ Journals • 5+ Scopus • Publications • Patents • Mentoring</span>
               <span className="material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]">
                 payments
               </span>
@@ -277,8 +283,7 @@ export function AboutSection() {
         {/* 5. Prompt Bubble */}
         <div className="flex justify-end w-full">
           <div className="max-w-xl px-6 py-4 rounded-2xl md:rounded-3xl bg-slate-surface border border-slate-border text-text-secondary text-[15px] md:text-[16px] leading-relaxed bubble-glow transition-all duration-300 hover:border-blue-400/35">
-            &ldquo;Where does the foundational research and long-term intellectual
-            validation come from?&rdquo;
+            &ldquo;What drives your leadership, travel and social impact work?&rdquo;
           </div>
         </div>
 
@@ -292,19 +297,22 @@ export function AboutSection() {
                 </span>
               </div>
               <span className="text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-cyan-600 dark:text-cyan-300 uppercase">
-                SSRG JOURNALS • PILLAR III
+                KASTER TRUST + NETWORKS • PILLAR III — SOCIAL IMPACT
               </span>
             </div>
             <p className="text-[15px] md:text-[16px] text-text-secondary leading-relaxed mb-4">
               <strong className="text-text-primary font-semibold">
-                Academic Rigor &amp; Global Open Access
+                Helping deserving students continue education by reducing financial
+                barriers
               </strong>{' '}
-              — Harnessing Ph.D. research foundations in computer science to shepherd
-              SSRG International Journals (Seventh Sense Research Group), indexing
-              10,000+ scientific publications across 45+ international universities.
+              — Kaster Trust provides educational fee support and encourages learning
+              opportunities. Active in business and professional communities as BNI
+              Member since 2022 and Rotary Member since 2024. A passionate traveller
+              and lifelong learner who shares knowledge through motivational sessions
+              and professional interactions.
             </p>
             <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
-              <span>Indexed: Global Open Access • Double-Blind Peer Review</span>
+              <span>BNI since 2022 • Rotary since 2024 • Global Travel • Mentorship</span>
               <span className="material-symbols-outlined text-cyan-600 dark:text-cyan-400 text-[16px]">
                 menu_book
               </span>

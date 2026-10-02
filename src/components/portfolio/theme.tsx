@@ -58,6 +58,8 @@ const ThemeContext = React.createContext<{
   setTheme: () => {},
 })
 
+
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Always render 'light' on the first pass so client hydration matches the
   // SSR HTML exactly. Reading localStorage here would render 'dark' on the
@@ -116,6 +118,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [commit],
   )
 
+
   const toggleTheme = React.useCallback(() => {
     commit(themeRef.current === 'dark' ? 'light' : 'dark')
   }, [commit])
@@ -128,3 +131,5 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   return React.useContext(ThemeContext)
 }
+
+

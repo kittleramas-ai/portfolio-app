@@ -30,12 +30,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1.0',
       },
       {
-        title: 'Dr. S. K. | Founder & CEO — Infodazz, BNI Madurai & SSRG',
+        title:
+          'Dr. R. Surendiran | Founder — Infodazz, Kittle, Seventh Sense Research Group & Kaster Trust',
       },
       {
         name: 'description',
         content:
-          'Founder & CEO of Infodazz, BNI Madurai Executive & CS Ph.D. Bridging enterprise software with regional business scale.',
+          'Dr. R. Surendiran — Founder & CEO of Infodazz, Founder of Kittle Pvt Ltd, Seventh Sense Research Group and Kaster Trust. Building technology businesses, research platforms and social impact initiatives.',
       },
     ],
     links: [
@@ -55,7 +56,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Anton&family=Bebas+Neue&family=Syne:wght@700;800&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Anton&family=Bebas+Neue&family=Syne:wght@700;800&family=Great+Vibes&display=swap',
       },
       {
         rel: 'stylesheet',
@@ -77,7 +78,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-primary-container selection:text-text-primary overflow-x-hidden">
+      <body className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
         <ThemeProvider>{children}</ThemeProvider>
         <TanStackDevtools
           config={{

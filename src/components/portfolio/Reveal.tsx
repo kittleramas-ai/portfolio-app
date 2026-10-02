@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { prefersReducedMotion, isMobileDevice } from '../../lib/gsap'
-import { loadGsap } from '../../lib/gsapLoader'
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
+import { loadGsap } from '../../routes/lib/gsapLoader'
 
 type RevealProps = {
   children: React.ReactNode

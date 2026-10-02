@@ -1,26 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Dr. R. Surendiran">
+  <title>Dr. R. Surendiran</title>
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0A0D14" />
-      <stop offset="100%" stop-color="#121826" />
+    <!-- Executive Emerald tile -->
+    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0D281E" />
+      <stop offset="55%" stop-color="#1A4A35" />
+      <stop offset="100%" stop-color="#2E7D5B" />
     </linearGradient>
-    <linearGradient id="glowGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="50%" stop-color="#818cf8" />
-      <stop offset="100%" stop-color="#a855f7" />
+    <!-- Champagne bronze monogram -->
+    <linearGradient id="bronze" x1="18" y1="14" x2="46" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F3E6BE" />
+      <stop offset="55%" stop-color="#E5C07B" />
+      <stop offset="100%" stop-color="#C9A227" />
     </linearGradient>
   </defs>
-  <!-- Background with subtle border -->
-  <rect width="64" height="64" rx="16" fill="url(#bgGrad)" />
-  <rect x="1" y="1" width="62" height="62" rx="15" stroke="url(#glowGrad)" stroke-width="1.5" stroke-opacity="0.6" />
-  
-  <!-- Stylized Monogram S -->
-  <path d="M42 22C40 18 36.5 16 32 16C25.5 16 21 20 21 25.5C21 34 38 31 38 39C38 43 34.5 45.5 30.5 45.5C25 45.5 21.5 42 20 38M44 26L41 22" 
-        stroke="url(#glowGrad)" 
-        stroke-width="5" 
-        stroke-linecap="round" 
-        stroke-linejoin="round" />
-  
-  <!-- Subtle accent dot -->
-  <circle cx="45" cy="44" r="3" fill="#38bdf8" />
+
+  <rect x="1" y="1" width="62" height="62" rx="16" fill="url(#tile)" />
+  <rect x="1" y="1" width="62" height="62" rx="16" stroke="#C9A227" stroke-opacity="0.5" stroke-width="1.5" />
+  <rect x="6" y="6" width="52" height="52" rx="11" stroke="#E5C07B" stroke-opacity="0.22" stroke-width="1" />
+
+  <!-- Monogram R, drawn as geometry so no system font is required -->
+  <g stroke="url(#bronze)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 17V47" />
+    <path d="M22 17H33A8 8 0 0 1 33 33H22" />
+    <path d="M31 33L42 47" />
+  </g>
+
+  <!-- Signature swash -->
+  <path d="M19 53.5C25 56 39 56 45 53" stroke="#C9A227" stroke-opacity="0.75" stroke-width="2.5" stroke-linecap="round" />
 </svg>

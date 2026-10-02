@@ -45,5 +45,7 @@ const movies = [
     //   ]
     // }
 
+//redux
 
- 
+//redux.js
+// Import necessary functions from Redux Toolkit

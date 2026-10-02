@@ -3,5 +3,12 @@
   "name": "portfolio",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry"
+  "main": "@tanstack/react-start/server-entry",
+  "d1_databases": [
+    {
+      "binding": "portfolio",
+      "database_name": "portfolio",
+      "database_id": "67c32cc5-7bad-49f0-92e5-d42a87603348"
+    }
+  ]
 }

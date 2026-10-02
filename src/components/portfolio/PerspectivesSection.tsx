@@ -12,8 +12,8 @@ export function PerspectivesSection() {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-slate-border gap-6 relative z-10">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="px-2.5 py-1 rounded-full text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-widest">
-              RESEARCH &amp; ESSAYS // SCHOLARLY &amp; INDUSTRY MONOGRAPHS
+            <span className="inline-block max-w-full px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-wider sm:tracking-widest leading-relaxed break-words whitespace-normal text-center sm:text-left">
+              BEYOND BUSINESS // ENTREPRENEURSHIP • KNOWLEDGE • SOCIAL IMPACT
             </span>
           </div>
           <h2
@@ -26,13 +26,13 @@ export function PerspectivesSection() {
               lineHeight: 1.15,
             }}
           >
-            EXECUTIVE PERSPECTIVES &amp; PUBLICATIONS
+            BEYOND BUSINESS — THREE COMMITMENTS
           </h2>
         </div>
         <p className="text-mono-metric font-mono-metric text-text-tertiary max-w-md">
-          Distilling decades of hands-on software architecture and regional
-          leadership into high-impact research papers, policy memos, and industry
-          commentary.
+          Entrepreneurship, Knowledge and Social Impact — building technology
+          companies, supporting research &amp; education, and helping students
+          overcome barriers.
         </p>
       </div>
       </Reveal>
@@ -40,31 +40,31 @@ export function PerspectivesSection() {
       <Reveal delay={100}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
         {/* Article 01 */}
-        <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
+        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
           <div>
             <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
-                TECHNICAL MONOGRAPH
+                ENTREPRENEURSHIP
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Infodazz Research
+                Infodazz • Kittle
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “The Resilient Enterprise: Why Multi-Cloud Fault Tolerance is an
-              Economic Imperative, Not an IT Feature”
+              “Building Technology Companies and Digital Ecosystems”
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              An executive case study into downtime systemic shocks, multi-region
-              redundancy paradigms, and calculating business downtime risk for
-              industrial supply-chain backbones.
+              From academic research into entrepreneurship — Infodazz (Estd 2022,
+              50+ professionals, 11 services) and Kittle Pvt Ltd helping
+              businesses grow through technology, SaaS, ERP, Web/Mobile and
+              digital transformation.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Read Essay</span>
+            <span className="text-text-tertiary">Technology Businesses</span>
             <span className="material-symbols-outlined text-[18px] text-cyan-400 group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
@@ -72,31 +72,30 @@ export function PerspectivesSection() {
         </article>
 
         {/* Article 02 */}
-        <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
+        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
           <div>
             <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider">
-                POLICY &amp; COMMERCE
+                KNOWLEDGE
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Regional Business Review
+                Seventh Sense Research
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 group-hover:text-accent-gold transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “Grassroots Capitalism: How High-Trust Referral Architectures Beat
-              Algorithmic Marketplaces in Tier-2 Hubs”
+              “Supporting Research, Education and Innovation”
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Examining empirical outcomes from ₹120+ Crore in localized
-              transactions, demonstrating that human accountability networks
-              outperform pure algorithmic intermediaries.
+              Seventh Sense Research Group — 30+ International Journals, 5+
+              Scopus Indexed, publication ecosystem and collaboration support,
+              plus research publications, patents and academic mentoring.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Executive Memo</span>
+            <span className="text-text-tertiary">Research &amp; Education</span>
             <span className="material-symbols-outlined text-[18px] text-accent-gold group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>
@@ -104,31 +103,30 @@ export function PerspectivesSection() {
         </article>
 
         {/* Article 03 */}
-        <article className="executive-card rounded-3xl p-8 flex flex-col justify-between group">
+        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
           <div>
             <div className="card-head-row border-slate-border">
               <span className="badge-pill text-[11px] font-mono-metric bg-emerald-500/10 border-emerald-500/20 text-emerald-400 tracking-wider">
-                PEER REVIEWED
+                SOCIAL IMPACT
               </span>
               <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                SSRG Int'l Journals
+                Kaster Trust
               </span>
             </div>
             <h3
               className="text-xl font-bold text-text-primary mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors leading-snug"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              “A Survey on Distributed Consensus Protocols in Heterogeneous Edge
-              Computing”
+              “Helping Students Overcome Educational Barriers”
             </h3>
             <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Doctoral analysis examining consensus latency tradeoffs, Byzantine
-              fault tolerance, and node synchronization across geographically
-              dispersed IoT edge systems.
+              Kaster Trust helps deserving students continue education by
+              supporting fees and reducing financial barriers — encouraging
+              learning opportunities and student growth.
             </p>
           </div>
           <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Double-Blind Peer Reviewed</span>
+            <span className="text-text-tertiary">Education Support</span>
             <span className="material-symbols-outlined text-[18px] text-emerald-400 group-hover:translate-x-1 transition-transform">
               arrow_forward
             </span>

@@ -10,10 +10,10 @@ export function MilestonesSection() {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-border">
-          {/* Metric 1: UPTIME */}
+          {/* Metric 1: PROFESSIONALS */}
           <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
             <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
-              UPTIME
+              PROFESSIONALS
             </div>
             <div className="my-auto">
               <div
@@ -23,67 +23,7 @@ export function MilestonesSection() {
                 }}
               >
                 <CountUp
-                  target={100}
-                  className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
-                />
-                <span className="text-[44px] sm:text-[54px] lg:text-[62px] leading-none text-text-tertiary ml-0.5 select-none font-sans font-light">
-                  %
-                </span>
-              </div>
-            </div>
-            <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
-              since deployment <span className="mx-1.5 text-text-tertiary/50">·</span>{' '}
-              zero-latency
-            </div>
-          </div>
-
-          {/* Metric 2: TRANSACTIONS */}
-          <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
-            <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
-              TRANSACTIONS
-            </div>
-            <div className="my-auto">
-              <div
-                className="flex items-baseline tracking-tight font-extrabold text-text-primary"
-                style={{
-                  fontFamily: 'Anton, "Bebas Neue", "Space Grotesk", sans-serif',
-                }}
-              >
-                <span className="text-[40px] sm:text-[50px] lg:text-[56px] leading-none text-accent-gold/80 mr-1 select-none font-sans">
-                  ₹
-                </span>
-                <CountUp
-                  target={120}
-                  className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
-                />
-                <span className="text-[32px] sm:text-[42px] lg:text-[48px] leading-none text-text-secondary font-bold ml-1 font-headline-sm">
-                  Cr
-                </span>
-                <span className="text-[44px] sm:text-[54px] lg:text-[62px] leading-none text-text-tertiary ml-0.5 select-none font-sans font-light">
-                  +
-                </span>
-              </div>
-            </div>
-            <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
-              cumulative <span className="mx-1.5 text-text-tertiary/50">·</span> bni regional
-              network
-            </div>
-          </div>
-
-          {/* Metric 3: MONTHLY ACTIVE */}
-          <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
-            <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
-              MONTHLY ACTIVE
-            </div>
-            <div className="my-auto">
-              <div
-                className="flex items-baseline tracking-tight font-extrabold text-text-primary"
-                style={{
-                  fontFamily: 'Anton, "Bebas Neue", "Space Grotesk", sans-serif',
-                }}
-              >
-                <CountUp
-                  target={500}
+                  target={50}
                   className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
                 />
                 <span className="text-[44px] sm:text-[54px] lg:text-[62px] leading-none text-text-tertiary ml-0.5 select-none font-sans font-light">
@@ -92,15 +32,15 @@ export function MilestonesSection() {
               </div>
             </div>
             <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
-              active leaders <span className="mx-1.5 text-text-tertiary/50">·</span> across
-              tamil nadu
+              infodazz team <span className="mx-1.5 text-text-tertiary/50">·</span>{' '}
+              trichy • madurai • karaikudi • kumbakonam
             </div>
           </div>
 
-          {/* Metric 4: ACCOUNTS / CITATIONS */}
+          {/* Metric 2: VENTURES */}
           <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
             <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
-              ACCOUNTS
+              VENTURES FOUNDED
             </div>
             <div className="my-auto">
               <div
@@ -110,8 +50,32 @@ export function MilestonesSection() {
                 }}
               >
                 <CountUp
-                  target={10000}
-                  format="comma"
+                  target={4}
+                  className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
+                />
+              </div>
+            </div>
+            <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
+              infodazz <span className="mx-1.5 text-text-tertiary/50">·</span> kittle{' '}
+              <span className="mx-1.5 text-text-tertiary/50">·</span> seventh sense{' '}
+              <span className="mx-1.5 text-text-tertiary/50">·</span> kaster trust
+            </div>
+          </div>
+
+          {/* Metric 3: INTERNATIONAL JOURNALS */}
+          <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
+            <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
+              INTERNATIONAL JOURNALS
+            </div>
+            <div className="my-auto">
+              <div
+                className="flex items-baseline tracking-tight font-extrabold text-text-primary"
+                style={{
+                  fontFamily: 'Anton, "Bebas Neue", "Space Grotesk", sans-serif',
+                }}
+              >
+                <CountUp
+                  target={30}
                   className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
                 />
                 <span className="text-[44px] sm:text-[54px] lg:text-[62px] leading-none text-text-tertiary ml-0.5 select-none font-sans font-light">
@@ -120,8 +84,35 @@ export function MilestonesSection() {
               </div>
             </div>
             <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
-              open access <span className="mx-1.5 text-text-tertiary/50">·</span> ssrg
-              journals global
+              seventh sense <span className="mx-1.5 text-text-tertiary/50">·</span> research
+              publishing platform
+            </div>
+          </div>
+
+          {/* Metric 4: SCOPUS INDEXED */}
+          <div className="py-12 lg:py-16 px-6 lg:px-10 flex flex-col justify-between group hover:bg-slate-surface/60 transition-colors duration-300">
+            <div className="text-[12px] font-mono-metric text-text-tertiary tracking-[0.22em] uppercase mb-8">
+              SCOPUS INDEXED
+            </div>
+            <div className="my-auto">
+              <div
+                className="flex items-baseline tracking-tight font-extrabold text-text-primary"
+                style={{
+                  fontFamily: 'Anton, "Bebas Neue", "Space Grotesk", sans-serif',
+                }}
+              >
+                <CountUp
+                  target={5}
+                  className="text-[56px] sm:text-[68px] lg:text-[76px] leading-none text-text-primary"
+                />
+                <span className="text-[44px] sm:text-[54px] lg:text-[62px] leading-none text-text-tertiary ml-0.5 select-none font-sans font-light">
+                  +
+                </span>
+              </div>
+            </div>
+            <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
+              scopus journals <span className="mx-1.5 text-text-tertiary/50">·</span>{' '}
+              academic collaboration support
             </div>
           </div>
         </div>
