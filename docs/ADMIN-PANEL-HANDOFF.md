@@ -1,6 +1,7 @@
 # Admin Panel — Build Handoff
 
-**Status:** v1 WORKING. Login + settings editor + D1-backed content, verified end to end.
+**Status:** v2 WORKING. Login + settings editor + image uploads, on a Node/VPS
+target. Verified end to end against both the dev server and the production build.
 **Last updated:** 2026-10-02
 
 ---
@@ -8,49 +9,118 @@
 ## What works now
 
 - `/admin/login` — email + password, PBKDF2, httpOnly session cookie.
-- `/admin` — server-guarded settings editor. Editable: WhatsApp number,
-  pre-filled message, contact email, phone display, hero statement (3 lines),
-  counter-statement, both CTA labels + links. Live previews for the wa.me URL
-  and the hero statement.
-- The public site renders those values from D1 **on the server**, so there is no
-  flash of default content. `WhatsAppFab` and `HeroSection` take them as props.
+- `/admin` — settings editor: WhatsApp number, pre-filled message, contact
+  email, phone display, hero statement (3 lines), counter-statement, both CTA
+  labels + links. Live previews for the wa.me URL and hero statement.
+- `/admin` — **image slots**: hero portrait, signature, social share image,
+  favicon. File picker, replace, alt-text editing, remove.
+- The public site renders settings AND images server-side, so there is no flash
+  of defaults.
 
 ### Run it
 
-```
+```bash
 npm run admin:seed      # prints a generated password; re-run resets it
-npm run dev
-# open http://localhost:3000/admin   (3001 if 3000 is taken)
+npm run dev             # http://localhost:3000/admin
+```
+
+Production:
+
+```bash
+npm run build && npm start
 ```
 
 ### Verify it
 
-```
-npx tsx admin/verify.ts               # 20 crypto/cookie assertions
-npx tsx admin/integration.ts --write  # 12 checks against real D1
-npx tsx admin/guard-check.ts          # 11 HTTP checks (needs dev server up)
+```bash
+npm test                # all four suites
 ```
 
-All three pass. `tsc`, `eslint`, and `npm run build` are clean.
+`test:guard` and `test:upload` need a server running and respect `BASE_URL`
+(default `http://localhost:3000`):
+
+```
+npm run test:verify    # 20 crypto/cookie assertions
+npm run test:db        # 12 checks against the real database
+npm run test:guard     # 11 HTTP auth checks
+npm run test:upload    # 21 checks on the upload path
+```
+
+All pass against both `npm run dev` and the built `npm start`.
+
+---
+
+## Architecture
+
+**Node/VPS, not Cloudflare.** Two things forced the move:
+
+1. **Uploads are impossible on Workers.** workerd has no writable filesystem —
+   `node:fs` resolves at build time but throws
+   `"[unenv] fs.writeFile is not implemented yet!"`. Verified directly rather
+   than assumed.
+2. **D1 only exists inside Cloudflare**, so the database had to move anyway.
+
+`vite.config.ts` no longer uses `@cloudflare/vite-plugin`; `wrangler.jsonc` is
+no longer used for deployment. The old D1 database still exists but is
+abandoned — its rows were copied into `data/portfolio.db` by a one-shot script
+that has since been removed.
+
+| Concern | Choice |
+|---|---|
+| Database | SQLite file (`DATABASE_FILE`, default `data/portfolio.db`) via `better-sqlite3` |
+| Schema | Applied on first DB access with `CREATE TABLE IF NOT EXISTS`, so a VPS deploy has no migration step to forget |
+| Uploads | `public/uploads/`, served by `server.mjs` |
+| Entry point | `server.mjs`, adapting Node req/res to the `{ fetch }` handler `vite build` emits |
+| Auth | PBKDF2-SHA256 210k; opaque 48-byte tokens stored as `sha256(token+pepper)` in an httpOnly cookie |
+
+### Why uploads are served from the source tree
+
+Vite copies `public/` into `dist/client/` **at build time**. An upload written
+after the build would 404, which defeats the entire point. `server.mjs` serves
+`/uploads/*` from `public/uploads/` directly, so a manager's upload is live
+immediately with no rebuild. Verified: upload after build → serves at once.
+
+Deploy consequence: `public/uploads/` and `data/` must survive a deploy. Don't
+`rm -rf` the checkout, or point `DATABASE_FILE` / `UPLOADS_DIR` outside it.
+
+### Image slots are a closed enum
+
+`hero_portrait`, `signature`, `og_image`, `favicon` — each with its own max
+dimensions and aspect requirement. A manager cannot upload a 6 MB phone photo
+into a slot that renders at 300 px; validation rejects it with a readable
+message. Uploads are magic-byte checked independently of the declared
+`Content-Type`, so a file renamed `.png` cannot smuggle HTML in from the site
+origin.
 
 ---
 
 ## Not done yet
 
-1. **Image uploads** — blocked on R2 being enabled in the Cloudflare dashboard
-   (`code: 10042`, "Please enable R2 through the Cloudflare Dashboard"). Planned
-   slots: `hero_portrait`, `signature`, `og_image`, `favicon`. Needs an
-   `r2_buckets` binding in wrangler.jsonc.
-2. **Password change** — no UI; re-run `npm run admin:seed` to reset instead.
-3. **Login rate limiting** — not implemented. PBKDF2 at 210k iterations makes
-   each attempt expensive, but add Cloudflare WAF rules before going public.
-4. **Production deploy** — never run. Needs the migration applied to remote D1
-   and a pepper secret:
+1. **Password change UI** — re-run `npm run admin:seed` to reset instead.
+2. **Login rate limiting** — PBKDF2 at 210k makes each attempt expensive, but
+   add fail2ban or an nginx `limit_req` before this is internet-facing.
+3. **Audit history** — `updated_by` records who last changed what; there is no
+   change log.
+4. **Never deployed to a real VPS** — see `docs/VPS-DEPLOY.md`. The production
+   build and `npm start` were verified locally on port 3100, nothing beyond that.
 
-   ```
-   npx wrangler d1 execute portfolio --file drizzle/0000_admin_auth.sql --remote
-   npx wrangler secret put SESSION_TOKEN_PEPPER
-   ```
+---
+
+## Bugs found and fixed (worth remembering)
+
+Two were only caught because the checks test the failure path, not the happy
+path.
+
+**Expired sessions authenticated.** Expiry columns were declared
+`integer({ mode: 'timestamp' })`, which Drizzle interprets as **seconds**, while
+the app wrote `Date.now()` (**milliseconds**). Drizzle read every `expires_at`
+back as a date in the year **58722**, so `expiresAt <= now` never fired. Fixed
+with `'timestamp_ms'`. Caught by `admin/expiry-check.ts`.
+
+**The site silently ignored its own database.** `.env.local` still carried
+`DATABASE_URL="dev.db"` from the starter template, which took priority over the
+default path and pointed the app at a different, non-existent file than the CLI
+tools used. Every read fell back to schema defaults. Removed.
 
 ---
 
@@ -61,92 +131,77 @@ WhatsApp number, swap images, update the signature. No RBAC — one login.
 
 ---
 
-## Architecture decisions
+## Design decisions
 
 - `admin/` holds all admin code; `src/` keeps the public site. Route files stay
   in `src/routes/admin/` because TanStack Router requires that location.
-- **One `admin_user` table, one hardcoded role.** No tenants, no permissions
-  table, no branches/departments.
-- **Settings as key-value rows**, one row per group — not a single JSON blob.
-  A group save is a single upsert, so concurrent edits cannot clobber.
-- **One Zod schema per group**, TS types inferred from it, so the defaults and
-  the validator cannot drift apart.
-- Timestamps use `mode: 'timestamp_ms'` — see the bug note below.
-- Sessions use sliding expiry (extended on use), 7-day TTL.
+- **One `admin_user` table, one hardcoded role.** No tenants, no permissions.
+- **Settings as key-value rows**, one row per group, so a group save is a
+  single upsert and concurrent edits cannot clobber each other.
+- **One Zod schema per group**, TS types inferred from it.
+- Schema is created on first DB access, not at boot — see above.
+- `requireAdmin()` throws a Response so write paths fail closed.
 
 ### Import-protection constraint
 
 Route files are compiled into BOTH the client and server graphs, and TanStack
 denies `@tanstack/react-start/server` to the client. So `beforeLoad` **cannot**
 call `getRequest()` directly — the build fails with "Import denied in client
-environment". Guards are therefore wrapped in `createServerFn` inside
-`admin/server/guards.ts`, and route files reference the plain exported function.
+environment". Guards are wrapped in `createServerFn` in
+`admin/server/guards.ts`; route files reference the plain exported function.
 
-Anything reaching D1 has the same restriction: `cloudflare:workers` is
-server-only, so `admin/server/public.ts` may only be imported from inside a
-server function, never from a route loader or a component.
-
----
-
-## Bug found and fixed (worth remembering)
-
-Expiry columns were declared `integer({ mode: 'timestamp' })`, which Drizzle
-interprets as **seconds**, while the app writes `Date.now()` (**milliseconds**).
-Drizzle read every `expires_at` back as a timestamp in the year **58722**, so
-the `expiresAt <= now` check never fired and **expired sessions kept working**.
-
-Fixed by switching to `'timestamp_ms'` throughout, with a comment on the column.
-Caught by `admin/expiry-check.ts` — which is exactly why the guard is tested
-against a real expired row rather than a fresh one.
+Anything reaching the database has the same restriction: `admin/server/public.ts`
+may only be imported from inside a server function, never from a route loader or
+a component.
 
 ---
 
 ## Reference: what to copy from bookade
 
-Lives at `../bookade-reference` (moved out of this repo). Excluded from
-tsconfig, since it maps its own `@/*` to a `src/` that does not exist here and
-was adding ~300 phantom type errors.
+Lives at `../bookade-reference`, excluded from tsconfig (it maps its own `@/*`
+to a `src/` that does not exist here and added ~300 phantom type errors).
 
 **Same stack** — TanStack Start, Cloudflare, Drizzle, Zod, shadcn.
 
-**Copied:**
-- `server/auth/security.ts` — opaque random token, stored as
-  `sha256(token + pepper)`, httpOnly cookie. (Ignore its `JWT_SECRET`; dead
-  config, nothing reads it.)
+**Copied:** `server/auth/security.ts` — opaque random token stored as
+`sha256(token + pepper)` in an httpOnly cookie. (Ignore its `JWT_SECRET`; dead
+config, nothing reads it.)
 
 **Deliberately NOT copied:**
 - **RBAC** — `server/access/modulePolicies.ts` is 462 lines modelling
-  multi-tenant SaaS (tenants, branches, departments, 20-operator row-level
-  ABAC, 220-line contract tests). ~1,150 lines for access+auth+rbac+uploads.
-  We need one boolean: "is this person logged in."
+  multi-tenant SaaS. ~1,150 lines for access+auth+rbac+uploads, to answer one
+  boolean: "is this person logged in."
 - **Local-disk uploads** — `server/modules/uploads/storage.ts` uses `node:fs`
-  writing to `process.cwd()/"uploads"`. `node:fs` does not exist on workerd.
+  → `process.cwd()/"uploads"`. That *does* work on a VPS, but it never runs
+  migrations and has no path-traversal guard; ours does both.
 - **Client-side route guard** — `components/app/session-guard.tsx:26-36` bounces
   from a `useEffect`, so a logged-out visitor downloads the whole admin bundle
-  before being redirected. Ours guards in `beforeLoad`.
+  first.
 - **Fail-open ability guard** — `crudFactory.helpers.ts:68-112` returns early
-  (ALLOW) when a handler forgets to declare an ability. Ours throws.
-- **Two settings shapes** — a loose `interface` for defaults plus a `.strict()`
-  Zod for writes, already drifted: `branding.siteName` is rejected by the write
-  path while the admin UI still posts it.
-- **Media caching** — `getUploadContent` does a full `readFile` + DB SELECT per
-  image with no `Cache-Control`/`ETag`.
+  (ALLOW) when a handler forgets to declare an ability.
+- **Two settings shapes** — a loose `interface` plus a `.strict()` Zod, already
+  drifted: `branding.siteName` is rejected by the write path while the admin UI
+  still posts it.
+- **No upload validation** — it blocks SVG and matches magic bytes, but has no
+  dimension or aspect limits, so nothing stops a 20 MB image.
 - **Anonymous public upload** — `routes/api/public/uploads.tsx` lets any visitor
   upload a permanently world-readable file, IP rate limit only.
 
 **Note:** bookade's admin is **not wired to its own storefront** —
-`TopAnnouncementBar.tsx:8-14` hardcodes its announcements in a TS array. Good
-reference for auth and module-policy shape, not for frontend wiring.
+`TopAnnouncementBar.tsx:8-14` hardcodes its announcements in a TS array.
 
 ---
 
 ## Environment
 
-- D1: `portfolio`, `database_id: 67c32cc5-7bad-49f0-92e5-d42a87603348`, APAC.
-- `wrangler types` regenerates `worker-configuration.d.ts` after changing
-  `wrangler.jsonc` (`npm run cf:types`).
-- `better-sqlite3` has a native ABI mismatch with this Node build — that is why
-  the integration suite shells out to `wrangler d1 execute` instead.
+- DB: `data/portfolio.db` (gitignored). Override with `DATABASE_FILE`.
+- Uploads: `public/uploads/` (gitignored). Override with `UPLOADS_DIR`.
+- `SESSION_TOKEN_PEPPER` has **no default in production** — the server throws
+  without it, because a shared pepper would let anyone with a database dump
+  forge valid sessions.
+- `better-sqlite3` needed `npm rebuild` (prebuilt binary targeted a different
+  Node ABI).
+- Deploy steps: `docs/VPS-DEPLOY.md`.
 
 ---
 
