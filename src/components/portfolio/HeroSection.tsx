@@ -1,6 +1,10 @@
 import { Reveal } from './Reveal'
 import { AnimatedText } from './AnimatedText'
 import heroImage from '../../asserts/hero-standing-cutout.png'
+import type { HeroSettings } from '../../../admin/server/settings-schema'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+
+const DEFAULT_HERO = DEFAULT_SITE_SETTINGS.hero
 
 /* Shared shell — every section uses max-w-7xl + px-6/md:px-12, so the hero's
    left/right edges line up with the content below it. */
@@ -86,7 +90,12 @@ const NAME_CLASS =
  * He leads the row in the DOM so on narrow viewports he sits under the name
  * rather than beside it, where there is no room for a 0.418:1 figure.
  */
-export function HeroSection() {
+export function HeroSection({
+  settings = DEFAULT_HERO,
+}: {
+  /** Editable copy, supplied by the route from D1. */
+  settings?: HeroSettings
+}) {
   return (
     <section
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden border-b border-slate-border/50 section-hairline lg:min-h-[96vh]"
@@ -143,9 +152,13 @@ export function HeroSection() {
           <div className="order-2 flex flex-col items-center gap-4 text-center sm:gap-5 lg:order-1 lg:col-span-5 lg:col-start-7 lg:items-start lg:text-left">
             <Reveal delay={100}>
               <p className="max-w-xs text-xl font-bold leading-tight text-text-primary sm:text-2xl lg:text-[1.75rem]">
-                Build the business{' '}
-                <span className="text-text-tertiary">you&apos;ve always</span>{' '}
-                <span className="text-primary font-light">dreamed about...</span>
+                {settings.statementLine1}{' '}
+                <span className="text-text-tertiary">
+                  {settings.statementLine2}
+                </span>{' '}
+                <span className="text-primary font-light">
+                  {settings.statementLine3}
+                </span>
               </p>
             </Reveal>
 
@@ -153,18 +166,18 @@ export function HeroSection() {
               <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
                 <a
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-container px-6 py-3 text-base font-semibold text-white shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-opacity hover:opacity-90"
-                  href="#ventures"
+                  href={settings.ctaPrimaryHref}
                 >
-                  Explore Solutions
+                  {settings.ctaPrimaryLabel}
                   <span className="material-symbols-outlined text-[18px]">
                     arrow_forward
                   </span>
                 </a>
                 <a
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-border px-6 py-3 text-base font-semibold text-text-primary transition-colors hover:border-accent-gold hover:text-accent-gold"
-                  href="#about"
+                  href={settings.ctaSecondaryHref}
                 >
-                  Founder Journey
+                  {settings.ctaSecondaryLabel}
                 </a>
               </div>
             </Reveal>
@@ -175,9 +188,7 @@ export function HeroSection() {
           <div className="order-3 lg:order-2 lg:col-span-3 lg:col-start-10 lg:flex lg:items-end">
             <Reveal delay={150}>
               <p className="mx-auto max-w-xs text-center text-lg font-semibold leading-snug text-text-secondary sm:text-xl lg:mx-0 lg:text-left lg:text-[1.375rem]">
-                <span className="text-primary font-light">...without</span> losing
-                yourself in it along{' '}
-                <span className="text-text-tertiary">the way.</span>
+                {settings.counterStatement}
               </p>
             </Reveal>
           </div>

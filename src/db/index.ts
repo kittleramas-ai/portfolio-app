@@ -18,10 +18,5 @@ export type Db = ReturnType<typeof drizzle<typeof schema>>
  */
 export function getDb(): Db {
   const d1 = env.portfolio
-  if (!d1) {
-    throw new Error(
-      'D1 binding "portfolio" is missing. Check wrangler.jsonc and that you are running via vite (npm run dev), not a bare build.',
-    )
-  }
   return drizzle(d1, { schema })
 }

@@ -1,4 +1,5 @@
 import { eq, inArray } from 'drizzle-orm'
+import type { ZodType } from 'zod'
 
 import { getDb } from '../../src/db/index.ts'
 import { siteSetting } from '../../src/db/schema.ts'
@@ -7,11 +8,24 @@ import {
   contactSettingsSchema,
   heroSettingsSchema,
   SETTINGS_GROUPS,
-  type ContactSettings,
-  type HeroSettings,
-  type SettingsGroupKey,
-  type SiteSettings,
 } from './settings-schema.ts'
+import type {
+  ContactSettings,
+  HeroSettings,
+  SettingsGroupKey,
+  SiteSettings,
+} from './settings-schema.ts'
+
+/**
+ * Schema per settings group, keyed by the group name.
+ *
+ * Adding a group means adding an entry here and to SETTINGS_GROUPS — the
+ * compiler then flags every place that needs updating.
+ */
+const GROUP_SCHEMAS = {
+  contact: contactSettingsSchema,
+  hero: heroSettingsSchema,
+} as const satisfies Record<SettingsGroupKey, ZodType<SiteSettings[SettingsGroupKey]>>
 
 /**
  * Read all settings, filling gaps from the schema defaults.
@@ -33,25 +47,27 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   const byKey = new Map(rows.map((r) => [r.key, r]))
 
-  const readGroup = <K extends SettingsGroupKey>(
-    key: K,
-    schema: { safeParse: (v: unknown) => { success: boolean; data?: SiteSettings[K] } },
-  ): SiteSettings[K] => {
+  const readGroup = <TGroup extends SettingsGroupKey>(
+    key: TGroup,
+    schema: Pick<ZodType<SiteSettings[TGroup]>, 'safeParse'>,
+  ): SiteSettings[TGroup] => {
+    const fallback = () => structuredClone(DEFAULT_SITE_SETTINGS[key])
     const row = byKey.get(key)
-    if (!row) return structuredClone(DEFAULT_SITE_SETTINGS[key])
+    if (!row) return fallback()
+
     let parsedJson: unknown
     try {
       parsedJson = JSON.parse(row.value)
     } catch {
-      return structuredClone(DEFAULT_SITE_SETTINGS[key])
+      return fallback()
     }
+
     const parsed = schema.safeParse(parsedJson)
-    if (!parsed.success || parsed.data === undefined) {
-      return structuredClone(DEFAULT_SITE_SETTINGS[key])
-    }
+    if (!parsed.success) return fallback()
+
     // Merge over defaults so a row saved before a new field existed still
     // picks up that field's default instead of rendering `undefined`.
-    return { ...structuredClone(DEFAULT_SITE_SETTINGS[key]), ...parsed.data }
+    return { ...fallback(), ...parsed.data }
   }
 
   return {
@@ -67,13 +83,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
  * the request body — defence in depth, so a future caller cannot bypass the
  * schema by writing straight to this function.
  */
-export async function saveSettingsGroup<K extends SettingsGroupKey>(
-  groupKey: K,
-  value: SiteSettings[K],
+export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
+  groupKey: TGroup,
+  value: SiteSettings[TGroup],
   updatedBy: string | null,
-): Promise<SiteSettings[K]> {
-  const schema = groupKey === 'contact' ? contactSettingsSchema : heroSettingsSchema
-  const validated = schema.parse(value) as SiteSettings[K]
+): Promise<SiteSettings[TGroup]> {
+  // Indexed by the group name, so each caller gets its own schema back with the
+  // right type. (A `groupKey === 'contact' ? a : b` conditional widens to a
+  // union; an indexed lookup keyed by a generic does not narrow cleanly either,
+  // hence the explicit parse-and-return below.)
+  const parsed = GROUP_SCHEMAS[groupKey].parse(value) as SiteSettings[TGroup]
 
   const db = getDb()
   const now = new Date()
@@ -84,7 +103,7 @@ export async function saveSettingsGroup<K extends SettingsGroupKey>(
     .insert(siteSetting)
     .values({
       key: groupKey,
-      value: JSON.stringify(validated),
+      value: JSON.stringify(parsed),
       groupKey,
       updatedAt: now,
       updatedBy,
@@ -92,13 +111,13 @@ export async function saveSettingsGroup<K extends SettingsGroupKey>(
     .onConflictDoUpdate({
       target: siteSetting.key,
       set: {
-        value: JSON.stringify(validated),
+        value: JSON.stringify(parsed),
         updatedAt: now,
         updatedBy,
       },
     })
 
-  return validated
+  return parsed
 }
 
 export async function getSettingRow(key: string) {

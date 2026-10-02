@@ -1,17 +1,21 @@
 import { cn } from '../../routes/lib/utils'
+import type { ContactSettings } from '../../../admin/server/settings-schema'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 
 /**
- * Placeholder WhatsApp deep link. Swap the number for the real one.
- * wa.me expects a country code with no `+`, spaces or dashes.
+ * Builds the wa.me deep link.
+ *
+ * The number and message come from the admin panel (D1). `getSiteSettings()`
+ * falls back to schema defaults for any missing or malformed row, so this is
+ * always a usable URL even before anyone has opened /admin.
  */
-const WHATSAPP_NUMBER = '919000000000'
+const DEFAULT_CONTACT = DEFAULT_SITE_SETTINGS.contact
 
-const WHATSAPP_MESSAGE =
-  "Hello Dr. Surendiran, I'd like to discuss a collaboration."
-
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  WHATSAPP_MESSAGE,
-)}`
+export function whatsappUrl(contact: ContactSettings): string {
+  const number = contact.whatsappNumber.trim()
+  const message = contact.whatsappMessage.trim()
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
+}
 
 /** WhatsApp glyph, 24x24 (brand mark path). */
 function WhatsAppGlyph({ className }: { className?: string }) {
@@ -35,7 +39,14 @@ function WhatsAppGlyph({ className }: { className?: string }) {
  * its content subtree, and a transformed ancestor turns `position: fixed`
  * into scroll-relative positioning (same reason the Navbar sits outside).
  */
-export function WhatsAppFab({ className }: { className?: string }) {
+export function WhatsAppFab({
+  className,
+  contact,
+}: {
+  className?: string
+  /** Supplied by the route from D1; falls back to defaults when absent. */
+  contact?: ContactSettings
+}) {
   return (
     <div
       className={cn(
@@ -45,7 +56,7 @@ export function WhatsAppFab({ className }: { className?: string }) {
       )}
     >
       <a
-        href={WHATSAPP_URL}
+        href={whatsappUrl(contact ?? DEFAULT_CONTACT)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

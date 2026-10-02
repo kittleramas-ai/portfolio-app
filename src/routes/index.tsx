@@ -8,6 +8,7 @@ import { lazy, Suspense } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import { LoaderCircle } from 'lucide-react'
+import { getPublicSettingsFn } from '../../admin/server/public.ts'
 
 
 //Lazy Dynamic import
@@ -99,13 +100,25 @@ function DeferredFooter({ enabled }: { enabled: boolean }) {
 
 
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  /**
+   * Read editable settings server-side and hand them to the page as loader
+   * data, so the WhatsApp number and hero copy render on first paint. A client
+   * fetch would flash the default number first.
+   *
+   * Goes through a server function because admin/server/public.ts reaches D1,
+   * and this route file is also compiled into the client bundle.
+   */
+  loader: async () => ({ settings: await getPublicSettingsFn() }),
+  component: Home,
+})
 
 
 // NOTE: keep Home exported (not code-split). The workspace path contains an
 // apostrophe, which breaks TanStack Start's generated split-import quoting.
 export function Home() {
   const [mainReady, setMainReady] = useState(false)
+  const { settings } = Route.useLoaderData()
 
   return (
     <div className="min-h-screen bg-obsidian-base text-text-primary antialiased selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
@@ -113,12 +126,12 @@ export function Home() {
 
       <SiteBackdrop />
       <Navbar />
-      <WhatsAppFab />
+      <WhatsAppFab contact={settings.contact} />
       <SmoothProvider>
 
         <main className="w-full relative z-10">
           <Suspense fallback={<LoadingFallback centered />}>
-          <HeroSection />
+          <HeroSection settings={settings.hero} />
           <MilestonesSection />
           <AboutSection />
           <VenturesSection />

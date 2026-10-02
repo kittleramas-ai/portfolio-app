@@ -17,6 +17,16 @@ const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('portfolio
 
 interface MyRouterContext {
   queryClient: QueryClient
+  /**
+   * The incoming request, so route guards can read cookies server-side.
+   *
+   * TanStack Router does not put `request` on `beforeLoad`'s context in this
+   * version, and a client-side guard is not acceptable for admin routes: it
+   * would send the whole admin bundle to an anonymous visitor before bouncing
+   * them. getRequest() from @tanstack/react-start/server works inside
+   * beforeLoad during SSR, so the guard is created with it as a fallback.
+   */
+  request?: Request
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

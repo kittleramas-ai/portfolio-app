@@ -27,10 +27,10 @@ export const adminUser = sqliteTable(
     email: text('email').notNull(),
     passwordHash: text('password_hash').notNull(),
     displayName: text('display_name'),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    createdAt: integer('created_at', { mode: 'timestamp_ms' })
       .notNull()
-      .default(sql`(unixepoch())`),
-    lastLoginAt: integer('last_login_at', { mode: 'timestamp' }),
+      .default(sql`(unixepoch()) * 1000`),
+    lastLoginAt: integer('last_login_at', { mode: 'timestamp_ms' }),
   },
   (t) => [uniqueIndex('admin_user_email_uq').on(t.email)],
 )
@@ -44,11 +44,20 @@ export const adminSession = sqliteTable(
       .references(() => adminUser.id, { onDelete: 'cascade' }),
     /** sha256(rawToken + pepper). Indexed — it is the only column read on every request. */
     tokenHash: text('token_hash').notNull(),
-    expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    /**
+     * MUST be 'timestamp_ms', not 'timestamp'.
+     *
+     * Drizzle's `timestamp` mode treats the integer as SECONDS. The app writes
+     * Date.now() (milliseconds), so a `timestamp` column read the value back as
+     * 1.79e12 seconds = the year 58722 — which meant an expired session's
+     * `expiresAt <= now` check never fired and expired sessions kept working.
+     * `timestamp_ms` matches what is actually written.
+     */
+    expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' })
       .notNull()
-      .default(sql`(unixepoch())`),
-    lastActiveAt: integer('last_active_at', { mode: 'timestamp' }),
+      .default(sql`(unixepoch()) * 1000`),
+    lastActiveAt: integer('last_active_at', { mode: 'timestamp_ms' }),
     userAgent: text('user_agent'),
   },
   (t) => [
@@ -76,9 +85,9 @@ export const siteSetting = sqliteTable(
     /** JSON-encoded value. A scalar is stored as a bare JSON scalar, not wrapped. */
     value: text('value').notNull(),
     groupKey: text('group_key').notNull(),
-    updatedAt: integer('updated_at', { mode: 'timestamp' })
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
       .notNull()
-      .default(sql`(unixepoch())`),
+      .default(sql`(unixepoch()) * 1000`),
     updatedBy: text('updated_by').references(() => adminUser.id, {
       onDelete: 'set null',
     }),

@@ -51,8 +51,11 @@ export async function resolveAdmin(
     .where(eq(adminSession.tokenHash, tokenHash))
     .limit(1)
 
+  // `found[0]` is typed as always defined because `noUncheckedIndexedAccess`
+  // is off, but an empty result is the normal "no such token" case — so the
+  // length check is real, not dead code.
+  if (found.length === 0) return null
   const row = found[0]
-  if (!row) return null
   if (new Date(row.expiresAt).getTime() <= now.getTime()) return null
 
   // Sliding expiry: extend on use so an active editor is not logged out
