@@ -5,9 +5,8 @@ import { getDb } from '../../src/db/index.ts'
 import { siteSetting } from '../../src/db/schema.ts'
 import {
   DEFAULT_SITE_SETTINGS,
-  contactSettingsSchema,
-  heroSettingsSchema,
-  SETTINGS_GROUPS,
+  SETTINGS_GROUP_KEYS,
+  SITE_SETTINGS_SHAPE,
 } from './settings-schema.ts'
 import type {
   ContactSettings,
@@ -19,13 +18,13 @@ import type {
 /**
  * Schema per settings group, keyed by the group name.
  *
- * Adding a group means adding an entry here and to SETTINGS_GROUPS — the
- * compiler then flags every place that needs updating.
+ * A mapped type rather than a plain `Record`: the section schemas have
+ * structurally different output types, and pinning the map to `SiteSettings[K]`
+ * is what lets `readGroup` return `SiteSettings[TGroup]` instead of a union.
  */
-const GROUP_SCHEMAS = {
-  contact: contactSettingsSchema,
-  hero: heroSettingsSchema,
-} as const satisfies Record<SettingsGroupKey, ZodType<SiteSettings[SettingsGroupKey]>>
+const GROUP_SCHEMAS = SITE_SETTINGS_SHAPE as {
+  [K in SettingsGroupKey]: ZodType<SiteSettings[K]>
+}
 
 /**
  * Read all settings, filling gaps from the schema defaults.
@@ -34,22 +33,22 @@ const GROUP_SCHEMAS = {
  * corrupt settings row must not take the public site down. The stored value is
  * validated on the way out too, so a hand-edited row with the wrong shape
  * degrades to defaults instead of leaking garbage into the page.
+ *
+ * Loops over the group registry, so a newly added section is read here for free.
  */
 export async function getSiteSettings(): Promise<SiteSettings> {
   const db = getDb()
-  const groupKeys = SETTINGS_GROUPS.map((g) => g.key)
 
   const rows = await db
     .select()
     .from(siteSetting)
-    .where(inArray(siteSetting.key, groupKeys))
+    .where(inArray(siteSetting.key, SETTINGS_GROUP_KEYS))
     .catch(() => [] as Array<typeof siteSetting.$inferSelect>)
 
   const byKey = new Map(rows.map((r) => [r.key, r]))
 
   const readGroup = <TGroup extends SettingsGroupKey>(
     key: TGroup,
-    schema: Pick<ZodType<SiteSettings[TGroup]>, 'safeParse'>,
   ): SiteSettings[TGroup] => {
     const fallback = () => structuredClone(DEFAULT_SITE_SETTINGS[key])
     const row = byKey.get(key)
@@ -62,7 +61,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       return fallback()
     }
 
-    const parsed = schema.safeParse(parsedJson)
+    const parsed = GROUP_SCHEMAS[key].safeParse(parsedJson)
     if (!parsed.success) return fallback()
 
     // Merge over defaults so a row saved before a new field existed still
@@ -70,22 +69,23 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return { ...fallback(), ...parsed.data }
   }
 
-  return {
-    contact: readGroup('contact', contactSettingsSchema),
-    hero: readGroup('hero', heroSettingsSchema),
-  }
+  return Object.fromEntries(
+    SETTINGS_GROUP_KEYS.map((key) => [key, readGroup(key)]),
+  ) as SiteSettings
 }
 
 /**
  * Persist one settings group.
  *
- * `value` is re-validated here even though the API handler already validated
- * the request body — defence in depth, so a future caller cannot bypass the
- * schema by writing straight to this function.
+ * `value` is validated here against the group's own schema. The admin UI also
+ * validates before calling, but this is the boundary that matters: it is what
+ * stops a crafted request writing a shape no component expects. Validating in
+ * two places is deliberate — the client copy gives the manager an inline error,
+ * this one is the guarantee.
  */
 export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
   groupKey: TGroup,
-  value: SiteSettings[TGroup],
+  value: unknown,
   updatedBy: string | null,
 ): Promise<SiteSettings[TGroup]> {
   // Indexed by the group name, so each caller gets its own schema back with the

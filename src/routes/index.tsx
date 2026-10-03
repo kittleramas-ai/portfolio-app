@@ -13,6 +13,7 @@ import {
   getPublicSettingsFn,
 } from '../../admin/server/public.ts'
 import type { SignatureMedia } from '../components/portfolio/media-types'
+import type { FooterSettings } from '../../admin/server/settings-schema'
 
 
 //Lazy Dynamic import
@@ -63,9 +64,11 @@ function MainReadySignal({
 function DeferredFooter({
   enabled,
   signature,
+  settings,
 }: {
   enabled: boolean
   signature?: SignatureMedia | null
+  settings: FooterSettings
 }) {
   const footerRef = useRef<HTMLDivElement>(null)
   const [shouldLoad, setShouldLoad] = useState(false)
@@ -99,7 +102,7 @@ function DeferredFooter({
     <div ref={footerRef} className="relative z-10 min-h-px">
       {shouldLoad && (
         <Suspense fallback={<LoadingFallback />}>
-          <Footer signature={signature} />
+          <Footer signature={signature} settings={settings} />
         </Suspense>
       )}
     </div>
@@ -145,28 +148,32 @@ export function Home() {
     <div className="min-h-screen bg-obsidian-base text-text-primary antialiased selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
       {/* Fixed elements stay OUTSIDE ScrollSmoother */}
 
-      <SiteBackdrop />
-      <Navbar signature={signature} />
+<SiteBackdrop />
+      <Navbar signature={signature} settings={settings.navbar} />
       <WhatsAppFab contact={settings.contact} />
       <SmoothProvider>
 
-        <main className="w-full relative z-10">
+<main className="w-full relative z-10">
           <Suspense fallback={<LoadingFallback centered />}>
           <HeroSection settings={settings.hero} portrait={portrait} />
-          <MilestonesSection />
-          <AboutSection />
-          <VenturesSection />
-          <QuoteSection />
-          <AchievementsSection />
-          <KeynotesSection />
-          <GovernanceSection />
-          <PerspectivesSection />
-          <BooksSection />
-          <ContactSection />
+          <MilestonesSection settings={settings.milestones} />
+          <AboutSection settings={settings.about} />
+          <VenturesSection settings={settings.ventures} />
+          <QuoteSection settings={settings.quote} />
+          <AchievementsSection settings={settings.achievements} />
+          <KeynotesSection settings={settings.keynotes} />
+          <GovernanceSection settings={settings.governance} />
+          <PerspectivesSection settings={settings.perspectives} />
+          <BooksSection settings={settings.books} />
+          <ContactSection settings={settings.advisory} />
           <MainReadySignal setReady={setMainReady} />
           </Suspense>
         </main>
-        <DeferredFooter enabled={mainReady} signature={signature} />
+        <DeferredFooter
+          enabled={mainReady}
+          signature={signature}
+          settings={settings.footer}
+        />
 
 
       </SmoothProvider>

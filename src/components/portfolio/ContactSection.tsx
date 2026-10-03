@@ -1,7 +1,16 @@
 import * as React from 'react'
 import { Reveal } from './Reveal'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { AdvisorySettings } from '../../../admin/server/settings-schema'
 
-export function ContactSection() {
+const DEFAULT_ADVISORY = DEFAULT_SITE_SETTINGS.advisory
+
+export function ContactSection({
+  settings = DEFAULT_ADVISORY,
+}: {
+  /** The copy around the enquiry form, including the success panel. Managed in the admin panel. */
+  settings?: AdvisorySettings
+}) {
   const [submitted, setSubmitted] = React.useState(false)
   const [formData, setFormData] = React.useState({
     firstName: '',
@@ -28,7 +37,7 @@ export function ContactSection() {
           <div className="lg:col-span-5 flex flex-col justify-between space-y-10 lg:sticky lg:top-28">
             <div className="space-y-6">
               <div className="text-mono-metric font-mono-metric text-text-tertiary uppercase tracking-widest text-[12px]">
-                CONTACT US
+                {settings.eyebrow}
               </div>
               <h2
                 className="text-headline-lg font-headline-lg text-text-primary tracking-tight"
@@ -41,14 +50,10 @@ export function ContactSection() {
                   fontSize: 'clamp(36px, 4vw, 52px)',
                 }}
               >
-                Let&apos;s build, research and create impact together!
+                {settings.heading}
               </h2>
               <p className="text-body-md font-body-md text-text-secondary leading-relaxed max-w-lg">
-                Dr. R. Surendiran — Founder &amp; CEO, Infodazz • Founder / Owner,
-                Kittle Pvt Ltd &amp; Seventh Sense Research Group • Founder /
-                Trustee, Kaster Trust. For business growth, research collaboration,
-                education support and motivational sessions. HQ Trichy — Madurai,
-                Karaikudi, Kumbakonam.
+                {settings.bio}
               </p>
             </div>
 
@@ -56,7 +61,7 @@ export function ContactSection() {
               <div className="text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
                 <span className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Official Executive Communications Office
+                  {settings.officeLabel}
                 </span>
               </div>
             </div>
@@ -72,12 +77,10 @@ export function ContactSection() {
                   </span>
                 </div>
                 <h3 className="text-2xl font-bold text-text-primary">
-                  Inquiry Successfully Transmitted
+                  {settings.successHeading}
                 </h3>
                 <p className="text-text-secondary max-w-md mx-auto leading-relaxed">
-                  Thank you, {formData.firstName || 'Executive'}. The Executive
-                  Secretariat has received your message and will review and respond
-                  within 24 hours.
+                  Thank you, {formData.firstName || 'Executive'}. {settings.successBody}
                 </p>
                 <button
                   type="button"
@@ -93,7 +96,7 @@ export function ContactSection() {
                   }}
                   className="mt-4 px-6 py-2.5 rounded-lg bg-slate-surface border border-slate-border text-text-primary text-sm font-semibold hover:border-primary/50 transition-all cursor-pointer"
                 >
-                  Send Another Message
+                  {settings.successAgainLabel}
                 </button>
               </div>
             ) : (
@@ -193,12 +196,11 @@ export function ContactSection() {
                   By submitting this form, you agree to our{' '}
                   <a
                     className="underline text-text-secondary hover:text-text-primary"
-                    href="#privacy"
+                    href={settings.privacyHref}
                   >
-                    Privacy Policy
+                    {settings.privacyLabel}
                   </a>{' '}
-                  and consent to receive communications from Infodazz, Kittle Pvt
-                  Ltd, Seventh Sense Research Group and Kaster Trust.
+                  {settings.privacyConsent}
                 </div>
 
                 {/* Submit Button */}
@@ -208,9 +210,9 @@ export function ContactSection() {
                     style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                     type="submit"
                   >
-                    <span>SUBMIT</span>
+                    <span>{settings.submitLabel}</span>
                     <span className="material-symbols-outlined text-[18px]">
-                      arrow_forward
+                      {settings.submitIcon}
                     </span>
                   </button>
                 </div>

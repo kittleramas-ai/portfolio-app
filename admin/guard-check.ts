@@ -121,7 +121,11 @@ check(
 )
 check(
   'authenticated response renders admin markup',
-  authedBody.includes('Site Settings'),
+  // 'Site Admin' is the sidebar's brand line, which the shell renders on the
+  // server regardless of which settings tab is open. Assert on that rather than
+  // on any section name: the tab list is generated from SETTINGS_GROUPS, so a
+  // test naming one of them would break every time a section is renamed.
+  authedBody.includes('Site Admin'),
 )
 // The settings FORM fields are rendered client-side from getAdminSettingsFn
 // inside a useEffect, so they are deliberately absent from the SSR HTML.

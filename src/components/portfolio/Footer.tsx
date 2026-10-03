@@ -1,7 +1,10 @@
 import { SignatureMark } from './SignatureMark'
 import type { SignatureMedia } from './media-types'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { FooterSettings } from '../../../admin/server/settings-schema'
 
 type FooterLink = {
+  id?: string
   label: string
   href: string
   external?: boolean
@@ -9,46 +12,12 @@ type FooterLink = {
 }
 
 type FooterColumn = {
+  id?: string
   heading: string
   links: FooterLink[]
 }
 
-const FOOTER_COLUMNS: FooterColumn[] = [
-  {
-    heading: 'GOVERNANCE',
-    links: [
-      { label: 'Executive Profile', href: '#about', accent: true },
-      { label: 'Board Advisory', href: '#governance' },
-      { label: 'Keynotes & Summits', href: '#keynotes' },
-      { label: 'Publications', href: '#perspectives' },
-      {
-        label: 'Infodazz Enterprise',
-        href: 'https://infodazz.org',
-        external: true,
-      },
-    ],
-  },
-  {
-    heading: 'VENTURES',
-    links: [
-      { label: 'Infodazz — Estd 2022', href: '#ventures' },
-      { label: 'Kittle Pvt Ltd — Trichy', href: '#ventures' },
-      {
-        label: 'Seventh Sense Research',
-        href: 'https://internationaljournalssrg.org',
-        external: true,
-      },
-      { label: 'Kaster Trust — Education', href: '#ventures' },
-    ],
-  },
-  {
-    heading: 'ENGAGEMENT',
-    links: [
-      { label: 'Advisory Governance', href: '#about' },
-      { label: 'Direct Consultation', href: '#advisory' },
-    ],
-  },
-]
+const DEFAULT_FOOTER = DEFAULT_SITE_SETTINGS.footer
 
 function LinkColumn({ heading, links }: FooterColumn) {
   return (
@@ -57,8 +26,8 @@ function LinkColumn({ heading, links }: FooterColumn) {
         {heading}
       </span>
       <ul className="space-y-4">
-        {links.map((link) => (
-          <li key={link.label}>
+        {links.map((link, i) => (
+          <li key={link.id ?? `${link.label}-${i}`}>
             <a
               className={`group inline-block text-[15px] leading-snug transition-all duration-200 hover:translate-x-1 ${
                 link.accent
@@ -79,14 +48,23 @@ function LinkColumn({ heading, links }: FooterColumn) {
   )
 }
 
-export function Footer({ signature }: { signature?: SignatureMedia | null } = {}) {
+export function Footer({
+  signature,
+  settings = DEFAULT_FOOTER,
+}: {
+  signature?: SignatureMedia | null
+  /** Columns, links, biography and copyright bar. Managed in the admin panel. */
+  settings?: FooterSettings
+} = {}) {
   const scrollToTop = (e: React.MouseEvent) => {
     e.preventDefault()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Get the current year dynamically
+  // Get the current year dynamically. The stored copyright line uses `{year}`
+  // as a placeholder so the text does not need re-saving every January.
   const year = new Date().getFullYear()
+  const copyright = settings.copyright.replace('{year}', String(year))
 
   return (
     <footer
@@ -106,15 +84,10 @@ export function Footer({ signature }: { signature?: SignatureMedia | null } = {}
             </a>
 
             <p className="mt-9 max-w-md text-[15px] leading-relaxed text-text-secondary">
-              Founder | Technology Entrepreneur | Research Publisher | Social
-              Impact Leader — Building technology businesses (Infodazz, Kittle),
-              research platforms (Seventh Sense, 30+ journals, 5+ Scopus) and
-              social impact (Kaster Trust education support).
+              {settings.bio}
             </p>
             <p className="mt-5 max-w-md font-mono-metric text-[11px] leading-relaxed text-text-tertiary">
-              Ph.D — Madurai Kamaraj University • MCA — Thiagarajar School of
-              Management, Madurai • B.Sc Mathematics — GAC Kumbakonam • BNI
-              since 2022 • Rotary since 2024
+              {settings.credentials}
             </p>
           </div>
 
@@ -123,8 +96,8 @@ export function Footer({ signature }: { signature?: SignatureMedia | null } = {}
             aria-label="Footer"
             className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:col-span-7"
           >
-            {FOOTER_COLUMNS.map((column) => (
-              <LinkColumn key={column.heading} {...column} />
+            {settings.columns.map((column) => (
+              <LinkColumn key={column.id} {...column} />
             ))}
           </nav>
         </div>
@@ -132,15 +105,14 @@ export function Footer({ signature }: { signature?: SignatureMedia | null } = {}
         {/* Bottom Bar */}
         <div className="mt-20 flex flex-col items-start justify-between gap-6 border-t border-slate-border pt-8 md:flex-row md:items-center">
           <div className="font-mono-metric text-[11px] leading-relaxed text-text-tertiary">
-            © {year} Dr. R. Surendiran. Infodazz • Kittle Pvt Ltd • Seventh
-            Sense Research Group • Kaster Trust. All Rights Reserved.
+            {copyright}
           </div>
           <a
             className="group inline-flex cursor-pointer items-center gap-2 font-mono-metric text-[12px] text-text-secondary transition-colors hover:text-accent-gold"
             href="#hero"
             onClick={scrollToTop}
           >
-            <span>Back to Top</span>
+            <span>{settings.backToTopLabel}</span>
             <span className="material-symbols-outlined text-[16px] transition-transform duration-200 group-hover:-translate-y-0.5">
               north
             </span>

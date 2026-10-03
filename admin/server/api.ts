@@ -19,8 +19,7 @@ import {
 import { getSessionPepper } from './env.ts'
 import { pruneExpiredSessions, requireAdmin, resolveAdmin } from './session.ts'
 import {
-  contactSettingsSchema,
-  heroSettingsSchema,
+  settingsGroupEnvelopeSchema,
   SETTINGS_GROUPS,
 } from './settings-schema.ts'
 import { getSiteSettings, saveSettingsGroup } from './settings.ts'
@@ -139,25 +138,26 @@ export const getAdminSettingsFn = createServerFn({ method: 'GET' }).handler(
   },
 )
 
-const saveContactInput = z.object({ contact: contactSettingsSchema })
-const saveHeroInput = z.object({ hero: heroSettingsSchema })
-
-/** Save the contact group (WhatsApp number, email, phone display). */
-export const saveContactSettingsFn = createServerFn({ method: 'POST' })
-  .validator(saveContactInput)
+/**
+ * Save one settings group.
+ *
+ * One endpoint for every group rather than one function per group: with fourteen
+ * sections the per-group functions were fourteen copies of the same three lines,
+ * and every new section would need another. `saveSettingsGroup` looks the
+ * group's schema up by name and parses with it, so the group is validated by
+ * exactly the schema that defines it — see `settingsGroupEnvelopeSchema`.
+ */
+export const saveSettingsGroupFn = createServerFn({ method: 'POST' })
+  .validator(settingsGroupEnvelopeSchema)
   .handler(async ({ data }) => {
     const admin = await requireAdmin(getRequest())
-    const saved = await saveSettingsGroup('contact', data.contact, admin.userId)
-    return { ok: true as const, contact: saved, savedAt: new Date().toISOString() }
-  })
-
-/** Save the hero group (statement, counter line, CTA labels/links). */
-export const saveHeroSettingsFn = createServerFn({ method: 'POST' })
-  .validator(saveHeroInput)
-  .handler(async ({ data }) => {
-    const admin = await requireAdmin(getRequest())
-    const saved = await saveSettingsGroup('hero', data.hero, admin.userId)
-    return { ok: true as const, hero: saved, savedAt: new Date().toISOString() }
+    const saved = await saveSettingsGroup(data.group, data.value, admin.userId)
+    return {
+      ok: true as const,
+      group: data.group,
+      value: saved,
+      savedAt: new Date().toISOString(),
+    }
   })
 
 // ---------------------------------------------------------------- media

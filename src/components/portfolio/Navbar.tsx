@@ -2,20 +2,23 @@ import * as React from 'react'
 import { ThemeToggle } from './ThemeToggle'
 import type { SignatureMedia } from './media-types'
 import { SignatureMark } from './SignatureMark'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { NavbarSettings } from '../../../admin/server/settings-schema'
 
-const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Ventures', href: '#ventures' },
-  { label: 'Honors', href: '#achievements' },
-  { label: 'Keynotes', href: '#keynotes' },
-  { label: 'Advisory', href: '#governance' },
-  { label: 'Perspectives', href: '#perspectives' },
-  { label: 'Books', href: '#books' },
-  { label: 'Contact', href: '#advisory' },
-]
+const DEFAULT_NAV = DEFAULT_SITE_SETTINGS.navbar
 
-export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}) {
-  const [activeHash, setActiveHash] = React.useState('#about')
+export function Navbar({
+  signature,
+  settings = DEFAULT_NAV,
+}: {
+  signature?: SignatureMedia | null
+  /** Link list, CTA and button label. Managed in the admin panel. */
+  settings?: NavbarSettings
+} = {}) {
+  const links = settings.links
+  const [activeHash, setActiveHash] = React.useState(
+    links[0]?.href ?? '#about',
+  )
   const [menuOpen, setMenuOpen] = React.useState(false)
   const [scrolled, setScrolled] = React.useState(false)
 
@@ -37,7 +40,12 @@ export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}
   }, [])
 
   React.useEffect(() => {
-    const ids = NAV_LINKS.map((l) => l.href.replace('#', ''))
+    // Only in-page anchors are worth observing; an absolute URL has no element
+    // to intersect, and passing one to getElementById just yields null.
+    const ids = links
+      .map((l) => l.href)
+      .filter((href) => href.startsWith('#'))
+      .map((href) => href.slice(1))
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -53,12 +61,17 @@ export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}
       if (el) observer.observe(el)
     })
     return () => observer.disconnect()
-  }, [])
+    // `links` is a new array identity on every settings load, so depend on the
+    // hrefs themselves — otherwise the observer would rebuild on every render.
+  }, [settings.links])
 
   const handleNavClick = (href: string) => {
     setActiveHash(href)
     setMenuOpen(false)
   }
+
+  /** External links open in a new tab; in-page anchors stay in place. */
+  const isExternal = (href: string) => !href.startsWith('#')
 
   // Prevent scrolling when menu is open
   React.useEffect(() => {
@@ -106,7 +119,7 @@ export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}
                 menu
               </span>
               <span className="hidden sm:inline font-bold uppercase tracking-widest text-sm">
-                Menu
+                {settings.menuButtonLabel}
               </span>
             </button>
           </div>
@@ -135,14 +148,17 @@ export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}
             </button>
 
             {/* Menu Links */}
-            <nav className="mt-12 md:mt-16 flex flex-col gap-5 md:gap-7 w-full">
-              {NAV_LINKS.map((link) => {
+<nav className="mt-12 md:mt-16 flex flex-col gap-5 md:gap-7 w-full">
+              {links.map((link) => {
                 const isActive = activeHash === link.href
                 return (
                   <a
-                    key={link.label}
+                    key={link.id}
                     href={link.href}
                     onClick={() => handleNavClick(link.href)}
+                    {...(isExternal(link.href)
+                      ? { rel: 'noopener noreferrer', target: '_blank' }
+                      : {})}
                     className={`text-4xl md:text-5xl lg:text-[56px] leading-tight font-headline-lg font-bold uppercase tracking-tight transition-all duration-200 transform hover:translate-x-4 ${
                       isActive
                         ? 'text-accent-gold'
@@ -158,11 +174,16 @@ export function Navbar({ signature }: { signature?: SignatureMedia | null } = {}
             <div className="mt-auto pt-16">
               <a
                 className="inline-flex items-center justify-center gap-3 px-6 py-3 md:px-8 md:py-4 rounded-full bg-accent-gold text-portfolio-black hover:bg-opacity-90 font-bold uppercase tracking-wider text-xs md:text-sm transition-all"
-                href="#advisory"
+                href={settings.ctaHref}
                 onClick={() => setMenuOpen(false)}
+                {...(isExternal(settings.ctaHref)
+                  ? { rel: 'noopener noreferrer', target: '_blank' }
+                  : {})}
               >
-                Book Executive Consultation
-                <span className="material-symbols-outlined">arrow_forward</span>
+                {settings.ctaLabel}
+                <span className="material-symbols-outlined">
+                  {settings.ctaIcon}
+                </span>
               </a>
             </div>
           </div>

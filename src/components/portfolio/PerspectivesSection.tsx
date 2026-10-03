@@ -1,6 +1,53 @@
 import { Reveal } from './Reveal'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { PerspectivesSettings } from '../../../admin/server/settings-schema'
 
-export function PerspectivesSection() {
+const DEFAULT_PERSPECTIVES = DEFAULT_SITE_SETTINGS.perspectives
+
+/**
+ * The three article cards share one layout and differ only by accent, so the
+ * design stays in code and settings only names the theme. Class strings are
+ * copied verbatim out of the cards they replace, so the rendered className is
+ * unchanged.
+ */
+const ACCENTS = {
+  cyan: {
+    softBg: 'bg-cyan-500/10',
+    badgeBorder: 'border-cyan-400/20',
+    text: 'text-cyan-400',
+    headingHover: 'group-hover:text-cyan-600 dark:group-hover:text-cyan-300',
+  },
+  gold: {
+    softBg: 'bg-amber-500/10',
+    badgeBorder: 'border-amber-500/20',
+    text: 'text-accent-gold',
+    headingHover: 'group-hover:text-accent-gold',
+  },
+  emerald: {
+    softBg: 'bg-emerald-500/10',
+    badgeBorder: 'border-emerald-500/20',
+    text: 'text-emerald-400',
+    headingHover:
+      'group-hover:text-emerald-600 dark:group-hover:text-emerald-300',
+  },
+} as const
+
+/** The settings enum is site-wide, so it is wider than the map above. */
+type Accent = keyof typeof ACCENTS
+
+/**
+ * The schema's accent enum is site-wide (six themes) but only three are
+ * designed here, so the lookup is deliberately partial and falls back to cyan
+ * rather than letting an undesigned key render an unthemed card.
+ */
+const ACCENT_LOOKUP: Partial<Record<Accent, (typeof ACCENTS)[Accent]>> = ACCENTS
+
+export function PerspectivesSection({
+  settings = DEFAULT_PERSPECTIVES,
+}: {
+  /** Editable copy, supplied by the route from the database. */
+  settings?: PerspectivesSettings
+}) {
   return (
     <section
       className="py-24 w-full border-b border-slate-border relative section-hairline"
@@ -13,7 +60,7 @@ export function PerspectivesSection() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="inline-block max-w-full px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-wider sm:tracking-widest leading-relaxed break-words whitespace-normal text-center sm:text-left">
-              BEYOND BUSINESS // ENTREPRENEURSHIP • KNOWLEDGE • SOCIAL IMPACT
+              {settings.eyebrow}
             </span>
           </div>
           <h2
@@ -26,112 +73,51 @@ export function PerspectivesSection() {
               lineHeight: 1.15,
             }}
           >
-            BEYOND BUSINESS — THREE COMMITMENTS
+            {settings.heading}
           </h2>
         </div>
         <p className="text-mono-metric font-mono-metric text-text-tertiary max-w-md">
-          Entrepreneurship, Knowledge and Social Impact — building technology
-          companies, supporting research &amp; education, and helping students
-          overcome barriers.
+          {settings.intro}
         </p>
       </div>
       </Reveal>
 
       <Reveal delay={100}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        {/* Article 01 */}
-        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
-          <div>
-            <div className="card-head-row border-slate-border">
-              <span className="badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider">
-                ENTREPRENEURSHIP
-              </span>
-              <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Infodazz • Kittle
-              </span>
-            </div>
-            <h3
-              className="text-xl font-bold text-text-primary mb-3 group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors leading-snug"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              “Building Technology Companies and Digital Ecosystems”
-            </h3>
-            <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              From academic research into entrepreneurship — Infodazz (Estd 2022,
-              50+ professionals, 11 services) and Kittle Pvt Ltd helping
-              businesses grow through technology, SaaS, ERP, Web/Mobile and
-              digital transformation.
-            </p>
-          </div>
-          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Technology Businesses</span>
-            <span className="material-symbols-outlined text-[18px] text-cyan-400 group-hover:translate-x-1 transition-transform">
-              arrow_forward
-            </span>
-          </div>
-        </article>
-
-        {/* Article 02 */}
-        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
-          <div>
-            <div className="card-head-row border-slate-border">
-              <span className="badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider">
-                KNOWLEDGE
-              </span>
-              <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Seventh Sense Research
-              </span>
-            </div>
-            <h3
-              className="text-xl font-bold text-text-primary mb-3 group-hover:text-accent-gold transition-colors leading-snug"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              “Supporting Research, Education and Innovation”
-            </h3>
-            <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Seventh Sense Research Group — 30+ International Journals, 5+
-              Scopus Indexed, publication ecosystem and collaboration support,
-              plus research publications, patents and academic mentoring.
-            </p>
-          </div>
-          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Research &amp; Education</span>
-            <span className="material-symbols-outlined text-[18px] text-accent-gold group-hover:translate-x-1 transition-transform">
-              arrow_forward
-            </span>
-          </div>
-        </article>
-
-        {/* Article 03 */}
-        <article className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
-          <div>
-            <div className="card-head-row border-slate-border">
-              <span className="badge-pill text-[11px] font-mono-metric bg-emerald-500/10 border-emerald-500/20 text-emerald-400 tracking-wider">
-                SOCIAL IMPACT
-              </span>
-              <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
-                Kaster Trust
-              </span>
-            </div>
-            <h3
-              className="text-xl font-bold text-text-primary mb-3 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors leading-snug"
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-            >
-              “Helping Students Overcome Educational Barriers”
-            </h3>
-            <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
-              Kaster Trust helps deserving students continue education by
-              supporting fees and reducing financial barriers — encouraging
-              learning opportunities and student growth.
-            </p>
-          </div>
-          <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
-            <span className="text-text-tertiary">Education Support</span>
-            <span className="material-symbols-outlined text-[18px] text-emerald-400 group-hover:translate-x-1 transition-transform">
-              arrow_forward
-            </span>
-          </div>
-        </article>
+        {settings.articles.map((article) => {
+          // Anything outside the three mapped themes falls back to cyan rather
+          // than rendering a card with no accent at all.
+          const accent = ACCENT_LOOKUP[article.accent as Accent] ?? ACCENTS.cyan
+          return (
+            <article key={article.id} className="executive-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between group">
+              <div>
+                <div className="card-head-row border-slate-border">
+                  <span className={`badge-pill text-[11px] font-mono-metric ${accent.softBg} ${accent.badgeBorder} ${accent.text} tracking-wider`}>
+                    {article.badge}
+                  </span>
+                  <span className="card-head-meta text-mono-metric font-mono-metric text-text-tertiary text-[11px]">
+                    {article.meta}
+                  </span>
+                </div>
+                <h3
+                  className={`text-xl font-bold text-text-primary mb-3 ${accent.headingHover} transition-colors leading-snug`}
+                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                >
+                  {article.heading}
+                </h3>
+                <p className="text-body-sm font-body-sm text-text-secondary leading-relaxed mb-6">
+                  {article.body}
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
+                <span className="text-text-tertiary">{article.footerLabel}</span>
+                <span className={`material-symbols-outlined text-[18px] ${accent.text} group-hover:translate-x-1 transition-transform`}>
+                  arrow_forward
+                </span>
+              </div>
+            </article>
+          )
+        })}
       </div>
       </Reveal>
       </div>

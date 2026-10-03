@@ -1,6 +1,6 @@
 import { Reveal } from './Reveal'
 import { AnimatedText } from './AnimatedText'
-import heroImage from '../../asserts/hero-standing-cutout.png'
+import heroImage from '../../asserts/hero-figure-cutout.webp'
 import type { HeroSettings } from '../../../admin/server/settings-schema'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { SignatureMedia } from './media-types'
@@ -21,14 +21,18 @@ const DEFAULT_HERO = DEFAULT_SITE_SETTINGS.hero
 const D_CLASS =
   'block shrink-0 bg-clip-text font-display uppercase leading-[0.78] tracking-[-0.045em] text-[clamp(5rem,23vw,12rem)] lg:text-[clamp(8rem,40vh,28rem)]'
 
-/* Full-length standing figure, grounded on the same baseline as the D so he
-   reads as leaning against the letterform rather than floating in front of it.
-   The cut-out is 177x423 (0.418:1), so the height drives the width and `w-auto`
-   is left to preserve that ratio.
-   Width-scoped (vw) for the same reason as the D — on a 375px phone a vh-based
-   height of 28vh is only ~187px, which makes him small next to the letterform. */
-const FIGURE_CLASS =
-  'relative z-10 -mr-[1.5vw] h-[clamp(9.5rem,50vw,22rem)] w-auto shrink-0 object-contain object-bottom lg:h-[clamp(11rem,33vh,23rem)]'
+/* The standing figure, cut out of the studio shot and grounded on the same
+   baseline as the D so he reads as leaning against the letterform rather than
+   floating in front of it. The cut-out is 547x978 (0.559:1), so the height
+   drives the width and `w-auto` is left to preserve that ratio.
+   Width-scoped (vw) below lg for the same reason as the D — on a 375px phone a
+   vh-based height of 33vh is only ~187px, which makes him small next to the
+   letterform.
+   Height and the overlap offset both live in `.hero-figure` (see styles.css):
+   the offset that lands his hand on the D is a fraction of his own height, so
+   it has to be derived from the same value the height is set from.
+   `z-10` keeps him painted in front of the letterform. */
+const FIGURE_CLASS = 'hero-figure relative z-10 shrink-0 object-contain object-bottom'
 
 /* Shared champagne-bronze ramp. The glyphs are filled with this via
    background-clip:text, so the D and the name are lit from the same angle and
@@ -77,19 +81,24 @@ const NAME_CLASS =
   'block font-display uppercase leading-[0.82] tracking-[-0.012em] text-[clamp(1.4rem,15vw,4.5rem)] lg:text-[clamp(1.35rem,15vh,10rem)]'
 
 /**
- * Hero — editorial lockup: a full-length standing figure leaning against an
- * oversized gold "D", with the name set to the right of the letterform.
+ * Hero — editorial lockup: a standing figure leaning on an oversized gold "D",
+ * with the name set to the right of the letterform.
  *
- * The figure and the D share one `items-end` flex row rather than being
- * positioned independently. That single constraint is what makes the
+ * The figure, the D and the name share one `items-end` flex row rather than
+ * being positioned independently. That single constraint is what makes the
  * composition work: bottom-aligning them puts his feet on the same baseline as
- * the D, so the letterform reads as the thing he is standing against. A negative
- * right margin pulls his shoulder over the D's left stem, and `z-10` keeps him
- * painted in front of it. Absolutely positioning either one would break that
- * shared baseline and reintroduce the floating-figure problem.
+ * the D, so the letterform reads as the thing he is standing against. Absolutely
+ * positioning any of them would break that shared baseline and reintroduce the
+ * floating-figure problem.
  *
- * He leads the row in the DOM so on narrow viewports he sits under the name
- * rather than beside it, where there is no room for a 0.418:1 figure.
+ * The figure leads the row and the D follows, because the overlap is a negative
+ * RIGHT margin — that only pulls the figure over the letterform if the
+ * letterform is already painted to its right. Leading it also means the figure
+ * can never overflow the container's left edge, since it carries no left offset.
+ *
+ * Below lg the row wraps: the name's `basis-full` drops it onto its own line,
+ * and `.hero-figure` drops the overlap, because a 23vw letterform is too small
+ * to survive a figure scaled to 50vw of height.
  */
 export function HeroSection({
   settings = DEFAULT_HERO,
@@ -120,8 +129,8 @@ export function HeroSection({
             // Intrinsic size of the bundled fallback, used only to reserve
             // layout space before the image decodes. An upload carries its own
             // dimensions, so the box still reserves correctly.
-            width={portrait?.width ?? 177}
-            height={portrait?.height ?? 423}
+            width={portrait?.width ?? 547}
+            height={portrait?.height ?? 978}
             decoding="async"
             className={FIGURE_CLASS}
           />
@@ -153,8 +162,9 @@ export function HeroSection({
           </span>
         </h1>
 
-        {/* Supporting copy. Offset to clear the standing figure on lg so the
-            statement aligns under the name instead of colliding with him. */}
+        {/* Supporting copy. Starting at column 7 on lg keeps the statement under
+            the name, which now runs from just past the figure to the right edge,
+            rather than under the figure and the letterform. */}
         <div className="relative z-20 mt-auto grid w-full grid-cols-1 items-end gap-8 pb-10 sm:gap-10 lg:grid-cols-12 lg:gap-6 lg:pb-12">
           <div className="order-2 flex flex-col items-center gap-4 text-center sm:gap-5 lg:order-1 lg:col-span-5 lg:col-start-7 lg:items-start lg:text-left">
             <Reveal delay={100}>

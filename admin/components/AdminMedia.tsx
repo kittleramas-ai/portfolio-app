@@ -14,7 +14,67 @@ import type {
 } from '../server/media-schema.ts'
 
 /** Slot metadata as sent by getAdminMediaFn (mirrors MEDIA_SLOTS). */
-type SlotMeta = typeof MEDIA_SLOTS[MediaSlotKey]
+export type SlotMeta = (typeof MEDIA_SLOTS)[MediaSlotKey]
+
+/** Everything the Images tab and the Overview tab need, in one shape. */
+export type AdminMediaState = {
+  entries: MediaEntry[]
+  slots: Record<string, SlotMeta>
+  available: boolean
+  unavailableReason: string | null
+}
+
+/**
+ * Loads the media slots once, at the shell level.
+ *
+ * The Overview needs the slot list to compute its "images live" and "alt text
+ * coverage" tiles, so the fetch lives here rather than inside <AdminMedia>.
+ * Both tabs read the same state, which also means an upload on the Images tab
+ * immediately moves the numbers on the Overview tile instead of leaving a stale
+ * count behind.
+ */
+export function useAdminMedia() {
+  const [media, setMedia] = useState<AdminMediaState | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const cancelled = { current: false }
+    void (async () => {
+      try {
+        const [loaded, avail] = await Promise.all([
+          getAdminMediaFn(),
+          getMediaAvailabilityFn(),
+        ])
+        if (cancelled.current) return
+        setMedia({
+          entries: loaded.entries,
+          slots: loaded.slots,
+          available: avail.available,
+          unavailableReason: avail.reason,
+        })
+      } catch (err) {
+        if (cancelled.current) return
+        setError(err instanceof Error ? err.message : 'Could not load images')
+      }
+    })()
+    return () => {
+      cancelled.current = true
+    }
+  }, [])
+
+  function applyChange(next: MediaEntry) {
+    setMedia((prev) =>
+      prev
+        ? {
+            ...prev,
+            entries: prev.entries.map((e) => (e.slot === next.slot ? next : e)),
+          }
+        : prev,
+    )
+  }
+
+  return { media, error, applyChange }
+}
 
 /**
  * Image slots.
@@ -27,59 +87,22 @@ type SlotMeta = typeof MEDIA_SLOTS[MediaSlotKey]
  * selection fails instantly; the server re-validates from the file's magic
  * bytes regardless, since the client cannot be trusted.
  */
-export function AdminMedia() {
-  const [entries, setEntries] = useState<MediaEntry[] | null>(null)
-  const [slots, setSlots] = useState<Record<string, SlotMeta> | null>(null)
-  const [available, setAvailable] = useState<boolean | null>(null)
-  const [unavailableReason, setUnavailableReason] = useState<string | null>(null)
-  const [loadError, setLoadError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const cancelled = { current: false }
-    void (async () => {
-      try {
-        const [media, avail] = await Promise.all([
-          getAdminMediaFn(),
-          getMediaAvailabilityFn(),
-        ])
-        if (cancelled.current) return
-        setEntries(media.entries)
-        setSlots(media.slots)
-        setAvailable(avail.available)
-        setUnavailableReason(avail.reason)
-      } catch (err) {
-        if (cancelled.current) return
-        setLoadError(
-          err instanceof Error ? err.message : 'Could not load images',
-        )
-      }
-    })()
-    return () => {
-      cancelled.current = true
-    }
-  }, [])
-
-  if (loadError) {
-    return (
-      <p className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-[13px] text-red-200">
-        {loadError}
-      </p>
-    )
-  }
-
-  if (!entries || !slots) {
-    return <p className="text-[#7a8a80]">Loading images…</p>
-  }
-
+export function AdminMedia({
+  media,
+  onChanged,
+}: {
+  media: AdminMediaState
+  onChanged: (entry: MediaEntry) => void
+}) {
   return (
     <>
-      {available === false ? (
+      {media.available === false ? (
         <div className="mb-6 rounded-xl border border-amber-400/30 bg-amber-500/10 p-5">
           <h3 className="text-[13px] font-bold uppercase tracking-wide text-amber-200">
             Image uploads are not available yet
           </h3>
           <p className="mt-2 text-[13px] leading-relaxed text-amber-100/80">
-            {unavailableReason}
+            {media.unavailableReason}
           </p>
           <p className="mt-3 text-[12px] leading-relaxed text-amber-100/60">
             The rest of this panel works normally. Once R2 is enabled these four
@@ -89,17 +112,13 @@ export function AdminMedia() {
       ) : null}
 
       <div className="space-y-5">
-        {entries.map((entry) => (
+        {media.entries.map((entry) => (
           <SlotCard
             key={entry.slot}
             entry={entry}
-            meta={slots[entry.slot]}
-            disabled={available === false}
-            onChanged={(next) =>
-              setEntries((prev) =>
-                prev ? prev.map((e) => (e.slot === next.slot ? next : e)) : prev,
-              )
-            }
+            meta={media.slots[entry.slot]}
+            disabled={media.available === false}
+            onChanged={onChanged}
           />
         ))}
       </div>
@@ -202,7 +221,7 @@ function SlotCard({
         : 'h-24 w-full max-w-xs'
 
   return (
-    <section className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+    <section className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-[14px] font-bold uppercase tracking-wide text-[#f5efe0]">
@@ -213,13 +232,15 @@ function SlotCard({
               </span>
             ) : null}
           </h3>
-          <p className="mt-1 text-[12.5px] text-[#7a8a80]">{meta.description}</p>
+          <p className="mt-1 text-[12.5px] text-[#7a8a80]">
+            {meta.description}
+          </p>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-5">
         <div
-          className={`flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-dashed border-white/15 bg-black/20 ${previewBox}`}
+          className={`flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-dashed border-[var(--admin-border)] bg-[var(--admin-row)] ${previewBox}`}
         >
           {hasImage ? (
             <img
@@ -252,7 +273,7 @@ function SlotCard({
                 setAltSaved(false)
               }}
               placeholder="Describe the image"
-              className="w-full rounded-lg border border-white/15 bg-black/30 px-3 py-2 text-[13px] text-[#f5efe0] outline-none placeholder:text-[#7a8a80] focus:border-[#d4af37]"
+              className="w-full rounded-lg border border-[var(--admin-border)] bg-[var(--admin-field)] px-3 py-2 text-[13px] text-[#f5efe0] outline-none placeholder:text-[#7a8a80] focus:border-[var(--admin-gold)] focus:bg-[var(--admin-field-hover)]"
             />
           </label>
 
@@ -278,7 +299,7 @@ function SlotCard({
                 type="button"
                 disabled={busy}
                 onClick={() => void onRemove()}
-                className="rounded-lg border border-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-red-400/60 hover:text-red-300 disabled:opacity-40"
+                className="rounded-lg border border-[var(--admin-border)] px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-red-400/60 hover:text-red-300 disabled:opacity-40"
               >
                 Remove
               </button>
@@ -289,7 +310,7 @@ function SlotCard({
                 type="button"
                 disabled={busy}
                 onClick={() => void onSaveAlt()}
-                className="rounded-lg border border-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-[#d4af37] hover:text-[#d4af37] disabled:opacity-40"
+                className="rounded-lg border border-[var(--admin-border)] px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-[#d4af37] hover:text-[#d4af37] disabled:opacity-40"
               >
                 Save alt text
               </button>

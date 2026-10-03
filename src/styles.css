@@ -1458,6 +1458,74 @@ a {
 }
 
 /* ========================================================================= */
+/* ADMIN PANEL SURFACES                                                      */
+/* The admin panel is a fixed dark instrument and deliberately does NOT use   */
+/* the site's theme tokens. In this project Tailwind's `black`, `white` and    */
+/* the neutral scale are all remapped onto brand variables, and those are      */
+/* theme-dependent: `--portfolio-black` is paper white (#fdfbf5) in the light  */
+/* theme and near-black in the dark one. So `bg-black/30` — which reads as     */
+/* "30% black" — actually rendered as 30% paper white whenever <html> was not  */
+/* on `.dark`, and every input and list row washed out to a pale grey box.     */
+/*                                                                            */
+/* Defining the palette here and referencing it with literal                   */
+/* `bg-[var(--admin-field)]` utilities keeps ONE place to change it. The       */
+/* classes have to stay literal: Tailwind scans source text for candidates,    */
+/* so an interpolated `bg-[${something}]` generates no rule at all.            */
+/* ------------------------------------------------------------------------- */
+/* Surfaces step DOWN in lightness as they come forward — panel, then card,    */
+/* then field — so a field reads as an inset well in its container instead of  */
+/* as a pale slab floating on top of it.                                      */
+/* ========================================================================= */
+.admin-shell {
+  --admin-page: #071a12;
+  --admin-panel: #0d281e;
+  --admin-surface: #0b2018;
+  --admin-field: #071a11;
+  --admin-field-hover: #0a2015;
+  --admin-row: #0a1c15;
+  --admin-row-hover: #0e2419;
+  --admin-border: #1c3a2e;
+  --admin-border-strong: #2e5744;
+  --admin-gold: #d4af37;
+  --admin-ring: rgba(212, 175, 55, 0.18);
+}
+
+/* ========================================================================= */
+/* HERO FIGURE                                                               */
+/* Stand-in for utilities, because two of the hero's properties are the     */
+/* same number: the figure's height AND the offset that puts his hand on    */
+/* the "D". Expressing the offset as a fraction of the height means it      */
+/* keeps tracking the figure at every viewport size instead of needing a    */
+/* matching pair of hand-tuned clamps that drift apart.                     */
+/* ------------------------------------------------------------------------- */
+/* The offset is derived from the artwork, not eyeballed. In                  */
+/* hero-figure-cutout.webp the figure is 0.559 heights wide and the clasped  */
+/* hands run from 0.132 to 0.331 heights in from its left edge. Pulling the  */
+/* figure right by 0.28 heights puts the "D"'s left edge at 0.279 — inside   */
+/* the clasp — so the outer 0.05 heights of the hand nearest the viewer     */
+/* rests on the letterform, and his forearm crosses the D's left stem. He is */
+/* leaning on the letter rather than standing beside it.                     */
+/* ========================================================================= */
+.hero-figure {
+  --hero-figure-h: clamp(9.5rem, 50vw, 22rem);
+  height: var(--hero-figure-h);
+  width: auto;
+  /*
+   * Below lg the D is only 23vw of type while the figure is 50vw of height,
+   * so the same offset would swallow the entire letterform on a phone. There
+   * the two simply stand side by side and the lockup drops the overlap.
+   */
+  margin-right: 0;
+}
+
+@media (min-width: 64rem) {
+  .hero-figure {
+    --hero-figure-h: clamp(11rem, 33vh, 23rem);
+    margin-right: calc(var(--hero-figure-h) * -0.28);
+  }
+}
+
+/* ========================================================================= */
 /* APP-WIDE BADGE / PILL SYSTEM — consistent circle borders                */
 /* Card header pills must stay single-line with fixed height so            */
 /* rounded-full borders render identically across all sections.            */

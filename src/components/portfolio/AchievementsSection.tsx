@@ -1,238 +1,139 @@
 import * as React from 'react'
 import { CountUp } from './CountUp'
 import { Reveal } from './Reveal'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { AchievementsSettings } from '../../../admin/server/settings-schema'
 
-type Accolade = {
-  id: string
-  index: string
-  barTitle: string
-  badge: string
-  badgeIcon: string
-  accentText: string
-  accentBorder: string
-  accentBg: string
-  accentSoftBg: string
-  cardBg: string
-  cardBorder: string
-  headBg: string
-  headBorder: string
-  bodyFrom: string
-  bodyTo: string
-  pill: string
-  heading: string
-  description: string
-  certNo: string
-  certStatus: string
-  certIcon: string
-  certTitle: string
-  certSub: string
-  quote: string
-  stats: React.ReactNode[]
-  peekMeta: string
-  tabShort: string
-  tabActive: string
-  fileName: string
-  ctaLabel: string
-  ctaHref: string
-}
+const DEFAULT_ACHIEVEMENTS = DEFAULT_SITE_SETTINGS.achievements
 
-const DECK: Accolade[] = [
-  {
-    id: 'accolade-card-1',
-    index: '01',
-    barTitle: 'INFODAZZ • ESTD 2022 • TRICHY HQ',
-    badge: 'TECHNOLOGY BUSINESS',
-    badgeIcon: 'rocket_launch',
-    accentText: 'text-accent-gold',
-    accentBorder: 'border-amber-500/30',
-    accentBg: 'bg-amber-500/15',
-    accentSoftBg: 'bg-amber-500/10',
+type DeckCard = AchievementsSettings['deck'][number]
+
+/**
+ * The per-card colour classes, lifted verbatim out of the four cards this
+ * section used to hand-write. The admin edits the copy and names an `accent`;
+ * the palette itself stays here, so a content manager cannot break the theme.
+ *
+ * The gradient variables are NOT derived from the card's position in the deck.
+ * `--portfolio-achievement-N-*` is baked per entry below, so reordering or
+ * deleting a card in the admin moves the card without repointing it at another
+ * card's gradient.
+ */
+const ACCENTS = {
+  gold: {
+    text: 'text-accent-gold',
+    border: 'border-amber-500/30',
+    bg: 'bg-amber-500/15',
+    softBg: 'bg-amber-500/10',
     cardBg: 'bg-[var(--portfolio-achievement-1-card)]',
     cardBorder: 'border-amber-500/30',
     headBg: 'bg-[var(--portfolio-achievement-1-head)]',
     headBorder: 'border-amber-500/20',
     bodyFrom: 'from-[var(--portfolio-achievement-1-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-1-body-end)]',
-    pill: 'FOUNDER & CEO • DIGITAL TRANSFORMATION',
-    heading: 'Infodazz — Helping Businesses Grow Through Technology',
-    description:
-      'Established in 2022. Headquarters Trichy, branches Madurai, Karaikudi, Kumbakonam. 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management.',
-    certNo: 'ESTD // INFODAZZ-2022',
-    certStatus: 'VERIFIED',
-    certIcon: 'award_star',
-    certTitle: 'Founder & CEO',
-    certSub: 'Infodazz • Trichy • Madurai • Karaikudi • Kumbakonam',
-    quote:
-      '“Vision: helping businesses grow through technology and digital transformation.”',
-    peekMeta: 'TEAM: 50+ PROFESSIONALS',
-    tabShort: '01 Infodazz',
     tabActive: 'bg-amber-500 border-amber-500 text-black',
-    fileName: 'infodazz_venture_profile.ts',
-    ctaLabel: 'infodazz.org',
-    ctaHref: 'https://infodazz.org',
-    stats: [
-      <>
-        <CountUp target={50} suffix="+" /> Team
-      </>,
-      <>4 Locations</>,
-      <>
-        <CountUp target={11} /> Services
-      </>,
-      <>Estd 2022</>,
-    ],
   },
-  {
-    id: 'accolade-card-2',
-    index: '02',
-    barTitle: 'KITTLE PVT LTD • TRICHY • TECHNOLOGY INNOVATION',
-    badge: 'IT SOLUTIONS',
-    badgeIcon: 'cloud_done',
-    accentText: 'text-cyan-400',
-    accentBorder: 'border-cyan-400/30',
-    accentBg: 'bg-cyan-500/15',
-    accentSoftBg: 'bg-cyan-500/10',
+  cyan: {
+    text: 'text-cyan-400',
+    border: 'border-cyan-400/30',
+    bg: 'bg-cyan-500/15',
+    softBg: 'bg-cyan-500/10',
     cardBg: 'bg-[var(--portfolio-achievement-2-card)]',
     cardBorder: 'border-cyan-400/30',
     headBg: 'bg-[var(--portfolio-achievement-2-head)]',
     headBorder: 'border-cyan-400/20',
     bodyFrom: 'from-[var(--portfolio-achievement-2-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-2-body-end)]',
-    pill: 'FOUNDER / OWNER • SOFTWARE & CONSULTING',
-    heading: 'Kittle Pvt Ltd — IT Solutions & Digital Platforms',
-    description:
-      'Trichy-based technology company focused on Software Solutions, IT Services, Digital Platforms and Technology Consulting — building digital ecosystems for business growth.',
-    certNo: 'VENTURE // KITTLE-TRICHY',
-    certStatus: 'VALIDATED',
-    certIcon: 'workspace_premium',
-    certTitle: 'Founder / Owner',
-    certSub: 'Kittle Pvt Ltd • Trichy',
-    quote:
-      '“Focus: software solutions, IT services, digital platforms and technology consulting.”',
-    peekMeta: 'BASE: TRICHY',
-    tabShort: '02 Kittle',
     tabActive: 'bg-cyan-400 border-cyan-400 text-black',
-    fileName: 'kittle_venture_profile.ts',
-    ctaLabel: 'Business Inquiries',
-    ctaHref: '#advisory',
-    stats: [
-      <>Software Solutions</>,
-      <>IT Services</>,
-      <>Digital Platforms</>,
-      <>Tech Consulting</>,
-    ],
   },
-  {
-    id: 'accolade-card-3',
-    index: '03',
-    barTitle: 'SEVENTH SENSE RESEARCH GROUP • PUBLISHING PLATFORM',
-    badge: 'RESEARCH PUBLISHER',
-    badgeIcon: 'school',
-    accentText: 'text-emerald-400',
-    accentBorder: 'border-emerald-500/30',
-    accentBg: 'bg-emerald-500/15',
-    accentSoftBg: 'bg-emerald-500/10',
+  emerald: {
+    text: 'text-emerald-400',
+    border: 'border-emerald-500/30',
+    bg: 'bg-emerald-500/15',
+    softBg: 'bg-emerald-500/10',
     cardBg: 'bg-[var(--portfolio-achievement-3-card)]',
     cardBorder: 'border-emerald-500/30',
     headBg: 'bg-[var(--portfolio-achievement-3-head)]',
     headBorder: 'border-emerald-500/20',
     bodyFrom: 'from-[var(--portfolio-achievement-3-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-3-body-end)]',
-    pill: 'FOUNDER / OWNER • ACADEMIC COLLABORATION',
-    heading: 'Seventh Sense — 30+ Journals, 5+ Scopus Indexed',
-    description:
-      'International research publishing platform supporting researchers and academicians. Research publication ecosystem and academic collaboration support. Academic profile: Ph.D Madurai Kamaraj University, MCA Thiagarajar School of Management Madurai, B.Sc Mathematics GAC Kumbakonam — with research publications, patents, mentoring and guidance.',
-    certNo: 'PLATFORM // SSRG-JOURNALS',
-    certStatus: 'ACADEMIC PLATFORM',
-    certIcon: 'menu_book',
-    certTitle: 'Founder / Owner',
-    certSub: 'Seventh Sense Research Group',
-    quote:
-      '“Supporting researchers and academicians through publishing and collaboration.”',
-    peekMeta: '30+ JOURNALS • 5+ SCOPUS',
-    tabShort: '03 Seventh Sense',
     tabActive: 'bg-emerald-400 border-emerald-400 text-black',
-    fileName: 'seventh_sense_profile.ts',
-    ctaLabel: 'SSRG Platform Portal',
-    ctaHref: 'https://internationaljournalssrg.org',
-    stats: [
-      <>
-        <CountUp target={30} suffix="+" /> Journals
-      </>,
-      <>
-        <CountUp target={5} suffix="+" /> Scopus
-      </>,
-      <>Publications</>,
-      <>Mentoring</>,
-    ],
   },
-  {
-    id: 'accolade-card-4',
-    index: '04',
-    barTitle: 'KASTER TRUST • LEADERSHIP • GLOBAL VISION',
-    badge: 'SOCIAL IMPACT',
-    badgeIcon: 'volunteer_activism',
-    accentText: 'text-indigo-400',
-    accentBorder: 'border-indigo-400/30',
-    accentBg: 'bg-indigo-500/15',
-    accentSoftBg: 'bg-indigo-500/10',
+  indigo: {
+    text: 'text-indigo-400',
+    border: 'border-indigo-400/30',
+    bg: 'bg-indigo-500/15',
+    softBg: 'bg-indigo-500/10',
     cardBg: 'bg-[var(--portfolio-achievement-4-card)]',
     cardBorder: 'border-indigo-400/30',
     headBg: 'bg-[var(--portfolio-achievement-4-head)]',
     headBorder: 'border-indigo-400/20',
     bodyFrom: 'from-[var(--portfolio-achievement-4-body-start)]',
     bodyTo: 'to-[var(--portfolio-achievement-4-body-end)]',
-    pill: 'FOUNDER / TRUSTEE • BNI 2022 • ROTARY 2024',
-    heading: 'Kaster Trust — Education Support & Community Leadership',
-    description:
-      'Founder / Trustee of Kaster Trust supporting education for economically disadvantaged students via fee support and learning opportunities. BNI Member since 2022, Rotary Member since 2024. From humble farmer family background — passionate traveller sharing knowledge through motivational sessions.',
-    certNo: 'TRUST // KASTER-EDUCATION',
-    certStatus: 'SOCIAL MISSION',
-    certIcon: 'campaign',
-    certTitle: 'Founder / Trustee',
-    certSub: 'Kaster Trust • BNI • Rotary',
-    quote:
-      '“Technology creates possibilities, but people create impact.”',
-    peekMeta: 'MISSION: EDUCATION ACCESS',
-    tabShort: '04 Kaster & Networks',
     tabActive: 'bg-indigo-400 border-indigo-400 text-black',
-    fileName: 'kaster_trust_profile.ts',
-    ctaLabel: 'Support Education',
-    ctaHref: '#advisory',
-    stats: [
-      <>Fee Support</>,
-      <>BNI 2022</>,
-      <>Rotary 2024</>,
-      <>Global Travel</>,
-    ],
   },
-]
+} as const
 
-const STAT_LABELS = [
-  ['Team Strength', 'Focus Areas', 'Intl Journals', 'Mission Focus'],
-  ['Locations', 'Base', 'Scopus Indexed', 'BNI Membership'],
-  ['Service Verticals', 'Offerings', 'Ecosystem', 'Rotary Membership'],
-  ['Founded', 'Engagement', 'Mentorship', 'Vision'],
-]
+type AccentClasses = (typeof ACCENTS)[keyof typeof ACCENTS]
+type AccentKey = keyof typeof ACCENTS
 
-export function AchievementsSection() {
+/**
+ * The `accent` enum is site-wide and wider than the four themes designed here,
+ * so an unmapped value falls back to gold rather than rendering an unthemed
+ * card.
+ */
+const accentFor = (key: DeckCard['accent']): AccentClasses =>
+  Object.hasOwn(ACCENTS, key) ? ACCENTS[key as AccentKey] : ACCENTS.gold
+
+/**
+ * `stats` used to be a `React.ReactNode[]` — raw JSX fragments mixing
+ * `<CountUp>` elements with bare strings — which cannot be validated, stored or
+ * edited. Settings hold structured rows instead, so this rebuilds the markup
+ * that fragment used to produce: the animated counter followed by its label
+ * inside one text run, with the single literal space the JSX had between them.
+ */
+function renderStat(stat: DeckCard['stats'][number]) {
+  if (stat.kind === 'count') {
+    return (
+      <>
+        <CountUp
+          target={stat.countTo ?? 0}
+          prefix={stat.prefix}
+          suffix={stat.suffix}
+        />{' '}
+        {stat.label}
+      </>
+    )
+  }
+  return <>{stat.text}</>
+}
+
+export function AchievementsSection({
+  settings = DEFAULT_ACHIEVEMENTS,
+}: {
+  /** Eyebrow copy, the deck cards and their per-card accents. Managed in the admin panel. */
+  settings?: AchievementsSettings
+}) {
+  const deck = settings.deck
   // All deck data is static — render immediately, no skeleton delay.
   const [active, setActive] = React.useState(0)
   const [direction, setDirection] = React.useState(1)
   const touchX = React.useRef<number | null>(null)
 
   const goTo = (i: number) => {
-    const n = (i + DECK.length) % DECK.length
-    setDirection(n > active || (active === DECK.length - 1 && n === 0) ? 1 : -1)
+    const n = (i + deck.length) % deck.length
+    setDirection(n > active || (active === deck.length - 1 && n === 0) ? 1 : -1)
     setActive(n)
   }
+  // The length is a dependency now that the deck is data: a saved card deletion
+  // must not leave these callbacks modulo-ing a stale count.
   const next = React.useCallback(() => {
     setDirection(1)
-    setActive((a) => (a + 1) % DECK.length)
-  }, [])
+    setActive((a) => (a + 1) % deck.length)
+  }, [deck.length])
   const prev = React.useCallback(() => {
     setDirection(-1)
-    setActive((a) => (a - 1 + DECK.length) % DECK.length)
-  }, [])
+    setActive((a) => (a - 1 + deck.length) % deck.length)
+  }, [deck.length])
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -243,10 +144,15 @@ export function AchievementsSection() {
     return () => window.removeEventListener('keydown', onKey)
   }, [next, prev])
 
-  const card = DECK[active]
+  // The admin can delete every card, and the modulo maths below divides by the
+  // deck length — render nothing rather than throw.
+  if (deck.length === 0) return null
+
+  const card = deck[active]
+  const accent = accentFor(card.accent)
 
   // order for peeking bars: the 3 cards behind active, nearest first
-  const behind = [1, 2, 3].map((o) => (active + o) % DECK.length)
+  const behind = [1, 2, 3].map((o) => (active + o) % deck.length)
 
   return (
     
@@ -264,11 +170,11 @@ export function AchievementsSection() {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 mb-3">
               <span className="inline-flex items-center whitespace-nowrap shrink-0 px-3 py-1.5 rounded-full text-[11px] leading-none font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-[0.14em]">
-                Verified Honors
+                {settings.badge}
               </span>
-              <span className="text-mono-metric font-mono-metric text-text-tertiary shrink-0">|</span>
+              <span className="text-mono-metric font-mono-metric text-text-tertiary shrink-0">{settings.badgeSeparator}</span>
               <span className="whitespace-nowrap text-mono-metric font-mono-metric text-text-secondary text-[12px] tracking-wider">
-                INTERACTIVE DECK • {String(active + 1).padStart(2, '0')} / 04
+                INTERACTIVE DECK • {String(active + 1).padStart(2, '0')} / {String(deck.length).padStart(2, '0')}
               </span>
             </div>
             <h2
@@ -280,26 +186,27 @@ export function AchievementsSection() {
                 lineHeight: 1.15,
               }}
             >
-              Institutional Accolades &amp; Industry Honors
+              {settings.heading}
             </h2>
             <p className="mt-3 max-w-xl text-mono-metric font-mono-metric text-text-tertiary text-[12px] leading-relaxed">
-              Click any archive row or use the arrows to cycle through the four honors.
+              {settings.intro}
             </p>
           </div>
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap max-w-full">
-            {DECK.map((d, i) => {
+            {deck.map((d, i) => {
               const isActive = i === active
+              const theme = accentFor(d.accent)
               return (
                 <button
                   key={d.id}
                   onClick={() => goTo(i)}
                   className={`px-3.5 py-1.5 rounded-full text-mono-metric text-[11px] font-bold uppercase tracking-wider border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
-                      ? `${d.tabActive} shadow-lg scale-105`
+                      ? `${theme.tabActive} shadow-lg scale-105`
                       : 'bg-slate-surface border-slate-border text-text-tertiary hover:text-text-primary hover:border-slate-border-highlight'
                   }`}
                 >
-                  <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#071A12]' : `${d.accentText} bg-current`}`} />
+                  <span className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${isActive ? 'bg-[#071A12]' : `${theme.text} bg-current`}`} />
                   {d.tabShort}
                 </button>
               )
@@ -316,7 +223,8 @@ export function AchievementsSection() {
               .slice()
               .reverse()
               .map((cardIdx) => {
-                const d = DECK[cardIdx]
+                const d = deck[cardIdx]
+                const theme = accentFor(d.accent)
                 return (
                   <button
                     key={d.id}
@@ -324,14 +232,14 @@ export function AchievementsSection() {
                     className="group w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-2.5 rounded-xl bg-slate-surface border border-slate-border hover:border-slate-border-highlight transition-all cursor-pointer text-left"
                   >
                     <span className="flex items-center gap-2 min-w-0">
-                      <span className={`text-[11px] font-mono-metric font-bold ${d.accentText}`}>
+                      <span className={`text-[11px] font-mono-metric font-bold ${theme.text}`}>
                         ✦ {d.index}.
                       </span>
                       <span className="text-[11px] sm:text-xs font-mono-metric font-semibold text-text-secondary group-hover:text-text-primary truncate uppercase tracking-wider">
                         {d.barTitle}
                       </span>
                     </span>
-                    <span className={`hidden sm:inline text-[10px] font-mono-metric uppercase tracking-wider shrink-0 ${d.accentText}`}>
+                    <span className={`hidden sm:inline text-[10px] font-mono-metric uppercase tracking-wider shrink-0 ${theme.text}`}>
                       {d.peekMeta}
                     </span>
                   </button>
@@ -359,38 +267,38 @@ export function AchievementsSection() {
 
             <div
               key={card.id}
-              className={`deck-enter relative rounded-2xl overflow-hidden border ${card.cardBorder} ${card.cardBg} shadow-2xl ${
+              className={`deck-enter relative rounded-2xl overflow-hidden border ${accent.cardBorder} ${accent.cardBg} shadow-2xl ${
                 direction === 1 ? 'deck-from-right' : 'deck-from-left'
               }`}
-              style={{ ['--deck-accent' as string]: card.accentText }}
+              style={{ ['--deck-accent' as string]: accent.text }}
             >
               {/* Archive record header */}
               <div
-                className={`w-full ${card.headBg} border-b ${card.headBorder} px-6 sm:px-8 py-3.5 flex items-center justify-between gap-3 text-text-primary select-none`}
+                className={`w-full ${accent.headBg} border-b ${accent.headBorder} px-6 sm:px-8 py-3.5 flex items-center justify-between gap-3 text-text-primary select-none`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className={`h-2 w-2 rounded-full shrink-0 ${card.accentText} bg-current`} />
+                  <span className={`h-2 w-2 rounded-full shrink-0 ${accent.text} bg-current`} />
                   <span className="text-[11px] sm:text-xs font-mono-metric font-extrabold uppercase tracking-wider text-text-primary truncate">
                     {card.index}. {card.barTitle}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className={`hidden sm:inline-flex items-center whitespace-nowrap shrink-0 px-2.5 py-1 rounded-md text-[10px] leading-none font-mono-metric font-bold ${card.accentBg} ${card.accentText} border ${card.accentBorder} uppercase tracking-widest`}
+                    className={`hidden sm:inline-flex items-center whitespace-nowrap shrink-0 px-2.5 py-1 rounded-md text-[10px] leading-none font-mono-metric font-bold ${accent.bg} ${accent.text} border ${accent.border} uppercase tracking-widest`}
                   >
                     {card.badge}
                   </span>
                   <span className="text-[10px] font-mono-metric text-text-tertiary uppercase tracking-widest whitespace-nowrap">
-                    Deck Card {active + 1}/{DECK.length}
+                    Deck Card {active + 1}/{deck.length}
                   </span>
                 </div>
               </div>
 
-              <div className={`p-6 sm:p-8 bg-gradient-to-b ${card.bodyFrom} ${card.bodyTo} backdrop-blur-xl`}>
+              <div className={`p-6 sm:p-8 bg-gradient-to-b ${accent.bodyFrom} ${accent.bodyTo} backdrop-blur-xl`}>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                   <div className="lg:col-span-7 space-y-5 min-w-0">
                     <div
-                      className={`inline-flex items-center whitespace-nowrap shrink-0 max-w-full gap-2 px-3 py-1 rounded-full text-[11px] leading-none font-mono-metric overflow-hidden ${card.accentBg} border ${card.accentBorder} ${card.accentText}`}
+                      className={`inline-flex items-center whitespace-nowrap shrink-0 max-w-full gap-2 px-3 py-1 rounded-full text-[11px] leading-none font-mono-metric overflow-hidden ${accent.bg} border ${accent.border} ${accent.text}`}
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse shrink-0"></span>
                       <span className="truncate">{card.pill}</span>
@@ -405,25 +313,25 @@ export function AchievementsSection() {
                       {card.description}
                     </p>
                     <div className="grid grid-cols-2 gap-3 pt-1">
-                      {card.stats.slice(0, 2).map((v, si) => (
-                        <div key={si} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
-                          <div className={`text-lg sm:text-xl font-bold font-mono-metric ${si === 0 ? card.accentText : 'text-text-primary'}`}>
-                            {v}
+                      {card.stats.slice(0, 2).map((s, si) => (
+                        <div key={s.id} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
+                          <div className={`text-lg sm:text-xl font-bold font-mono-metric ${si === 0 ? accent.text : 'text-text-primary'}`}>
+                            {renderStat(s)}
                           </div>
                           <div className="text-[10px] font-mono-metric text-text-tertiary uppercase tracking-wider mt-1">
-                            {STAT_LABELS[si][active]}
+                            {card.statLabels[si]}
                           </div>
                         </div>
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      {card.stats.slice(2).map((v, si) => (
-                        <div key={si} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
+                      {card.stats.slice(2).map((s, si) => (
+                        <div key={s.id} className="p-4 rounded-xl bg-slate-surface border border-slate-border">
                           <div className="text-lg sm:text-xl font-bold font-mono-metric text-text-primary">
-                            {v}
+                            {renderStat(s)}
                           </div>
                           <div className="text-[10px] font-mono-metric text-text-tertiary uppercase tracking-wider mt-1">
-                            {STAT_LABELS[si + 2][active]}
+                            {card.statLabels[si + 2]}
                           </div>
                         </div>
                       ))}
@@ -432,7 +340,7 @@ export function AchievementsSection() {
                       <a
                         href={card.ctaHref}
                         {...(card.ctaHref.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider no-underline border transition-all hover:brightness-125 ${card.tabActive}`}
+                        className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider no-underline border transition-all hover:brightness-125 ${accent.tabActive}`}
                       >
                         <span>{card.ctaLabel}</span>
                         <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
@@ -441,7 +349,7 @@ export function AchievementsSection() {
                         onClick={next}
                         className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider bg-slate-surface border border-slate-border text-text-secondary hover:text-text-primary hover:border-slate-border-highlight transition-all cursor-pointer"
                       >
-                        <span>Inspect All Records</span>
+                        <span>{settings.inspectLabel}</span>
                         <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                       </button>
                     </div>
@@ -455,7 +363,7 @@ export function AchievementsSection() {
                         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
                         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
                         <span className="ml-2 text-[11px] font-mono-metric text-text-tertiary truncate">{card.fileName}</span>
-                        <span className={`ml-auto flex items-center gap-1.5 text-[10px] font-mono-metric uppercase tracking-wider shrink-0 ${card.accentText}`}>
+                        <span className={`ml-auto flex items-center gap-1.5 text-[10px] font-mono-metric uppercase tracking-wider shrink-0 ${accent.text}`}>
                           <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
                           {card.certStatus}
                         </span>
@@ -470,7 +378,7 @@ export function AchievementsSection() {
                         <div className="pl-4">
                           <span className="text-slate-300">recordId</span>
                           <span className="text-slate-500">: </span>
-                          <span className={card.accentText}>"{card.certNo}"</span>
+                          <span className={accent.text}>"{card.certNo}"</span>
                           <span className="text-slate-500">,</span>
                         </div>
                         <div className="pl-4">
@@ -487,7 +395,7 @@ export function AchievementsSection() {
                         <div className="text-slate-400">{'};'}</div>
                         <div className="mt-3 flex items-center gap-3">
                           <div
-                            className={`w-11 h-11 rounded-lg ${card.accentSoftBg} border ${card.accentBorder} flex items-center justify-center ${card.accentText} shrink-0`}
+                            className={`w-11 h-11 rounded-lg ${accent.softBg} border ${accent.border} flex items-center justify-center ${accent.text} shrink-0`}
                           >
                             <span className="material-symbols-outlined text-[24px]">{card.certIcon}</span>
                           </div>
@@ -510,17 +418,17 @@ export function AchievementsSection() {
             {/* Archive footer controls — aligned to card edges */}
             <div className="mt-4 flex items-center justify-between gap-3">
               <span className="flex-1 min-w-0 truncate text-[11px] font-mono-metric text-text-tertiary tracking-wide">
-                <span className={`${card.accentText}`}>●</span> Card {active + 1} of {DECK.length}: {card.barTitle}
+                <span className={`${accent.text}`}>●</span> Card {active + 1} of {deck.length}: {card.barTitle}
               </span>
               <div className="flex items-center gap-2 shrink-0 ml-auto">
                 <div className="hidden sm:flex items-center gap-1.5 mr-1">
-                  {DECK.map((d, i) => (
+                  {deck.map((d, i) => (
                     <button
                       key={d.id}
                       aria-label={`Go to card ${i + 1}`}
                       onClick={() => goTo(i)}
                       className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                        i === active ? `w-6 ${card.accentBg} border ${card.accentBorder}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
+                        i === active ? `w-6 ${accent.bg} border ${accent.border}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
                       }`}
                     />
                   ))}

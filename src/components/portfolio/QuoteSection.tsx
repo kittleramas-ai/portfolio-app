@@ -1,7 +1,16 @@
 import { Reveal } from './Reveal'
 import { AnimatedText } from './AnimatedText'
+import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
+import type { QuoteSettings } from '../../../admin/server/settings-schema'
 
-export function QuoteSection() {
+const DEFAULT_QUOTE = DEFAULT_SITE_SETTINGS.quote
+
+export function QuoteSection({
+  settings = DEFAULT_QUOTE,
+}: {
+  /** Editable copy, supplied by the route from the database. */
+  settings?: QuoteSettings
+}) {
   return (
     <section
       className="py-28 md:py-36 px-6 md:px-12 relative overflow-hidden border-b border-slate-border"
@@ -20,20 +29,20 @@ export function QuoteSection() {
           style={{ fontFamily: '"Space Grotesk", sans-serif' }}
         >
           <span className="text-teal-100/70 inline">
-            “Technology creates possibilities,
+            {settings.quoteLine1}
           </span>
           <span className="text-white inline">
             {' '}
-            but people create impact.”
+            {settings.quoteLine2}
           </span>
         </AnimatedText>
         <Reveal>
         <div className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg shrink-0">
             <img
-              alt="Dr. R. Surendiran"
+              alt={settings.portraitAlt}
               className="w-full h-full object-cover grayscale contrast-125"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHt-GFa9dNcxzSQIPTzFtGZugzZXCsvmWUvaqptV3qQcHQQYDqNzfMo7KKVdXQkA80dq9Nn4yb-_AlK94JMjQDCyVXNLPSrJs8y1rPtrLu7C7EuDrAnm3keIkJSnYgXalwhTBmHAPamsx5UZK_L4PJ0d359cuEDwQstjoUbJJDsHmNdpGtFtBjOu9RNrveJRQbHvZyhCDT77BNJcKE43ohJGvXLQDTWIc-L3795cw"
+              src={settings.portraitUrl}
             />
           </div>
           <div className="text-center sm:text-left">
@@ -41,16 +50,15 @@ export function QuoteSection() {
               className="text-[16px] md:text-[18px] font-bold text-white leading-snug"
               style={{ fontFamily: '"Space Grotesk", sans-serif' }}
             >
-              Dr. R. Surendiran — Leadership Philosophy
+              {settings.attribution}
             </div>
             <div className="text-[12px] md:text-[13px] text-teal-100/80 font-mono-metric font-medium tracking-wide mt-0.5">
-              Founder &amp; CEO, Infodazz • Kittle • Seventh Sense • Kaster Trust
+              {settings.roles}
             </div>
           </div>
         </div>
         <p className="mt-6 text-[13px] md:text-sm text-teal-100/70 font-mono-metric leading-relaxed max-w-2xl mx-auto">
-          Vision: to build organizations that combine innovation, business growth,
-          education and social responsibility.
+          {settings.vision}
         </p>
         </Reveal>
       </div>
