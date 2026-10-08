@@ -124,9 +124,15 @@ export function AnimatedText({
           try {
             splitter = new SplitText(el as HTMLElement, {
               type: split,
-              // keep accessible original? SplitText handles aria automatically in 3.13+
               smartWrap: true,
             } as any)
+            
+            // Fix Lighthouse prohibited ARIA attribute errors (SplitText adds these)
+            el.removeAttribute('aria-label')
+            const hiddenChildren = el.querySelectorAll('[aria-hidden="true"]')
+            for (let i = 0; i < hiddenChildren.length; i++) {
+              hiddenChildren[i].removeAttribute('aria-hidden')
+            }
           } catch (err) {
             console.warn('[AnimatedText] SplitText failed, falling back to block fade.', err)
             gsap.fromTo(

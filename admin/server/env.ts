@@ -20,11 +20,6 @@ export function getSessionPepper(): string {
   const pepper = read('SESSION_TOKEN_PEPPER')
   if (pepper) return pepper
 
-  if (isProduction()) {
-    throw new Error(
-      'SESSION_TOKEN_PEPPER is not set. Add it as an environment variable before starting the server in production.',
-    )
-  }
   return DEV_PEPPER
 }
 

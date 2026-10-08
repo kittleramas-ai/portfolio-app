@@ -50,7 +50,7 @@ export function MilestonesSection({
                   ) : null}
                 </div>
               </div>
-              <div className="text-[12px] font-mono-metric text-text-tertiary/80 tracking-wide mt-8 lowercase">
+              <div className="text-[12px] font-mono-metric text-text-secondary tracking-wide mt-8 lowercase">
                 {/* The middle-dot separators are their own dimmer spans, each
                     padded with a space, rather than part of the footnote text.
                     Splitting on the character means a manager can retype a
@@ -60,7 +60,7 @@ export function MilestonesSection({
                     {i > 0 ? (
                       <>
                         {' '}
-                        <span className="mx-1.5 text-text-tertiary/50">·</span>{' '}
+                        <span className="mx-1.5 text-text-tertiary">·</span>{' '}
                       </>
                     ) : null}
                     {part}
