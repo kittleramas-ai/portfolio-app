@@ -58,6 +58,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: '/favicon.svg',
       },
       {
+        rel: 'preload',
+        href: '/fonts/anton-latin.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      },
+      {
         rel: 'preconnect',
         href: 'https://fonts.googleapis.com',
       },
@@ -111,6 +118,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html, body { background-color: #071A12; color: #EDE8D8; margin: 0; padding: 0; }
+              img, svg { max-width: 100%; height: auto; }
+              #hero h1 { font-family: Anton, "Bebas Neue", sans-serif; }
+            `,
+          }}
+        />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">

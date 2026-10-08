@@ -41,6 +41,10 @@ export function QuoteSection({
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg shrink-0">
             <img
               alt={settings.portraitAlt}
+              width={56}
+              height={56}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover grayscale contrast-125"
               src={settings.portraitUrl}
             />

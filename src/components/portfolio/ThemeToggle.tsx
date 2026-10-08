@@ -31,7 +31,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           isDark ? 'opacity-40' : 'opacity-100',
         )}
         style={{ color: isDark ? 'var(--text-tertiary)' : '#8C6D1F' }}
-        aria-hidden
+        aria-hidden="true"
       />
       <Moon
         className={cn(
@@ -39,11 +39,11 @@ export function ThemeToggle({ className }: { className?: string }) {
           isDark ? 'opacity-100' : 'opacity-40',
         )}
         style={{ color: isDark ? '#E5C07B' : 'var(--text-tertiary)' }}
-        aria-hidden
+        aria-hidden="true"
       />
       {/* Sliding thumb */}
       <span
-        aria-hidden
+        aria-hidden="true"
         className={cn(
           'relative z-10 flex h-6 w-6 items-center justify-center rounded-full shadow-md transition-transform duration-300',
           isDark ? 'translate-x-[28px]' : 'translate-x-0',
@@ -54,9 +54,9 @@ export function ThemeToggle({ className }: { className?: string }) {
         }}
       >
         {isDark ? (
-          <Moon className="h-3.5 w-3.5 text-slate-900" aria-hidden />
+          <Moon className="h-3.5 w-3.5 text-slate-900" aria-hidden="true" />
         ) : (
-          <Sun className="h-3.5 w-3.5 text-white" aria-hidden />
+          <Sun className="h-3.5 w-3.5 text-white" aria-hidden="true" />
         )}
       </span>
     </button>

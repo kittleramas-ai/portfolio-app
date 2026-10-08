@@ -32,6 +32,19 @@ type AnimatedTextProps = {
  * SSR-safe: renders plain text on server, splits only on client.
  * Respects prefers-reduced-motion.
  */
+function extractText(node: React.ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node)
+  }
+  if (Array.isArray(node)) {
+    return node.map(extractText).join(' ')
+  }
+  if (React.isValidElement(node)) {
+    return extractText((node.props as any)?.children)
+  }
+  return ''
+}
+
 export function AnimatedText({
   as = 'div',
   split = 'words',
@@ -51,6 +64,10 @@ export function AnimatedText({
   const [mobileVisible, setMobileVisible] = React.useState(false)
   // Set post-mount so SSR + first client render stay identical (no hydration mismatch).
   const [isMobile, setIsMobile] = React.useState(false)
+
+  const textLabel = React.useMemo(() => {
+    return extractText(children).replace(/\s+/g, ' ').trim()
+  }, [children])
 
   const defaultStagger = React.useMemo(() => {
     if (stagger !== undefined) return stagger
@@ -125,11 +142,11 @@ export function AnimatedText({
                   mode === 'load'
                     ? undefined
                     : {
-                        trigger: el,
-                        start,
-                        once: mode === 'scroll',
-                        scrub: mode === 'scrub' ? true : undefined,
-                      },
+                      trigger: el,
+                      start,
+                      once: mode === 'scroll',
+                      scrub: mode === 'scrub' ? true : undefined,
+                    },
               },
             )
             return
@@ -163,7 +180,7 @@ export function AnimatedText({
             const safety = window.setTimeout(() => {
               gsap.set(targets, { y: 0, autoAlpha: 1, clearProps: 'transform' })
             }, (delay + duration + defaultStagger * targets.length) * 1000 + 800)
-            ;(tween as any)?.then?.(() => window.clearTimeout(safety))
+              ; (tween as any)?.then?.(() => window.clearTimeout(safety))
             const origCleanup = () => window.clearTimeout(safety)
             // chain into outer cleanup via ScrollTrigger refresh timer below
             window.setTimeout(origCleanup, (delay + duration + 2) * 1000)
@@ -198,6 +215,7 @@ export function AnimatedText({
                 ease,
                 overwrite: true,
                 clearProps: 'transform',
+
                 // Fail-visible: stale trigger measurements after fast anchor
                 // jumps leave text readable instead of hidden.
                 immediateRender: false,

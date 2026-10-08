@@ -425,12 +425,17 @@ export function AchievementsSection({
                   {deck.map((d, i) => (
                     <button
                       key={d.id}
+                      type="button"
                       aria-label={`Go to card ${i + 1}`}
                       onClick={() => goTo(i)}
-                      className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                        i === active ? `w-6 ${accent.bg} border ${accent.border}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
-                      }`}
-                    />
+                      className="p-1.5 flex items-center justify-center cursor-pointer focus:outline-none"
+                    >
+                      <span
+                        className={`h-1.5 rounded-full transition-all block ${
+                          i === active ? `w-6 ${accent.bg} border ${accent.border}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
+                        }`}
+                      />
+                    </button>
                   ))}
                 </div>
                 <button

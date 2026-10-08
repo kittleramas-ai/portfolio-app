@@ -174,10 +174,12 @@ export function ContactSection({
                 {/* Row 1: First Name & Last Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
+                    <label htmlFor="contact-first-name" className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
                       first name *
                     </label>
                     <input
+                      id="contact-first-name"
+                      name="firstName"
                       className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
                       placeholder="First name"
                       required
@@ -189,10 +191,12 @@ export function ContactSection({
                     />
                   </div>
                   <div>
-                    <label className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
+                    <label htmlFor="contact-last-name" className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
                       last name *
                     </label>
                     <input
+                      id="contact-last-name"
+                      name="lastName"
                       className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
                       placeholder="Last name"
                       required
@@ -208,10 +212,12 @@ export function ContactSection({
                 {/* Row 2: Email & Phone / Organization */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
+                    <label htmlFor="contact-email" className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
                       email address *
                     </label>
                     <input
+                      id="contact-email"
+                      name="email"
                       className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
                       placeholder="name@company.com"
                       required
@@ -223,10 +229,12 @@ export function ContactSection({
                     />
                   </div>
                   <div>
-                    <label className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
+                    <label htmlFor="contact-phone" className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
                       phone number / company
                     </label>
                     <input
+                      id="contact-phone"
+                      name="phoneOrCompany"
                       className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
                       placeholder="+91 00000 00000 / Company Name"
                       type="text"
@@ -243,10 +251,12 @@ export function ContactSection({
 
                 {/* Row 3: Message Textarea */}
                 <div>
-                  <label className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
+                  <label htmlFor="contact-message" className="text-mono-metric font-mono-metric text-text-tertiary text-[11px] uppercase tracking-wider block mb-2">
                     message *
                   </label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
                     placeholder="Provide context regarding timelines, architecture goals, or network collaboration requirements..."
                     required

@@ -76,7 +76,7 @@ export function HeroSection({
                 href={settings.ctaPrimaryHref}
               >
                 {settings.ctaPrimaryLabel}
-                <span className="material-symbols-outlined text-[18px]">
+                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
                   arrow_forward
                 </span>
               </a>

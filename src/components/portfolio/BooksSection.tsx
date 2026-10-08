@@ -86,6 +86,10 @@ export function BooksSection({
                         <img
                           src={book.coverImageUrl}
                           alt={book.title}
+                          width={190}
+                          height={270}
+                          loading="lazy"
+                          decoding="async"
                           className="absolute inset-0 h-full w-full object-cover"
                         />
                       ) : (
@@ -182,6 +186,10 @@ export function BooksSection({
                         <img
                           src={book.coverImageUrl}
                           alt={book.title}
+                          width={84}
+                          height={120}
+                          loading="lazy"
+                          decoding="async"
                           className="absolute inset-0 h-full w-full object-cover"
                         />
                       ) : (

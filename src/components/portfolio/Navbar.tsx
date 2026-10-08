@@ -118,10 +118,12 @@ export function Navbar({
             <button
               type="button"
               aria-label="Toggle Navigation Menu"
+              aria-expanded={menuOpen}
+              aria-controls="navigation-drawer"
               className="flex items-center gap-2 text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
               onClick={() => setMenuOpen(true)}
             >
-              <span className="material-symbols-outlined text-[28px]">
+              <span className="material-symbols-outlined text-[28px]" aria-hidden="true">
                 menu
               </span>
               <span className="hidden sm:inline font-bold uppercase tracking-widest text-sm">
@@ -134,21 +136,24 @@ export function Navbar({
 
       {/* Full Screen Split Overlay Menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-[100] flex animate-in fade-in duration-300 justify-end">
+        <div id="navigation-drawer" role="dialog" aria-modal="true" aria-label="Navigation Menu" className="fixed inset-0 z-[100] flex animate-in fade-in duration-300 justify-end">
           {/* Left side: Transparent overlay to close */}
           <div
             className="hidden sm:block flex-1 bg-black/20 backdrop-blur-sm cursor-pointer"
             onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
           ></div>
 
           {/* Right side: Solid menu panel */}
           <div className="w-full sm:w-[450px] md:w-[550px] lg:w-[600px] xl:w-[700px] h-full bg-obsidian-base shadow-2xl relative flex flex-col items-start px-8 sm:px-16 md:px-24 pt-24 pb-16 overflow-y-auto animate-in slide-in-from-right-8 duration-300">
             {/* Close Button */}
             <button
+              type="button"
+              aria-label="Close navigation menu"
               onClick={() => setMenuOpen(false)}
-              className="absolute top-8 left-8 flex items-center justify-center text-text-secondary hover:text-accent-gold transition-colors focus:outline-none"
+              className="absolute top-8 left-8 flex items-center justify-center text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[28px]">
+              <span className="material-symbols-outlined text-[28px]" aria-hidden="true">
                 close
               </span>
             </button>

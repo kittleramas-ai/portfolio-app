@@ -45,8 +45,9 @@ export function SignatureMark({
       width={width}
       height={height}
       decoding="async"
+      style={{ maxWidth: '180px', maxHeight: '50px', objectFit: 'contain' }}
       className={cn(
-        'h-auto w-auto select-none',
+        'h-auto w-auto max-w-[180px] max-h-[50px] select-none',
         // Only the bundled asset needs dark -> white conversion.
         !isUpload && 'dark:invert dark:hue-rotate-180',
         className,
