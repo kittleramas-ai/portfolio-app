@@ -12,12 +12,15 @@ dist-ssr
 __unconfig*
 todos.json
 
-# SQLite database (moved off Cloudflare D1 — the app now runs on a Node server).
-# Holds the admin user row and saved settings, so it must not be committed.
+# Legacy SQLite artefacts from before the move to MySQL. Kept ignored so a stray
+# local file is never committed if one reappears.
 data/
 *.db
 *.db-shm
 *.db-wal
+
+# The app runs on MySQL now (see DATABASE_URL in .env.local), not on a local
+# database file. Nothing database-related belongs in the repo.
 
 # Manager-uploaded images. Written at runtime by the admin panel; committed
 # copies would bloat the repo and the files are server state, not source.

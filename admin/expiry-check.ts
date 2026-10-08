@@ -9,22 +9,56 @@
  * `mode: 'timestamp'` (SECONDS) while the app wrote `Date.now()` (MILLISECONDS),
  * so every expiry read back as a date in the year 58722 and expired sessions
  * kept working. Keep this test.
+ *
+ * Session rows are written through the query builder rather than the
+ * `INSERT OR REPLACE ... SELECT ... FROM admin_user` strings this used to
+ * build. The builder takes the user id as a bound parameter, so there is no
+ * string interpolation to get wrong, and `onConflictDoUpdate` states the
+ * upsert intent instead of the `OR REPLACE` euphemism.
  */
-import { openDb } from './lib/sqlite.ts'
+import { eq } from 'drizzle-orm'
+
+import { closeCheckDb, openCheckDb } from './lib/db.ts'
+import { adminSession, adminUser } from '../src/db/schema.ts'
 import { generateSessionToken, hashSessionToken } from './server/session-token.ts'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const PEPPER = 'dev-only-pepper-not-for-production'
 
-/** Run SQL against the app's own SQLite file. */
-function sql(stmt: string): string {
-  const db = openDb()
-  try {
-    db.exec(stmt)
-    return 'ok'
-  } finally {
-    db.close()
-  }
+const { db } = await openCheckDb()
+
+const seeded = await db
+  .select({ id: adminUser.id })
+  .from(adminUser)
+  .where(eq(adminUser.email, 'admin@portfolio.local'))
+  .limit(1)
+const userId = seeded[0]?.id
+if (!userId) {
+  console.error(
+    'no admin@portfolio.local row — run: npm run db:seed',
+  )
+  await closeCheckDb()
+  process.exit(1)
+}
+
+/** Insert (or replace) a session row for the seeded admin. */
+async function putSession(id: string, tokenHash: string, expiresAt: number) {
+  await db
+    .insert(adminSession)
+    .values({
+      id,
+      userId,
+      tokenHash,
+      expiresAt: new Date(expiresAt),
+      createdAt: new Date(),
+    })
+    .onDuplicateKeyUpdate({
+      set: { expiresAt: new Date(expiresAt), userId },
+    })
+}
+
+async function dropSession(tokenHash: string) {
+  await db.delete(adminSession).where(eq(adminSession.tokenHash, tokenHash))
 }
 
 async function fetchWithRetry(path: string, cookie: string) {
@@ -47,11 +81,7 @@ async function probe(label: string, expiresAt: number) {
   const token = generateSessionToken()
   const hash = await hashSessionToken(token, PEPPER)
 
-  sql(`
-    INSERT OR REPLACE INTO admin_session (id, user_id, token_hash, expires_at, created_at)
-      SELECT 'expdbg', id, '${hash}', ${expiresAt}, ${Date.now()}
-      FROM admin_user WHERE email = 'admin@portfolio.local';
-  `)
+  await putSession('expdbg', hash, expiresAt)
 
   // Raw cookie header — no Expires attribute for the client to evaluate.
   const resp = await fetchWithRetry('/admin', `admin_session=${token}`)
@@ -61,7 +91,7 @@ async function probe(label: string, expiresAt: number) {
     `${ok ? 'PASS' : 'FAIL'}  ${label} -> ${resp.status} ${loc}`,
   )
 
-  sql(`DELETE FROM admin_session WHERE token_hash = '${hash}';`)
+  await dropSession(hash)
   return ok
 }
 
@@ -70,17 +100,13 @@ const now = Date.now()
 // Sanity: a future session MUST authenticate, or the probe proves nothing.
 const token = generateSessionToken()
 const hash = await hashSessionToken(token, PEPPER)
-sql(`
-  INSERT OR REPLACE INTO admin_session (id, user_id, token_hash, expires_at, created_at)
-    SELECT 'freshdbg', id, '${hash}', ${now + 3600_000}, ${now}
-    FROM admin_user WHERE email = 'admin@portfolio.local';
-`)
+await putSession('freshdbg', hash, now + 3600_000)
 const freshResp = await fetchWithRetry('/admin', `admin_session=${token}`)
 const freshOk = freshResp.status === 200
 console.log(
   `${freshOk ? 'PASS' : 'FAIL'}  future session authenticates -> ${freshResp.status}`,
 )
-sql(`DELETE FROM admin_session WHERE token_hash = '${hash}';`)
+await dropSession(hash)
 
 const pastOk = await probe('session expired 60s ago is rejected', now - 60_000)
 const longPastOk = await probe(
@@ -88,6 +114,7 @@ const longPastOk = await probe(
   now - 8 * 86_400_000,
 )
 
+await closeCheckDb()
 const failed = [freshOk, pastOk, longPastOk].filter((x) => !x).length
 console.log(`\n${failed === 0 ? 'ALL PASS' : `${failed} FAILURE(S)`}`)
 if (failed > 0) process.exitCode = 1

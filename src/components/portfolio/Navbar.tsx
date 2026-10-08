@@ -4,6 +4,7 @@ import type { SignatureMedia } from './media-types'
 import { SignatureMark } from './SignatureMark'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { NavbarSettings } from '../../../admin/server/settings-schema'
+import { getSmoother } from '../../routes/lib/gsap'
 
 const DEFAULT_NAV = DEFAULT_SITE_SETTINGS.navbar
 
@@ -73,15 +74,20 @@ export function Navbar({
   /** External links open in a new tab; in-page anchors stay in place. */
   const isExternal = (href: string) => !href.startsWith('#')
 
-  // Prevent scrolling when menu is open
+  // Prevent scrolling when menu is open. ScrollSmoother drives the page
+  // scroll itself, so body overflow alone is not enough — pause it too, or
+  // wheel events over the menu panel scroll the page behind the overlay.
   React.useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden'
+      getSmoother()?.paused(true)
     } else {
       document.body.style.overflow = 'unset'
+      getSmoother()?.paused(false)
     }
     return () => {
       document.body.style.overflow = 'unset'
+      getSmoother()?.paused(false)
     }
   }, [menuOpen])
 

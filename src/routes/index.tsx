@@ -132,6 +132,7 @@ export const Route = createFileRoute('/')({
       settings,
       signature: bySlot.get('signature') ?? null,
       portrait: bySlot.get('hero_portrait') ?? null,
+      whatsappIcon: bySlot.get('whatsapp_icon') ?? null,
     }
   },
   component: Home,
@@ -142,7 +143,7 @@ export const Route = createFileRoute('/')({
 // apostrophe, which breaks TanStack Start's generated split-import quoting.
 export function Home() {
   const [mainReady, setMainReady] = useState(false)
-  const { settings, signature, portrait } = Route.useLoaderData()
+  const { settings, signature, portrait, whatsappIcon } = Route.useLoaderData()
 
   return (
     <div className="min-h-screen bg-obsidian-base text-text-primary antialiased selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
@@ -150,7 +151,7 @@ export function Home() {
 
 <SiteBackdrop />
       <Navbar signature={signature} settings={settings.navbar} />
-      <WhatsAppFab contact={settings.contact} />
+      <WhatsAppFab contact={settings.contact} icon={whatsappIcon} />
       <SmoothProvider>
 
 <main className="w-full relative z-10">
@@ -165,7 +166,7 @@ export function Home() {
           <GovernanceSection settings={settings.governance} />
           <PerspectivesSection settings={settings.perspectives} />
           <BooksSection settings={settings.books} />
-          <ContactSection settings={settings.advisory} />
+          <ContactSection settings={settings.advisory} contact={settings.contact} />
           <MainReadySignal setReady={setMainReady} />
           </Suspense>
         </main>

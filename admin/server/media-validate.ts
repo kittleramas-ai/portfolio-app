@@ -1,9 +1,5 @@
-import {
-  isAllowedImageType,
-  MAX_UPLOAD_BYTES,
-  MEDIA_SLOTS,
-} from './media-schema.ts'
-import type { AllowedImageType, MediaSlotKey } from './media-schema.ts'
+import { isAllowedImageType, MAX_UPLOAD_BYTES } from './media-schema.ts'
+import type { AllowedImageType } from './media-schema.ts'
 
 /**
  * Upload validation.
@@ -138,13 +134,38 @@ function readDimensions(
   }
 }
 
-export function validateUpload(
-  slotKey: MediaSlotKey,
+/**
+ * Slot-free validation for the generic file-picker endpoint. Same checks as
+ * `validateUpload`, but with generous dimension caps since the image is not
+ * tied to a fixed slot.
+ */
+export function validateImageUpload(
   declaredType: string,
   bytes: Uint8Array,
 ): ValidationResult {
-  const slot = MEDIA_SLOTS[slotKey]
+  if (bytes.length === 0) return { ok: false, error: 'That file is empty.' }
+  if (bytes.length > MAX_UPLOAD_BYTES) {
+    return { ok: false, error: 'That file is over the 5 MB limit.' }
+  }
+  if (!isAllowedImageType(declaredType)) {
+    return { ok: false, error: 'Only JPEG, PNG and WebP images are accepted.' }
+  }
+  const detected = detectType(bytes)
+  if (!detected || detected !== declaredType) {
+    return { ok: false, error: 'That file is not a valid image of its declared type.' }
+  }
+  const dims = readDimensions(bytes, detected)
+  if (!dims || dims.width === 0 || dims.height === 0) {
+    return { ok: false, error: 'Could not read the image dimensions. The file may be corrupt.' }
+  }
+  return { ok: true, contentType: detected, width: dims.width, height: dims.height }
+}
 
+export function validateUpload(
+  _slotKey: string,
+  declaredType: string,
+  bytes: Uint8Array,
+): ValidationResult {
   if (bytes.length === 0) {
     return { ok: false, error: 'That file is empty.' }
   }
@@ -183,36 +204,6 @@ export function validateUpload(
     return {
       ok: false,
       error: 'Could not read the image dimensions. The file may be corrupt.',
-    }
-  }
-
-  if (dims.width > slot.maxWidth || dims.height > slot.maxHeight) {
-    return {
-      ok: false,
-      error: `Too large for ${slot.label}: ${dims.width}x${dims.height}. Maximum is ${slot.maxWidth}x${slot.maxHeight}.`,
-    }
-  }
-
-  const ratio = dims.width / dims.height
-  if (slot.aspect === 'portrait' && ratio >= 1) {
-    return {
-      ok: false,
-      error: `${slot.label} needs a portrait (taller than wide) image.`,
-    }
-  }
-  if (slot.aspect === 'landscape' && ratio <= 1) {
-    return {
-      ok: false,
-      error: `${slot.label} needs a landscape (wider than tall) image.`,
-    }
-  }
-  if (slot.aspect === 'square') {
-    const drift = Math.abs(ratio - 1)
-    if (drift > 0.25) {
-      return {
-        ok: false,
-        error: `${slot.label} needs a square image.`,
-      }
     }
   }
 

@@ -3,11 +3,13 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import { ThemeProvider } from '../components/portfolio/theme'
+import { getPublicMediaFn } from '../../admin/server/public.ts'
 
 import appCss from '../styles.css?url'
 
@@ -81,6 +83,29 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   shellComponent: RootDocument,
 })
 
+function PublicFavicon() {
+  useEffect(() => {
+    let cancelled = false
+    getPublicMediaFn()
+      .then((media) => {
+        const favicon = media.find((m) => m.slot === 'favicon' && m.url)
+        if (cancelled || !favicon?.url) return
+        let link = document.querySelector<HTMLLinkElement>("link[rel='icon']")
+        if (!link) {
+          link = document.createElement('link')
+          link.rel = 'icon'
+          document.head.appendChild(link)
+        }
+        link.href = favicon.url
+      })
+      .catch(() => undefined)
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return null
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -90,6 +115,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
         <ThemeProvider>{children}</ThemeProvider>
+        <PublicFavicon />
         <TanStackDevtools
           config={{
             position: 'bottom-right',

@@ -13,6 +13,7 @@ import {
   writeUpload,
 } from './media-storage.ts'
 import { validateUpload } from './media-validate.ts'
+import { formatIndiaTimestamp } from './time.ts'
 
 export type SaveMediaResult =
   | { ok: true; entry: MediaEntry }
@@ -55,7 +56,7 @@ export async function listMedia(): Promise<MediaEntry[]> {
         width: row.width,
         height: row.height,
         altText: row.altText,
-        updatedAt: new Date(row.updatedAt).toISOString(),
+        updatedAt: formatIndiaTimestamp(new Date(row.updatedAt)),
       })
     }),
   )
@@ -114,6 +115,7 @@ export async function saveMedia(input: {
   }
 
   const now = new Date()
+  const updatedAt = now
   await db
     .insert(siteMedia)
     .values({
@@ -124,11 +126,10 @@ export async function saveMedia(input: {
       width: validated.width,
       height: validated.height,
       altText: input.altText.slice(0, 160),
-      updatedAt: now,
+      updatedAt,
       updatedBy: input.updatedBy,
     })
-    .onConflictDoUpdate({
-      target: siteMedia.slot,
+.onDuplicateKeyUpdate({
       set: {
         storageKey,
         contentType: validated.contentType,
@@ -136,7 +137,7 @@ export async function saveMedia(input: {
         width: validated.width,
         height: validated.height,
         altText: input.altText.slice(0, 160),
-        updatedAt: now,
+        updatedAt,
         updatedBy: input.updatedBy,
       },
     })
@@ -157,7 +158,7 @@ export async function saveMedia(input: {
     width: validated.width,
     height: validated.height,
     altText: input.altText.slice(0, 160),
-    updatedAt: now.toISOString(),
+    updatedAt: formatIndiaTimestamp(now),
   }
   return { ok: true, entry: mediaEntrySchema.parse(entry) }
 }
@@ -171,6 +172,7 @@ export async function saveMedia(input: {
 export async function updateAltText(
   slot: MediaSlotKey,
   altText: string,
+  updatedBy: string,
 ): Promise<{ ok: boolean; error?: string }> {
   const db = getDb()
 
@@ -199,7 +201,11 @@ export async function updateAltText(
 
   await db
     .update(siteMedia)
-    .set({ altText: altText.slice(0, 160), updatedAt: new Date() })
+    .set({
+      altText: altText.slice(0, 160),
+      updatedAt: new Date(),
+      updatedBy,
+    })
     .where(eq(siteMedia.slot, slot))
 
   return { ok: true }

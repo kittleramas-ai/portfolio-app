@@ -11,7 +11,7 @@ import handler from './dist/server/server.js'
  *
  * `vite build` emits `dist/server/server.js`, which exports a standard
  * `{ fetch(request): Response }` handler — the same shape Cloudflare Workers
- * use. Node 18+ has a native fetch, so all that is needed is to adapt Node's
+ * use. Node 20+ has a native fetch, so all that is needed is to adapt Node's
  * IncomingMessage/ServerResponse to Web Request/Response.
  *
  * This adapter exists because the installed TanStack Start has no built-in

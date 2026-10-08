@@ -14,6 +14,7 @@ import type {
   SettingsGroupKey,
   SiteSettings,
 } from './settings-schema.ts'
+import { indiaDateTimeSql } from './time.ts'
 
 /**
  * Schema per settings group, keyed by the group name.
@@ -97,8 +98,12 @@ export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
   const db = getDb()
   const now = new Date()
 
-  // INSERT ... ON CONFLICT DO UPDATE — one statement, no read-modify-write, so
-  // two concurrent saves to the same group cannot lose one another.
+  // INSERT ... ON DUPLICATE KEY UPDATE — one statement, no read-modify-write,
+  // so two concurrent saves to the same group cannot lose one another.
+  //
+  // `onDuplicateKeyUpdate` is MySQL's ON DUPLICATE KEY UPDATE. SQLite's
+  // `onConflictDoUpdate` named a conflict target, which MySQL has no equivalent
+  // of because ANY unique-key violation takes the update path.
   await db
     .insert(siteSetting)
     .values({
@@ -108,8 +113,7 @@ export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
       updatedAt: now,
       updatedBy,
     })
-    .onConflictDoUpdate({
-      target: siteSetting.key,
+    .onDuplicateKeyUpdate({
       set: {
         value: JSON.stringify(parsed),
         updatedAt: now,

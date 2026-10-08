@@ -42,10 +42,13 @@ function WhatsAppGlyph({ className }: { className?: string }) {
 export function WhatsAppFab({
   className,
   contact,
+  icon,
 }: {
   className?: string
   /** Supplied by the route from D1; falls back to defaults when absent. */
   contact?: ContactSettings
+  /** Admin-uploaded WhatsApp icon; falls back to the bundled glyph. */
+  icon?: { url: string | null; altText?: string } | null
 }) {
   return (
     <div
@@ -73,7 +76,15 @@ export function WhatsAppFab({
           'motion-reduce:transition-none motion-reduce:hover:scale-100',
         )}
       >
-        <WhatsAppGlyph className="size-7 drop-shadow-sm sm:size-8" />
+        {icon?.url ? (
+          <img
+            src={icon.url}
+            alt={icon.altText || 'WhatsApp'}
+            className="size-7 object-contain drop-shadow-sm sm:size-8"
+          />
+        ) : (
+          <WhatsAppGlyph className="size-7 drop-shadow-sm sm:size-8" />
+        )}
 
         <span
           className={cn(

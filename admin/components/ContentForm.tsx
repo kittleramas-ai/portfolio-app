@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ChevronDown, ChevronRight, Plus, Trash2 } from 'lucide-react'
 import type { ZodType } from 'zod'
 
@@ -333,6 +333,26 @@ function Field({
   const hint = HINTS[path]
   const key = path.split('.').pop() ?? ''
 
+  if (schema.type === 'object') {
+    return (
+      <fieldset className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-row)] p-4">
+        <legend className="px-1 font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
+          {label}
+        </legend>
+        <ObjectFields
+          object={schema}
+          value={
+            value && typeof value === 'object' && !Array.isArray(value)
+              ? (value as Record<string, unknown>)
+              : {}
+          }
+          path={path}
+          onChange={onChange}
+        />
+      </fieldset>
+    )
+  }
+
   if (schema.type === 'array') {
     const itemSchema = schema.items
     const items = Array.isArray(value) ? value : []
@@ -489,7 +509,9 @@ function Field({
 
   // Strings, including the null union collapsed to ''.
   const text = typeof value === 'string' ? value : value == null ? '' : String(value)
-  const isIcon = key.endsWith('Icon')
+  /** `icon` bare as well as `*Icon`: list items are addressed by their plain
+   *  key, so `ventures.pills.*.icon` would otherwise miss the picker. */
+  const isIcon = key === 'icon' || key.endsWith('Icon')
   /**
    * `maxLength` is the multiline signal, because a 300-character limit means
    * display copy and a 40-character one means a label. Links are the
@@ -497,6 +519,7 @@ function Field({
    * a tall box for "#advisory" wastes the most eye-catching space on the form.
    */
   const isLink = key.endsWith('Href') || key.endsWith('Url')
+  const isImageUrl = key.endsWith('Url')
   const multiline =
     hint?.multiline || (!isLink && !isIcon && (schema.maxLength ?? 0) >= 200)
 
@@ -506,17 +529,41 @@ function Field({
         <span className="mb-1.5 block font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
           {label}
         </span>
-        <input
-          list="material-symbols"
-          value={text}
-          onChange={(e) => onChange(e.target.value)}
-          className={inputClass}
-          placeholder="menu_book"
-        />
+        <div className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className="material-symbols-outlined shrink-0 text-[24px] leading-none text-[#f5efe0]"
+          >
+            {normaliseIconName(text)}
+          </span>
+          <input
+            list="material-symbols"
+            value={text}
+            onChange={(e) => onChange(normaliseIconName(e.target.value))}
+            className={inputClass}
+            placeholder="menu_book"
+          />
+        </div>
         <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
-          A Google Material Symbols name. Unknown names fall back to the glyph
-          spelling, so check it renders on the site.
+          A Google Material Symbols name, in snake_case. Typing the label
+          works too — spaces and capitals become underscores as you go.
         </span>
+        {/* The full catalogue is ~3000 icons, far more than the datalist can
+            carry, so the picker links out to it rather than trying to embed it. */}
+        <a
+          href="https://fonts.google.com/icons"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--admin-gold)] underline underline-offset-2 hover:opacity-80"
+        >
+          Browse Material Symbols
+          <span
+            aria-hidden="true"
+            className="material-symbols-outlined text-[14px]"
+          >
+            open_in_new
+          </span>
+        </a>
         <datalist id="material-symbols">
           {ICON_SUGGESTIONS.map((name) => (
             <option key={name} value={name} />
@@ -548,19 +595,94 @@ function Field({
       <span className="mb-1.5 block font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
         {label}
       </span>
-      <input
-        type={key.endsWith('Url') ? 'url' : 'text'}
-        value={text}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputClass}
-      />
+      <div className="flex items-center gap-2">
+        <input
+          type={key.endsWith('Url') ? 'url' : 'text'}
+          value={text}
+          onChange={(e) => onChange(e.target.value)}
+          className={inputClass}
+        />
+        {isImageUrl ? <FilePickerButton onUploaded={(url) => onChange(url)} /> : null}
+      </div>
       {countHint(schema, text, false)}
+      {isImageUrl ? (
+        <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
+          JPEG, PNG or WebP, max 5 MB. The URL updates once the upload finishes.
+        </span>
+      ) : null}
       {key.endsWith('Href') && !schema.description ? (
         <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
           A #section anchor on this page, or a full URL.
         </span>
       ) : null}
     </label>
+  )
+}
+
+function FilePickerButton({
+  onUploaded,
+}: {
+  onUploaded: (url: string) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+
+    setBusy(true)
+    setError(null)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: form,
+        credentials: 'same-origin',
+      })
+      const json = (await res.json()) as {
+        ok: boolean
+        error?: string
+        url?: string
+      }
+      if (!json.ok || !json.url) {
+        setError(json.error ?? 'Upload failed.')
+        return
+      }
+      onUploaded(json.url)
+    } catch {
+      setError('Upload failed. Check your connection and try again.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <span className="relative inline-flex shrink-0">
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={busy}
+        className="rounded-lg border border-[var(--admin-border)] bg-transparent px-3 py-2 font-mono-metric text-[11px] uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-[var(--admin-gold)] hover:text-[var(--admin-gold)] disabled:cursor-not-allowed disabled:opacity-35"
+      >
+        {busy ? 'Uploading…' : 'Choose file'}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={onPick}
+        className="hidden"
+      />
+      {error ? (
+        <span className="absolute left-0 top-full mt-1 whitespace-nowrap text-[11px] text-red-400">
+          {error}
+        </span>
+      ) : null}
+    </span>
   )
 }
 
@@ -574,6 +696,23 @@ function Field({
  * textarea, where the limit is genuinely hard to hit by eye, and on any field
  * once the value is within a quarter of the cap.
  */
+/**
+ * Turn what the manager can see on Google's icon page into the ligature name
+ * the site actually renders.
+ *
+ * The catalogue shows "Add Circle" and aliases like "+ add, circle, counter…",
+ * so copy-pasting or typing either of those stores a string that renders as
+ * nothing. Lowercasing and folding to snake_case as they type removes the whole
+ * class of mistake rather than reporting it after the fact.
+ */
+function normaliseIconName(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+}
+
 function countHint(schema: JsonSchema, text: string, multiline: boolean) {
   const max = schema.maxLength
   if (!max) return null

@@ -13,9 +13,16 @@ The app was originally a Cloudflare Workers project. That had to change:
   filesystem. Verified directly — `node:fs` resolves at build time but throws
   `"[unenv] fs.writeFile is not implemented yet!"` at runtime. Manager-uploaded
   images need a real disk.
-- **D1 is Cloudflare-only.** A VPS has no access to it, so the database moved to
-  a SQLite file via `better-sqlite3` (already a dependency; it only needed
-  `npm rebuild` for this Node ABI).
+- **D1 is Cloudflare-only.** A VPS has no access to it, so the database had to
+  move to a real engine. It went via a local SQLite file, and now runs on
+  **MySQL** via `mysql2`, which matches bookade (`dialect: "mysql"`) — the
+  reference this project's Drizzle discipline is modelled on.
+- **SQLite to MySQL changed the data layer's shape.** `better-sqlite3` is
+  synchronous and `mysql2/promise` is not, so every read that was
+  `db.get()` / `db.all()` is now awaited; `onConflictDoUpdate` became
+  `onDuplicateKeyUpdate`; `sqlite_master` introspection became
+  `information_schema`; and the three SQLite pragmas (`journal_mode`,
+  `foreign_keys`, `busy_timeout`) were replaced by pool configuration.
 
 `@cloudflare/vite-plugin` was removed from `vite.config.ts` and `wrangler.jsonc`
 is no longer used for deployment.
@@ -31,11 +38,33 @@ would let anyone with a database dump forge valid sessions.
 | Variable | Required | Notes |
 |---|---|---|
 | `SESSION_TOKEN_PEPPER` | **yes** | Long random string. Generate with `openssl rand -hex 32`. Changing it logs everyone out. |
-| `DATABASE_FILE` | recommended | Absolute path, e.g. `/var/lib/portfolio/portfolio.db`. Defaults to `./data/portfolio.db`. |
+| `DATABASE_URL` | **yes** | MySQL connection string, e.g. `mysql://portfolio:pw@127.0.0.1:3306/portfolio`. `src/db/path.ts` resolves it and `drizzle.config.ts` calls the same resolver, so the CLI and runtime cannot drift. |
+| `DATABASE_POOL_SIZE` | optional | Defaults to 10. |
 | `UPLOADS_DIR` | optional | Defaults to `public/uploads`. Point elsewhere if the deploy directory is read-only. |
 | `UPLOADS_URL_PREFIX` | optional | Defaults to `/uploads`. Only change if the web root differs. |
+| `SMTP_USER` | **yes for email notifications** | Gmail address used to send contact-form notifications. |
+| `SMTP_APP_PASSWORD` | **yes for email notifications** | Gmail app password; store it only in the server environment, never in source control. |
+| `ENQUIRY_NOTIFICATION_EMAIL` | **yes for email notifications** | Recipient address for new contact-form enquiries. |
 | `NODE_ENV` | recommended | `production` — enables strict checks and hides dev error detail. |
 | `PORT` | optional | Defaults to 3000. |
+
+The contact form continues to save each enquiry to MySQL if email delivery is
+unavailable. In that case, the submitter sees a notice and the server logs the
+mail error. Gmail delivery uses SMTP over TLS on port 465. Nodemailer 10
+requires Node.js 20 or newer. During local development, the mailer reads these
+values from the root `.env.local`; set the app password there after rotating it.
+
+### Creating the database
+
+The app expects the database to already exist; it only owns the tables.
+
+```sql
+CREATE DATABASE portfolio CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'portfolio'@'127.0.0.1' IDENTIFIED BY '<strong password>';
+GRANT ALL PRIVILEGES ON portfolio.* TO 'portfolio'@'127.0.0.1';
+```
+
+Run the app as that least-privilege user, not as `root`.
 
 ---
 
@@ -59,7 +88,7 @@ handler. The installed TanStack Start has no built-in node-server entrypoint
 (`@tanstack/react-start` ships `./server-entry`, a Worker-style export, but no
 `/node-server` subpath), so `server.mjs` adapts Node's
 `IncomingMessage`/`ServerResponse` to Web `Request`/`Response`. Node 18+ has
-native `fetch`, so the adapter is small.
+native `fetch`; the app's current dependencies require Node 20+.
 
 ### Uploads are served from the source tree, not the build
 
@@ -158,15 +187,18 @@ server {
 Two things hold state, and both need backing up:
 
 ```bash
-# Database (WAL mode — use .backup so a copy is consistent)
-sqlite3 /var/lib/portfolio/portfolio.db ".backup '/backup/portfolio-$(date +%F).db'"
+# Database — mysqldump against MySQL, not a file copy
+mysqldump --single-transaction --routines --triggers \
+  portfolio > /backup/portfolio-$(date +%F).sql
 
 # Uploaded images
 tar czf /backup/uploads-$(date +%F).tar.gz -C /srv/portfolio/public uploads
 ```
 
-The `.backup` command matters: copying the `.db` file while the server is running
-can capture a torn write in WAL mode.
+`--single-transaction` matters: without it a dump taken while the app is
+serving can interleave transactions and produce an inconsistent backup. Under
+SQLite this was a `.backup` of a local file; there is no equivalent file to copy
+now, which is the practical upside of the engine change.
 
 ---
 
@@ -176,12 +208,42 @@ can capture a torn write in WAL mode.
 cd /srv/portfolio
 git pull
 npm ci
+npm run db:migrate        # required — see below
 npm run build
 sudo systemctl restart portfolio
 ```
 
-Schema changes apply themselves on first database access (`ensureSchemaOn` in
-`src/db/index.ts`), so there is no separate migration step to forget.
+### Run migrations — required, not optional
+
+The schema comes from `drizzle/*.sql` and is **not** created at boot. That is a
+deliberate change from the earlier behaviour, where `src/db/index.ts` ran
+`CREATE TABLE IF NOT EXISTS` on first database access. Two reasons:
+
+- The hand-written DDL duplicated `src/db/schema.ts`, and had already drifted —
+  the committed migration was missing the `site_media` table entirely.
+- Drizzle keeps no record of which schema version a database is on, so "did this
+  deploy migrate?" was unanswerable.
+
+If you skip it, the site keeps serving reads but any save fails. The **admin
+Overview** shows a "Database" tile and a warning listing the missing tables, so
+you will see it there before a user does.
+
+There is **no `db:baseline` step on MySQL.** Under SQLite an older database had
+the tables but no migration history and needed one-time stamping; MySQL keeps no
+such bookkeeping table, so "are the tables there?" is the whole question. A fresh
+database just runs `db:migrate`.
+
+**Changing the schema later:**
+
+```bash
+# 1. edit src/db/schema.ts
+npm run db:generate --name add_something   # writes drizzle/00NN_*.sql — commit this
+npm run db:migrate                          # applies it, locally and on the VPS
+```
+
+Commit the `drizzle/` folder. bookade gitignores its migrations directory and its
+history shows them deleted and regenerated three times, which means no deployed
+database can ever be replayed — worth not copying.
 
 ---
 
@@ -189,7 +251,8 @@ Schema changes apply themselves on first database access (`ensureSchemaOn` in
 
 ```bash
 npm run dev                  # http://localhost:3000
-npm run admin:seed           # create/reset the admin login
+npm run seed:all            # db:migrate + db:seed in one step
+npm run admin:seed           # create/reset the admin login (prints the password)
 npm test                     # all four verification suites
 ```
 

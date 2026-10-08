@@ -82,25 +82,35 @@ export function BooksSection({
                       className={`absolute left-1/2 top-1/2 flex h-[240px] w-[168px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-hidden rounded-lg border border-slate-border/60 px-4 text-center shadow-[0_24px_48px_-18px_rgba(7,26,18,0.6)] sm:h-[270px] sm:w-[190px] ${FAN_ROTATION[idx]} ${COVER_CLASS[book.cover]}`}
                       style={{ zIndex: idx }}
                     >
-                      <div
-                        className={`pointer-events-none absolute inset-0 bg-gradient-to-tr ${ink.wash} to-transparent`}
-                      />
-                      <div
-                        className={`pointer-events-none absolute left-3 top-0 bottom-0 w-px ${ink.spine}`}
-                      />
-                      <span
-                        className={`absolute left-1/2 top-6 h-px w-9 -translate-x-1/2 ${ink.rule}`}
-                      />
-                      <span
-                        className={`relative z-10 font-serif text-base font-bold leading-tight ${ink.title}`}
-                      >
-                        {book.title}
-                      </span>
-                      <span
-                        className={`relative z-10 mt-2 font-mono-metric text-[9px] uppercase tracking-[0.18em] ${ink.author}`}
-                      >
-                        {book.author}
-                      </span>
+                      {book.coverImageUrl ? (
+                        <img
+                          src={book.coverImageUrl}
+                          alt={book.title}
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          <div
+                            className={`pointer-events-none absolute inset-0 bg-gradient-to-tr ${ink.wash} to-transparent`}
+                          />
+                          <div
+                            className={`pointer-events-none absolute left-3 top-0 bottom-0 w-px ${ink.spine}`}
+                          />
+                          <span
+                            className={`absolute left-1/2 top-6 h-px w-9 -translate-x-1/2 ${ink.rule}`}
+                          />
+                          <span
+                            className={`relative z-10 font-serif text-base font-bold leading-tight ${ink.title}`}
+                          >
+                            {book.title}
+                          </span>
+                          <span
+                            className={`relative z-10 mt-2 font-mono-metric text-[9px] uppercase tracking-[0.18em] ${ink.author}`}
+                          >
+                            {book.author}
+                          </span>
+                        </>
+                      )}
                     </div>
                   )
                 })}
@@ -168,17 +178,27 @@ export function BooksSection({
                     <div
                       className={`relative flex h-[120px] w-[84px] shrink-0 flex-col items-center justify-center overflow-hidden rounded-lg border border-slate-border/60 px-2 text-center shadow-lg ${COVER_CLASS[book.cover]}`}
                     >
-                      <div
-                        className={`pointer-events-none absolute inset-0 bg-gradient-to-tr ${ink.wash} to-transparent`}
-                      />
-                      <div
-                        className={`pointer-events-none absolute left-2 top-0 bottom-0 w-px ${ink.spine}`}
-                      />
-                      <span
-                        className={`relative z-10 font-serif text-[11px] font-bold leading-tight ${ink.title}`}
-                      >
-                        {book.title}
-                      </span>
+                      {book.coverImageUrl ? (
+                        <img
+                          src={book.coverImageUrl}
+                          alt={book.title}
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          <div
+                            className={`pointer-events-none absolute inset-0 bg-gradient-to-tr ${ink.wash} to-transparent`}
+                          />
+                          <div
+                            className={`pointer-events-none absolute left-2 top-0 bottom-0 w-px ${ink.spine}`}
+                          />
+                          <span
+                            className={`relative z-10 font-serif text-[11px] font-bold leading-tight ${ink.title}`}
+                          >
+                            {book.title}
+                          </span>
+                        </>
+                      )}
                     </div>
 
                     <div className="flex min-w-0 flex-1 flex-col">

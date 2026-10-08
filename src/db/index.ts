@@ -1,153 +1,169 @@
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
-import { mkdirSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { drizzle } from 'drizzle-orm/mysql2'
+import type { MySql2Database } from 'drizzle-orm/mysql2'
+import { sql } from 'drizzle-orm'
+import mysql from 'mysql2/promise'
+import { readFileSync } from 'node:fs'
+import { join, resolve } from 'node:path'
 
 import * as schema from './schema.ts'
+import { resolveDatabaseUrl } from './path.ts'
 
 /**
- * SQLite database.
+ * MySQL database.
  *
- * The site is moving off Cloudflare to a VPS (a real Node server), so the
- * previous `drizzle-orm/d1` + `cloudflare:workers` binding no longer applies:
- * D1 only exists inside Cloudflare, and `node:fs` is what makes on-disk image
- * uploads possible at all (verified: the Workers runtime reports
- * "[unenv] fs.writeFile is not implemented yet!", which is why uploads could
- * not be written from there).
+ * Previously a SQLite file via `better-sqlite3`. Moved to MySQL so the engine
+ * matches bookade (`mysql2` + `dialect: 'mysql'`), which is the reference this
+ * project's Drizzle discipline is modelled on.
  *
- * `better-sqlite3` was already a project dependency; it only needed
- * `npm rebuild` because its prebuilt binary targeted a different Node ABI.
+ * `resolveDatabaseUrl` is shared with `drizzle.config.ts`, so the CLI and the
+ * runtime always target the same database.
  *
- * DB path, in order:
- *   1. DATABASE_FILE (recommended in production, absolute path)
- *   2. DATABASE_URL  (legacy name, still honoured)
- *   3. ./data/portfolio.db — dev default
+ * ---------------------------------------------------------------------------
+ * WHAT THIS CHANGE COSTS EVERY CALL SITE
+ * ---------------------------------------------------------------------------
+ * `better-sqlite3` is SYNCHRONOUS; `mysql2/promise` is not. Every read that
+ * used `db.get()` / `db.all()` / `db.run()` synchronously is now awaited:
  *
- * Kept outside `public/` on purpose: the database must never be web-servable.
+ *   const row = db.get(...)   ->   const [row] = await db.select()...
+ *   const rows = db.all(...)  ->   const rows = await db.select()...
+ *   db.run(...)                ->   await db.execute(...)
+ *
+ * This is why `initDb()` returns a handle whose queries are all promises, and
+ * why the verification scripts became async.
+ *
+ * The three pragmas the SQLite version needed have no MySQL equivalent and are
+ * gone: `journal_mode = WAL` (a file-level setting), `foreign_keys = ON` (MySQL
+ * enforces FKs by default via InnoDB) and `busy_timeout` (replaced by the
+ * pool's own `connectTimeout`/`queueLimit`). What replaces them is pool
+ * configuration, taken from bookade's `initDb()`.
  */
-function resolveDbPath(): string {
-  const configured =
-    process.env.DATABASE_FILE ?? process.env.DATABASE_URL ?? ''
-  if (configured && configured !== ':memory:') {
-    return configured.startsWith(':')
-      ? configured
-      : resolve(process.cwd(), configured)
-  }
-  return resolve(process.cwd(), 'data', 'portfolio.db')
-}
 
-const DB_PATH = resolveDbPath()
+/** Where drizzle-kit writes and reads migrations. */
+export const MIGRATIONS_FOLDER = resolve(process.cwd(), 'drizzle')
 
-let _db: ReturnType<typeof createDb> | null = null
-let _schemaEnsured = false
-
-function createDb() {
-  if (DB_PATH !== ':memory:') mkdirSync(dirname(DB_PATH), { recursive: true })
-
-  const client = new Database(DB_PATH)
-  // WAL lets the public page read settings while an admin save is in flight.
-  client.pragma('journal_mode = WAL')
-  client.pragma('foreign_keys = ON')
-  // Wait rather than throw if another connection holds the write lock.
-  client.pragma('busy_timeout = 5000')
-
-  ensureSchemaOn(client)
-
-  return drizzle({ client, schema })
-}
+let _db: MySql2Database<typeof schema> | null = null
+let _pool: mysql.Pool | null = null
 
 /**
- * Create the tables if they are missing, once per process.
+ * Open the pool and return the Drizzle handle. Idempotent.
  *
- * Done on first DB access rather than at server boot, because there is no
- * reliable boot hook in this setup — and getting it wrong fails confusingly.
- * A stale server started before the tables existed would otherwise throw
- * "no such table: admin_session" on the first admin request.
- *
- * Every statement is `IF NOT EXISTS`, so this is a cheap no-op on the hot path
- * and safe to run concurrently.
+ * No connection is opened at import time: importing this module happens during
+ * the build, and opening a database as a side effect of an import breaks route
+ * analysis.
  */
-function ensureSchemaOn(client: Database.Database): void {
-  if (_schemaEnsured) return
-  client.pragma('foreign_keys = ON')
-  for (const stmt of MIGRATIONS) client.exec(stmt)
-  _schemaEnsured = true
-}
+export function initDb(): MySql2Database<typeof schema> {
+  if (_db) return _db
 
-/**
- * Lazily created and cached per process. Not created at import time: importing
- * this module happens during the build, and opening a database as a side effect
- * of an import breaks route analysis.
- */
-export function getDb() {
-  if (!_db) _db = createDb()
+   _pool = mysql.createPool({
+     uri: resolveDatabaseUrl(process.env),
+      timezone: '+05:30',
+     // Queue rather than reject when every connection is busy: this app is
+     // overwhelmingly reads with a single occasional admin write, so waiting is
+     // always cheaper than a failed request.
+     waitForConnections: true,
+     connectionLimit: Number(process.env.DATABASE_POOL_SIZE ?? 10),
+     queueLimit: 0,
+     enableKeepAlive: true,
+   })
+
+  _db = drizzle(_pool, { schema, mode: 'default' })
   return _db
 }
 
-export type Db = ReturnType<typeof createDb>
+export function getDb(): MySql2Database<typeof schema> {
+  return _db ?? initDb()
+}
 
-/** Create tables if they are missing. Safe to call on every boot. */
-export function ensureSchema(): void {
-  if (DB_PATH !== ':memory:') mkdirSync(dirname(DB_PATH), { recursive: true })
-  const client = new Database(DB_PATH)
+/** Drain and close the pool. For tests and scripts. */
+export async function closeDb(): Promise<void> {
+  if (_pool) {
+    await _pool.end()
+    _pool = null
+  }
+  _db = null
+}
+
+export type Db = ReturnType<typeof initDb>
+
+/**
+ * The module-level handle every caller should use.
+ *
+ * The Proxy resolves on first property access and BINDS each method to the live
+ * handle, so `db.select()` keeps its `this` and an import can never observe
+ * `undefined` before initialisation. This is bookade's `src/server/db/index.ts`
+ * pattern, and it is also what makes the handle mockable in tests without a
+ * dependency-injection container.
+ */
+export const db = new Proxy({} as Db, {
+  get(_target, prop) {
+    const client = getDb()
+    const value = client[prop as keyof Db]
+    return typeof value === 'function' ? value.bind(client) : value
+  },
+})
+
+/* --------------------------------------------------------------- schema state */
+
+export type SchemaState = {
+  /** True when every table this app expects is present. */
+  ready: boolean
+  tablesPresent: string[]
+  missing: string[]
+  /** Migrations drizzle-kit has committed to `drizzle/`. */
+  expectedMigrations: number
+}
+
+const EXPECTED_TABLES = [
+  'admin_user',
+  'admin_session',
+  'site_setting',
+  'site_media',
+  'advisory_enquiry',
+] as const
+
+/** How many migrations the journal declares. */
+function expectedMigrationCount(): number {
   try {
-    client.pragma('foreign_keys = ON')
-    for (const stmt of MIGRATIONS) client.exec(stmt)
-  } finally {
-    client.close()
+    const journal = JSON.parse(
+      readFileSync(join(MIGRATIONS_FOLDER, 'meta', '_journal.json'), 'utf8'),
+    ) as { entries?: unknown[] }
+    return Array.isArray(journal.entries) ? journal.entries.length : 0
+  } catch {
+    return 0
   }
 }
 
 /**
- * Schema DDL, applied at boot.
+ * Is the database migrated?
  *
- * Hand-written and idempotent (`IF NOT EXISTS`) rather than generated migration
- * files. The whole schema is four small tables, and applying at boot removes an
- * entire class of "did you run the migration on the server?" failure — the most
- * common way a VPS deploy goes wrong. Keep in sync with src/db/schema.ts;
- * `npm run db:push` regenerates that file's DDL if you change the model.
+ * Under SQLite this compared `created_at` against drizzle's
+ * `__drizzle_migrations` bookkeeping table. MySQL has no equivalent table —
+ * drizzle tracks applied migrations only when you use its own programmatic
+ * migrator, and this project applies them with the `drizzle-kit migrate` CLI.
+ * So the question is answered directly instead: do the tables exist?
+ *
+ * `information_schema.tables` is MySQL's catalogue, not a modelled table, so
+ * there is no builder shape for it and the query goes through the `sql` tag.
+ * Same carve-out bookade makes: its `/api/health` runs
+ * `db.execute(sql\`SELECT COUNT(*) FROM __drizzle_migrations\`)` and nothing else
+ * in the app touches the driver.
  */
-const MIGRATIONS: string[] = [
-  `CREATE TABLE IF NOT EXISTS admin_user (
-     id            TEXT PRIMARY KEY NOT NULL,
-     email         TEXT NOT NULL,
-     password_hash TEXT NOT NULL,
-     display_name  TEXT,
-     created_at    INTEGER NOT NULL DEFAULT (unixepoch() * 1000),
-     last_login_at INTEGER
-   )`,
-  `CREATE UNIQUE INDEX IF NOT EXISTS admin_user_email_uq ON admin_user (email)`,
+export async function schemaState(): Promise<SchemaState> {
+  const handle = getDb()
 
-  `CREATE TABLE IF NOT EXISTS admin_session (
-     id             TEXT PRIMARY KEY NOT NULL,
-     user_id        TEXT NOT NULL REFERENCES admin_user(id) ON DELETE CASCADE,
-     token_hash     TEXT NOT NULL,
-     expires_at     INTEGER NOT NULL,
-     created_at     INTEGER NOT NULL DEFAULT (unixepoch() * 1000),
-     last_active_at INTEGER,
-     user_agent     TEXT
-   )`,
-  `CREATE UNIQUE INDEX IF NOT EXISTS admin_session_token_hash_uq ON admin_session (token_hash)`,
-  `CREATE INDEX IF NOT EXISTS admin_session_user_idx ON admin_session (user_id)`,
+  const rows = await handle.execute<{ TABLE_NAME: string }>(
+    sql`SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = DATABASE()`,
+  )
+  const present = new Set(
+    (rows[0] as unknown as Array<{ TABLE_NAME: string }>).map((r) => r.TABLE_NAME),
+  )
 
-  `CREATE TABLE IF NOT EXISTS site_setting (
-     key        TEXT PRIMARY KEY NOT NULL,
-     value      TEXT NOT NULL,
-     group_key  TEXT NOT NULL,
-     updated_at INTEGER NOT NULL DEFAULT (unixepoch() * 1000),
-     updated_by TEXT REFERENCES admin_user(id) ON DELETE SET NULL
-   )`,
-  `CREATE INDEX IF NOT EXISTS site_setting_group_idx ON site_setting (group_key)`,
+  const tablesPresent = EXPECTED_TABLES.filter((t) => present.has(t))
 
-  `CREATE TABLE IF NOT EXISTS site_media (
-     slot         TEXT PRIMARY KEY NOT NULL,
-     storage_key  TEXT NOT NULL UNIQUE,
-     content_type TEXT NOT NULL,
-     size_bytes   INTEGER NOT NULL,
-     width        INTEGER,
-     height       INTEGER,
-     alt_text     TEXT NOT NULL DEFAULT '',
-     updated_at   INTEGER NOT NULL DEFAULT (unixepoch() * 1000),
-     updated_by   TEXT REFERENCES admin_user(id) ON DELETE SET NULL
-   )`,
-]
+  return {
+    ready: tablesPresent.length === EXPECTED_TABLES.length,
+    tablesPresent,
+    missing: EXPECTED_TABLES.filter((t) => !present.has(t)),
+    expectedMigrations: expectedMigrationCount(),
+  }
+}

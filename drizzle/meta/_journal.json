@@ -1,12 +1,19 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1790914889071,
-      "tag": "0000_admin_auth",
+      "version": "5",
+      "when": 1791266894358,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1791354459028,
+      "tag": "0001_slimy_starjammers",
       "breakpoints": true
     }
   ]

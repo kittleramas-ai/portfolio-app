@@ -84,7 +84,7 @@ export function KeynotesSection({
             {settings.intro}
           </p>
           <a
-            className="relative z-10 inline-flex w-fit max-w-full items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-label-badge font-label-badge bg-text-primary text-obsidian-base no-underline font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md"
+            className="relative z-10 inline-flex w-fit max-w-full items-center gap-2 px-4 py-2 rounded-full text-label-badge font-label-badge bg-text-primary text-obsidian-base no-underline font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md"
             href={settings.ctaHref}
           >
             <span>{settings.ctaLabel}</span>

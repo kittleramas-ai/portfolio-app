@@ -1,7 +1,11 @@
 import { cache } from 'react'
 import { createServerFn } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
+import { z } from 'zod'
 
 import { getSiteSettings } from './settings.ts'
+import { insertEnquiry } from './enquiries.ts'
+import { sendEnquiryNotification } from './enquiry-email.ts'
 import { listMedia } from './media.ts'
 import { uploadsDir } from './media-storage.ts'
 import { DEFAULT_SITE_SETTINGS } from './settings-schema.ts'
@@ -40,6 +44,7 @@ export type PublicMedia = {
   altText: string
   width: number | null
   height: number | null
+  updatedAt: string | null
 }
 
 export const getPublicMediaFn = createServerFn({ method: 'GET' }).handler(
@@ -48,10 +53,13 @@ export const getPublicMediaFn = createServerFn({ method: 'GET' }).handler(
       const entries = await listMedia()
       return entries.map((e) => ({
         slot: e.slot,
-        url: e.url,
+        url: e.url
+          ? `${e.url}?v=${encodeURIComponent(e.updatedAt ?? String(Date.now()))}`
+          : null,
         altText: e.altText,
         width: e.width,
         height: e.height,
+        updatedAt: e.updatedAt,
       }))
     } catch {
       return []
@@ -62,6 +70,52 @@ export const getPublicMediaFn = createServerFn({ method: 'GET' }).handler(
 export const getPublicSettingsFn = createServerFn({ method: 'GET' }).handler(
   async (): Promise<SiteSettings> => readPublicSettings(),
 )
+
+/**
+ * Record one advisory-form submission in `advisory_enquiry`.
+ *
+ * Public and unauthenticated by definition — the form is on the marketing page.
+ * That is also why every field is length-capped here rather than in a schema
+ * the form shares with the admin panel: an unbounded string from an anonymous
+ * caller is the one input the Zod admin schemas cannot protect.
+ *
+ * `isRead` starts at 0 and nothing else ever writes this table, so the row is
+ * the whole record: there is no draft/soft-delete state to reconcile.
+ */
+const enquiryInput = z.object({
+  firstName: z.string().trim().min(1, 'First name is required').max(120),
+  lastName: z.string().trim().max(120).default(''),
+  email: z.string().trim().email('Enter a valid email').max(250),
+  phoneOrCompany: z.string().trim().max(160).default(''),
+  message: z.string().trim().min(1, 'Message is required').max(8000),
+})
+
+export const submitEnquiryFn = createServerFn({ method: 'POST' })
+  .validator(enquiryInput)
+  .handler(async ({ data }) => {
+    const request = getRequest()
+    const enquiry = {
+      firstName: data.firstName,
+      lastName: data.lastName || null,
+      email: data.email.toLowerCase(),
+      phoneOrCompany: data.phoneOrCompany || null,
+      message: data.message,
+      ipAddress:
+        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+        request.headers.get('x-real-ip') ??
+        null,
+      userAgent: request.headers.get('user-agent')?.slice(0, 512) ?? null,
+    }
+    await insertEnquiry(enquiry)
+
+    try {
+      await sendEnquiryNotification(enquiry)
+      return { ok: true as const, notificationSent: true }
+    } catch (error) {
+      console.error('[enquiry] notification email failed:', error)
+      return { ok: true as const, notificationSent: false }
+    }
+  })
 
 /**
  * Whether uploads can be written right now.

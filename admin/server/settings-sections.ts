@@ -145,8 +145,10 @@ export const quoteSettingsSchema = z.object({
     .string()
     .trim()
     .max(600)
-    .url('Enter a full image URL')
-    .or(z.literal(''))
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
     .default(
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCHt-GFa9dNcxzSQIPTzFtGZugzZXCsvmWUvaqptV3qQcHQQYDqNzfMo7KKVdXQkA80dq9Nn4yb-_AlK94JMjQDCyVXNLPSrJs8y1rPtrLu7C7EuDrAnm3keIkJSnYgXalwhTBmHAPamsx5UZK_L4PJ0d359cuEDwQstjoUbJJDsHmNdpGtFtBjOu9RNrveJRQbHvZyhCDT77BNJcKE43ohJGvXLQDTWIc-L3795cw',
     ),
@@ -355,6 +357,16 @@ const bookSchema = z.object({
   tone: z.enum(['dark', 'light']),
   /** Resolved to one of six fixed cover swatches inside the component. */
   cover: z.enum(['primary', 'slate900', 'slate800', 'slate700', 'slate300', 'slate100']),
+  /** Optional uploaded cover image; falls back to the `cover` swatch when empty. */
+  coverImageUrl: z
+    .string()
+    .trim()
+    .max(600)
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
+    .default(''),
 })
 
 export const booksSettingsSchema = z.object({
@@ -391,6 +403,7 @@ export const booksSettingsSchema = z.object({
       note: 'Validated learning as a way to operate when the market will not hold still.',
       tone: 'dark',
       cover: 'primary',
+      coverImageUrl: '',
     },
     {
       id: 'b2',
@@ -400,6 +413,7 @@ export const booksSettingsSchema = z.object({
       note: 'A contrarian case for building something that cannot simply be copied.',
       tone: 'dark',
       cover: 'slate900',
+      coverImageUrl: '',
     },
     {
       id: 'b3',
@@ -409,6 +423,7 @@ export const booksSettingsSchema = z.object({
       note: 'The unglamorous, honest version of running a company day to day.',
       tone: 'dark',
       cover: 'slate700',
+      coverImageUrl: '',
     },
     {
       id: 'b4',
@@ -418,6 +433,7 @@ export const booksSettingsSchema = z.object({
       note: 'A research-backed reminder that judgement under risk is a system, not a trait.',
       tone: 'dark',
       cover: 'slate800',
+      coverImageUrl: '',
     },
     {
       id: 'b5',
@@ -427,6 +443,7 @@ export const booksSettingsSchema = z.object({
       note: 'Why good companies get disrupted — and what early warning actually looks like.',
       tone: 'light',
       cover: 'slate100',
+      coverImageUrl: '',
     },
     {
       id: 'b6',
@@ -436,6 +453,7 @@ export const booksSettingsSchema = z.object({
       note: 'The unglamorous disciplines behind firms that made a durable leap.',
       tone: 'light',
       cover: 'slate300',
+      coverImageUrl: '',
     },
   ]),
 })
@@ -653,7 +671,7 @@ export const venturesSettingsSchema = z.object({
         { id: 'v3c1', label: 'Journals', value: 'International', countTo: 30, suffix: '+' },
         { id: 'v3c2', label: 'Scopus Indexed', value: 'Journals', countTo: 5, suffix: '+' },
       ],
-      ctaLabel: 'internationaljournalssrg.org',
+      ctaLabel: 'ssrg',
       ctaHref: 'https://internationaljournalssrg.org',
       ctaIcon: 'arrow_outward',
     },

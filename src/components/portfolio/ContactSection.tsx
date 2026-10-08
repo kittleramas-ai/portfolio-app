@@ -1,17 +1,28 @@
 import * as React from 'react'
 import { Reveal } from './Reveal'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
-import type { AdvisorySettings } from '../../../admin/server/settings-schema'
+import type {
+  AdvisorySettings,
+  ContactSettings,
+} from '../../../admin/server/settings-schema'
+import { submitEnquiryFn } from '../../../admin/server/public.ts'
 
 const DEFAULT_ADVISORY = DEFAULT_SITE_SETTINGS.advisory
+const DEFAULT_CONTACT = DEFAULT_SITE_SETTINGS.contact
 
 export function ContactSection({
   settings = DEFAULT_ADVISORY,
+  contact = DEFAULT_CONTACT,
 }: {
   /** The copy around the enquiry form, including the success panel. Managed in the admin panel. */
   settings?: AdvisorySettings
+  /** Direct contact details shown under the copy. Managed in the admin panel. */
+  contact?: ContactSettings
 }) {
   const [submitted, setSubmitted] = React.useState(false)
+  const [sending, setSending] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
+  const [notificationFailed, setNotificationFailed] = React.useState(false)
   const [formData, setFormData] = React.useState({
     firstName: '',
     lastName: '',
@@ -20,9 +31,23 @@ export function ContactSection({
     message: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setSending(true)
+    setError(null)
+    try {
+      const result = await submitEnquiryFn({ data: { ...formData } })
+      setNotificationFailed(!result.notificationSent)
+      setSubmitted(true)
+    } catch (err) {
+      // The row either exists or it does not; there is no retry-by-resubmit
+      // story worth building, so the message stays generic.
+      setError(
+        'Sorry, that did not go through. Please email us directly instead.',
+      )
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -64,6 +89,40 @@ export function ContactSection({
                   {settings.officeLabel}
                 </span>
               </div>
+
+              {/* Direct contact details. Both are optional in the admin panel,
+                  so each row disappears entirely when blank rather than
+                  rendering an empty link. */}
+              {contact.contactEmail || contact.contactPhoneDisplay ? (
+                <div className="space-y-3">
+                  {contact.contactEmail ? (
+                    <a
+                      href={`mailto:${contact.contactEmail}`}
+                      className="group flex items-center gap-3 w-fit"
+                    >
+                      <span className="material-symbols-outlined text-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold">
+                        mail
+                      </span>
+                      <span className="text-body-sm font-body-sm text-text-secondary transition-colors group-hover:text-accent-gold break-all">
+                        {contact.contactEmail}
+                      </span>
+                    </a>
+                  ) : null}
+                  {contact.contactPhoneDisplay ? (
+                    <a
+                      href={`tel:${contact.contactPhoneDisplay.replace(/[^\d+]/g, '')}`}
+                      className="group flex items-center gap-3 w-fit"
+                    >
+                      <span className="material-symbols-outlined text-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold">
+                        call
+                      </span>
+                      <span className="text-body-sm font-body-sm text-text-secondary transition-colors group-hover:text-accent-gold">
+                        {contact.contactPhoneDisplay}
+                      </span>
+                    </a>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -82,10 +141,18 @@ export function ContactSection({
                 <p className="text-text-secondary max-w-md mx-auto leading-relaxed">
                   Thank you, {formData.firstName || 'Executive'}. {settings.successBody}
                 </p>
+                {notificationFailed ? (
+                  <p role="alert" className="text-[13px] text-amber-300">
+                    Your enquiry was saved, but the email notification could not
+                    be sent. Please contact us directly to ensure a prompt
+                    response.
+                  </p>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => {
                     setSubmitted(false)
+                    setNotificationFailed(false)
                     setFormData({
                       firstName: '',
                       lastName: '',
@@ -191,6 +258,12 @@ export function ContactSection({
                   />
                 </div>
 
+                {error ? (
+                  <p role="alert" className="text-[13px] text-red-400">
+                    {error}
+                  </p>
+                ) : null}
+
                 {/* Disclaimer */}
                 <div className="text-mono-metric font-mono-metric text-text-tertiary text-[12px] leading-relaxed">
                   By submitting this form, you agree to our{' '}
@@ -206,11 +279,12 @@ export function ContactSection({
                 {/* Submit Button */}
                 <div className="pt-4 flex items-center justify-between">
                   <button
-                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-primary-container text-white hover:opacity-95 font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer"
+                    className="inline-flex items-center gap-3 px-8 py-3.5 rounded-lg bg-primary-container text-white hover:opacity-95 font-bold tracking-wider uppercase transition-all duration-150 text-[14px] shadow-lg cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                     type="submit"
+                    disabled={sending}
                   >
-                    <span>{settings.submitLabel}</span>
+                    <span>{sending ? 'Sending' : settings.submitLabel}</span>
                     <span className="material-symbols-outlined text-[18px]">
                       {settings.submitIcon}
                     </span>

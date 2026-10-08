@@ -5,6 +5,7 @@ import {
   BookOpen,
   Building2,
   CircleCheckBig,
+  Database,
   ExternalLink,
   FileText,
   Hash,
@@ -35,6 +36,7 @@ import {
   SITE_SETTINGS_SHAPE,
 } from '../server/settings-schema.ts'
 import type { SettingsGroupKey, SiteSettings } from '../server/settings-schema.ts'
+import type { SchemaState } from '../../src/db/index.ts'
 import { AdminMedia, useAdminMedia } from './AdminMedia.tsx'
 import { ContentForm } from './ContentForm.tsx'
 import { ErrorNote, isUnauthorized } from './fields.tsx'
@@ -97,7 +99,6 @@ const TABS: ReadonlyArray<{
 
 /**
  * Admin dashboard — the manager-facing surface.
- *
  * A sidebar of sections instead of one long scroll: reaching one section's copy
  * should not mean scrolling past every other section's copy, and there has to
  * be somewhere to answer "is anything missing yet?" — the thing a manager
@@ -115,6 +116,7 @@ export function AdminShell() {
   const router = useRouter()
   const [tab, setTab] = useState<TabKey>('overview')
   const [settings, setSettings] = useState<SiteSettings | null>(null)
+  const [schema, setSchema] = useState<SchemaState | null>(null)
   const [who, setWho] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -135,6 +137,7 @@ export function AdminShell() {
         ])
         if (cancelled.current) return
         setSettings(s.settings)
+        setSchema(s.schema)
         setWho(me?.displayName ?? me?.email ?? null)
       } catch (err) {
         if (cancelled.current) return
@@ -163,7 +166,7 @@ export function AdminShell() {
 
   // Computed once here so the sidebar badges and the Overview checklist can
   // never disagree — they read the same array.
-  const checks = settings ? collectChecks(settings, media) : []
+  const checks = settings ? collectChecks(settings, media, schema) : []
   const outstanding = (key: TabKey) =>
     checks.filter((c) => c.tab === key && c.severity === 'warn').length
 
@@ -226,6 +229,7 @@ export function AdminShell() {
           ) : tab === 'overview' ? (
             <Overview
               settings={settings}
+              schema={schema}
               media={media}
               mediaError={mediaError}
               checks={checks}
@@ -381,12 +385,14 @@ function TabChip({
 
 function Overview({
   settings,
+  schema,
   media,
   mediaError,
   checks,
   onGoTo,
 }: {
   settings: SiteSettings
+  schema: SchemaState | null
   media: ReturnType<typeof useAdminMedia>['media']
   mediaError: string | null
   checks: Check[]
@@ -396,17 +402,30 @@ function Overview({
   const live = entries.filter((e) => e.url).length
   const described = entries.filter((e) => e.url && e.altText.trim()).length
   const contactOk = contactSettingsSchema.safeParse(settings.contact).success
-  const sectionCount = SETTINGS_GROUPS.length
 
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Tile
+          icon={Database}
+          label="Database"
+          value={!schema ? '—' : schema.ready ? 'Ready' : 'Not migrated'}
+          note={
+            !schema
+              ? 'could not reach the database'
+              : schema.ready
+                ? `${schema.tablesPresent.length} tables present`
+                : `missing: ${schema.missing.join(', ')} — run npm run db:migrate`
+          }
+          tone={!schema ? 'warn' : schema.ready ? 'good' : 'warn'}
+        />
+        <Tile
           icon={ScanText}
-          label="Sections editable"
-          value={String(sectionCount)}
-          note="every section has a form"
-          tone="good"
+          label="Alt text"
+          value={media ? `${described}/${live}` : '—'}
+          note="uploaded slots described"
+          tone={described === live && live > 0 ? 'good' : 'warn'}
+          meter={live === 0 ? 0 : described / live}
         />
         <Tile
           icon={Images}
@@ -578,6 +597,7 @@ type Check = {
 function collectChecks(
   settings: SiteSettings,
   media: ReturnType<typeof useAdminMedia>['media'],
+  schema: SchemaState | null,
 ): Check[] {
   const checks: Check[] = []
   if (!media) return checks
@@ -685,6 +705,23 @@ function collectChecks(
       title: 'No public contact email',
       detail: 'Optional, but the contact section is empty without one.',
       tab: 'contact',
+    })
+  }
+
+  /**
+   * Schema drift. A deploy that skips `npm run db:migrate` leaves tables
+   * missing, and the failure mode is a "table doesn't exist" error at the
+   * moment someone saves a setting. bookade solves this with a public
+   * `/api/health`; surfacing it on the admin Overview keeps the same signal
+   * without publishing deployment state to the internet.
+   */
+  if (schema && !schema.ready) {
+    checks.push({
+      id: 'schema-missing',
+      severity: 'warn',
+      title: 'The database is not fully migrated',
+      detail: `Missing table(s): ${schema.missing.join(', ')}. Saves will fail until you run: npm run db:migrate`,
+      tab: 'overview',
     })
   }
 
