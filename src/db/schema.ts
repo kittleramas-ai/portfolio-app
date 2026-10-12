@@ -1,4 +1,5 @@
 import {
+  boolean,
   customType,
   index,
   int,
@@ -184,6 +185,48 @@ export const advisoryEnquiry = mysqlTable('advisory_enquiry', {
   userAgent: varchar('user_agent', { length: 512 }),
   createdAt: istDateTime('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
 })
+
+/**
+ * Enquiries submitted through the floating Nexa chatbot.
+ *
+ * A SEPARATE table from `advisory_enquiry`, not a shared one with a `source`
+ * column. The two capture different things:
+ *
+ *   - the chatbot collects an extra answer (`appointmentRequested`), which is a
+ *     real question with its own yes/no, not a remark about the message;
+ *   - it collects the same name/email/phone/query, so the columns overlap.
+ *
+ * Overlap is not a reason to merge. The chatbot flow is multi-step and will grow
+ * — a preferred slot, a company, a referral source — and every one of those is a
+ * question only one of the two forms asks. A shared table would mean nullable
+ * columns that only one surface populates, plus a `source` discriminator that
+ * every read has to remember to filter on.
+ *
+ * `appointmentRequested` was previously appended to `message` as a
+ * "--- Appointment requested: Yes" footer. That was the actual mess: the value
+ * became unqueryable, unindexable text, and any read of the message had to strip
+ * the footer back off. As its own column it is filterable ("show me everyone who
+ * asked for a slot") and cannot be confused with something the visitor typed.
+ */
+export const chatbotEnquiry = mysqlTable('chatbot_enquiry', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  firstName: varchar('first_name', { length: 120 }).notNull(),
+  lastName: varchar('last_name', { length: 120 }),
+  email: varchar('email', { length: INDEXED }).notNull(),
+  phoneOrCompany: varchar('phone_or_company', { length: 160 }),
+  message: mediumtext('message').notNull(),
+  /**
+   * "Would you like to schedule an appointment with the CEO?" — Yes/No.
+   *
+   * Indexed because it is the one field the office actually triages on: it
+   * separates "just get back to them" from "put them in the diary".
+   */
+  appointmentRequested: boolean('appointment_requested').notNull().default(false),
+  isRead: int('is_read').notNull().default(0),
+  ipAddress: varchar('ip_address', { length: 64 }),
+  userAgent: varchar('user_agent', { length: 512 }),
+  createdAt: istDateTime('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+}, (t) => [index('chatbot_enquiry_appointment_idx').on(t.appointmentRequested)])
 
 export const siteMedia = mysqlTable('site_media', {
   /** Named position: hero_portrait, signature, og_image, favicon. */

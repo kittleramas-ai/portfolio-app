@@ -15,15 +15,45 @@ function requiredEnv(name: string): string {
   return value
 }
 
+/**
+ * Which surface an enquiry arrived through.
+ *
+ * The CEO's inbox is the single place both land, so the subject line and the
+ * opening line are what distinguish a chatbot lead from a contact-form lead at a
+ * glance. Keyed here rather than passed as loose strings so the two cannot drift
+ * and so a new surface has to declare all three fields at once.
+ */
+export type EnquirySource = 'contact-form' | 'chatbot'
+
+const SOURCE_META: Record<
+  EnquirySource,
+  { subject: string; intro: string; fromName: string }
+> = {
+  'contact-form': {
+    subject: 'New advisory enquiry (contact form)',
+    intro: 'A new enquiry was submitted through the portfolio contact form.',
+    fromName: 'Portfolio website enquiry',
+  },
+  chatbot: {
+    subject: 'New chatbot enquiry (Nexa)',
+    intro:
+      'A new enquiry was submitted through the Nexa chatbot on the portfolio website.',
+    fromName: 'Nexa chatbot',
+  },
+}
+
 export async function sendEnquiryNotification(
   enquiry: Pick<
     NewEnquiry,
     'firstName' | 'lastName' | 'email' | 'phoneOrCompany' | 'message'
   >,
+  /** Defaults to the contact form so existing callers keep their subject. */
+  source: EnquirySource = 'contact-form',
 ): Promise<void> {
   const user = requiredEnv('SMTP_USER')
   const password = requiredEnv('SMTP_APP_PASSWORD').replace(/\s+/g, '')
   const recipient = requiredEnv('ENQUIRY_NOTIFICATION_EMAIL')
+  const meta = SOURCE_META[source]
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -38,12 +68,12 @@ export async function sendEnquiryNotification(
   // )
 
   await transporter.sendMail({
-    from: { name: 'Portfolio website enquiry', address: user },
+    from: { name: meta.fromName, address: user },
     to: recipient,
     replyTo: enquiry.email,
-    subject: 'New advisory enquiry',
+    subject: meta.subject,
     text: [
-      'A new enquiry was submitted through the portfolio contact form.',
+      meta.intro,
       '',
       `Name: ${name}`,
       `Email: ${enquiry.email}`,

@@ -115,10 +115,46 @@ export function AnimatedText({
     let cancelled = false
     let revert: (() => void) | null = null
 
+    /**
+     * How long a `mode="load"` animation will WAIT for GSAP before giving up.
+     *
+     * The hero headline is server-rendered and fully visible on first paint —
+     * `.gsap-animated-text` deliberately carries no `opacity: 0`, because hiding
+     * the largest text on the page in CSS would suppress its LCP and leave the
+     * name permanently invisible if GSAP ever failed to load.
+     *
+     * The cost of that choice is that the reveal can only start once GSAP
+     * arrives. When it is slow, `fromTo` applies `autoAlpha: 0` to text the
+     * visitor has already been reading, so the headline DISAPPEARS and then
+     * slides back in. That reads as a broken page, not as an animation.
+     *
+     * So a load-mode reveal is treated as a bonus: if GSAP has not arrived
+     * within this budget the text is simply left alone. Fast connections still
+     * get the full animation; slow ones get a headline that is simply already
+     * there. Scroll- and scrub-triggered modes are unaffected — nothing is
+     * visible until the element is scrolled into view, so a late arrival there
+     * causes no pop.
+     */
+    const LOAD_BUDGET_MS = 400
+    let deadline: number | undefined
+    const budget = new Promise<'budget-expired'>((resolve) => {
+      deadline = window.setTimeout(
+        () => resolve('budget-expired'),
+        LOAD_BUDGET_MS,
+      )
+    })
+
     // GSAP loads lazily (separate chunk) — never in the initial bundle.
-    loadGsap().then(
-      ({ gsap, ScrollTrigger, SplitText }) => {
+    Promise.race([
+      loadGsap().then((api) => ({ api } as const)),
+      budget,
+    ]).then(
+      (result) => {
+        if (deadline !== undefined) window.clearTimeout(deadline)
         if (cancelled || !ref.current) return
+        // Out of budget (or GSAP failed): leave the text exactly as rendered.
+        if (result === 'budget-expired') return
+        const { gsap, ScrollTrigger, SplitText } = result.api
         const ctx = gsap.context(() => {
           let splitter: SplitTextType | null = null
           try {
@@ -255,6 +291,9 @@ export function AnimatedText({
 
     return () => {
       cancelled = true
+      // Cleared so an unmount before the budget expires does not leave a timer
+      // running against a detached node.
+      if (deadline !== undefined) window.clearTimeout(deadline)
       revert?.()
     }
   }, [split, mode, defaultStagger, duration, y, delay, ease, start, isMobile])

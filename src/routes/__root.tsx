@@ -10,6 +10,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import { ThemeProvider } from '../components/portfolio/theme'
 import { getPublicMediaFn } from '../../admin/server/public.ts'
+import { getInitialThemeFn } from '../components/portfolio/theme-fn'
 
 import appCss from '../styles.css?url'
 
@@ -19,6 +20,7 @@ const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('portfolio
 
 interface MyRouterContext {
   queryClient: QueryClient
+  initialTheme: 'light' | 'dark'
   /**
    * The incoming request, so route guards can read cookies server-side.
    *
@@ -32,6 +34,9 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async ({ context }) => {
+    context.initialTheme = await getInitialThemeFn()
+  },
   head: () => ({
     meta: [
       {
@@ -58,13 +63,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: '/favicon.svg',
       },
       {
-        rel: 'preload',
-        href: '/fonts/anton-latin.woff2',
-        as: 'font',
-        type: 'font/woff2',
-        crossOrigin: 'anonymous',
-      },
-      {
         rel: 'preconnect',
         href: 'https://fonts.googleapis.com',
       },
@@ -74,12 +72,53 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         crossOrigin: 'anonymous',
       },
       {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Anton&family=Bebas+Neue&family=Syne:wght@700;800&family=Great+Vibes&display=swap',
+        rel: 'preload',
+        href: '/fonts/anton-latin.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
       },
       {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap',
+        rel: 'preload',
+        href: '/fonts/bebas-neue-latin.woff2',
+        as: 'font',
+        type: 'font/woff2',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'preload',
+        href: '/fonts/manrope/manrope-400.ttf',
+        as: 'font',
+        type: 'font/ttf',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'preload',
+        href: '/fonts/manrope/manrope-500.ttf',
+        as: 'font',
+        type: 'font/ttf',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'preload',
+        href: '/fonts/manrope/manrope-600.ttf',
+        as: 'font',
+        type: 'font/ttf',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'preload',
+        href: '/fonts/manrope/manrope-700.ttf',
+        as: 'font',
+        type: 'font/ttf',
+        crossOrigin: 'anonymous',
+      },
+      {
+        rel: 'preload',
+        href: '/fonts/jetbrains-mono/jetbrains-mono-400.ttf',
+        as: 'font',
+        type: 'font/ttf',
+        crossOrigin: 'anonymous',
       },
       {
         rel: 'stylesheet',
@@ -113,11 +152,29 @@ function PublicFavicon() {
   return null
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({
+  children,
+  context,
+}: {
+  children: React.ReactNode
+  context?: MyRouterContext
+}) {
+  const initialTheme = context?.initialTheme ?? 'light'
+  const isDark = initialTheme === 'dark'
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={isDark ? 'dark' : ''}
+      style={{ colorScheme: isDark ? 'dark' : 'light' }}
+      suppressHydrationWarning
+    >
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap';l.media='print';l.onload=function(){l.media='all'};document.head.appendChild(l)})();`,
+          }}
+        />
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -129,21 +186,30 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden">
-        <ThemeProvider>{children}</ThemeProvider>
+      <body
+        className="bg-obsidian-base text-text-primary antialiased min-h-screen relative selection:bg-[#D4AF37] selection:text-[#071A12] overflow-x-hidden"
+        suppressHydrationWarning
+      >
+        <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>
+        {/* Bottom viewport blur overlay — fades content into frosted blur near
+            the bottom of the viewport. Creates a "coming from blur" transition
+            between sections. */}
+        <div className="viewport-bottom-blur" aria-hidden="true" />
         <PublicFavicon />
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
+        {process.env.NODE_ENV === 'development' ? (
+          <TanStackDevtools
+            config={{
+              position: 'bottom-right',
+            }}
+            plugins={[
+              {
+                name: 'Tanstack Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+              TanStackQueryDevtools,
+            ]}
+          />
+        ) : null}
         <Scripts />
       </body>
     </html>

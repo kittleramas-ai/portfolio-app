@@ -67,6 +67,35 @@ const MIME = {
   '.webmanifest': 'application/manifest+json',
 }
 
+import { createGzip, createBrotliCompress } from 'node:zlib'
+
+const COMPRESSIBLE_TYPES = [
+  'text/html',
+  'text/css',
+  'text/javascript',
+  'application/javascript',
+  'application/json',
+  'image/svg+xml',
+  'text/plain',
+  'application/xml',
+]
+
+function shouldCompress(contentType, acceptEncoding) {
+  if (!acceptEncoding || (!acceptEncoding.includes('gzip') && !acceptEncoding.includes('br'))) return false
+  if (!contentType) return false
+  return COMPRESSIBLE_TYPES.some((type) => contentType.includes(type))
+}
+
+function getCompressionStream(acceptEncoding) {
+  if (acceptEncoding.includes('br')) return createBrotliCompress()
+  return createGzip()
+}
+
+function getContentEncoding(acceptEncoding) {
+  if (acceptEncoding.includes('br')) return 'br'
+  return 'gzip'
+}
+
 /**
  * Stream a file from a base directory if it exists at that path.
  * Returns true when it handled the response.
@@ -74,7 +103,7 @@ const MIME = {
  * The path-traversal guard is the `startsWith(base + sep)` check:
  * `normalize` alone would still let `/../secret` escape the directory.
  */
-async function serveFileFrom(base, pathname, res) {
+async function serveFileFrom(base, pathname, req, res) {
   let decoded
   try {
     decoded = decodeURIComponent(pathname)
@@ -90,45 +119,43 @@ async function serveFileFrom(base, pathname, res) {
     const info = await stat(full)
     if (!info.isFile()) return false
 
+    const contentType = MIME[extname(full).toLowerCase()] || 'application/octet-stream'
     res.statusCode = 200
-    res.setHeader(
-      'Content-Type',
-      MIME[extname(full).toLowerCase()] || 'application/octet-stream',
-    )
-    res.setHeader('Content-Length', String(info.size))
+    res.setHeader('Content-Type', contentType)
     res.setHeader('X-Content-Type-Options', 'nosniff')
 
-    // Vite fingerprints /assets/* filenames, so those are safe to cache
-    // forever. Everything else is not: the manager can replace an image under
-    // the same name, and a long-lived cache would hide the change.
     if (rel.replace(/\\/g, '/').includes('/assets/')) {
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
     }
 
-    createReadStream(full).pipe(res)
+    const acceptEncoding = req.headers['accept-encoding'] || ''
+    if (shouldCompress(contentType, acceptEncoding)) {
+      const encoding = getContentEncoding(acceptEncoding)
+      res.setHeader('Content-Encoding', encoding)
+      createReadStream(full).pipe(getCompressionStream(acceptEncoding)).pipe(res)
+    } else {
+      res.setHeader('Content-Length', String(info.size))
+      createReadStream(full).pipe(res)
+    }
     return true
   } catch {
     return false
   }
 }
 
-const serveStatic = (pathname, res) =>
-  serveFileFrom(CLIENT_DIR, pathname, res)
+const serveStatic = (pathname, req, res) =>
+  serveFileFrom(CLIENT_DIR, pathname, req, res)
 
-const serveUpload = (pathname, res) => {
+const serveUpload = (pathname, req, res) => {
   const prefix = (process.env.UPLOADS_URL_PREFIX || '/uploads').replace(
     /\/$/,
     '',
   )
   if (pathname !== prefix && !pathname.startsWith(prefix + '/')) return false
 
-  // Only the relative part is passed on, so the traversal guard applies
-  // relative to UPLOADS_DIR rather than to the URL prefix.
   const rest = pathname.slice(prefix.length).replace(/^\/+/, '')
-  // Short cache: the manager can replace a file under the same name, and a
-  // long-lived cache would hide that change.
   res.setHeader('Cache-Control', 'public, max-age=3600')
-  return serveFileFrom(UPLOADS_DIR, '/' + rest, res)
+  return serveFileFrom(UPLOADS_DIR, '/' + rest, req, res)
 }
 
 async function toWebRequest(req, origin) {
@@ -161,8 +188,8 @@ const server = createServer((req, res) => {
         url.pathname.startsWith('/admin')
 
       // Uploads first: they live in the source tree, not the build output.
-      if (await serveUpload(url.pathname, res)) return
-      if (!isAppRoute && (await serveStatic(url.pathname, res))) return
+      if (await serveUpload(url.pathname, req, res)) return
+      if (!isAppRoute && (await serveStatic(url.pathname, req, res))) return
 
       const request = await toWebRequest(req, origin)
       const response = await handler.fetch(request)
@@ -170,8 +197,18 @@ const server = createServer((req, res) => {
       res.statusCode = response.status
       response.headers.forEach((value, key) => res.setHeader(key, value))
 
+      const contentType = response.headers.get('content-type') || ''
+      const acceptEncoding = req.headers['accept-encoding'] || ''
+
       if (response.body) {
-        Readable.fromWeb(response.body).pipe(res)
+        if (shouldCompress(contentType, acceptEncoding)) {
+          const encoding = getContentEncoding(acceptEncoding)
+          res.setHeader('Content-Encoding', encoding)
+          res.removeHeader('content-length')
+          Readable.fromWeb(response.body).pipe(getCompressionStream(acceptEncoding)).pipe(res)
+        } else {
+          Readable.fromWeb(response.body).pipe(res)
+        }
       } else {
         res.end()
       }

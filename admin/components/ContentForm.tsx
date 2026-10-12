@@ -427,15 +427,28 @@ function Field({
   }
 
   if (schema.type === 'boolean') {
+    const isChecked = Boolean(value)
     return (
-      <label className="flex items-center gap-2.5">
-        <input
-          type="checkbox"
-          checked={Boolean(value)}
-          onChange={(e) => onChange(e.target.checked)}
-          className="size-4 accent-[#d4af37]"
-        />
-        <span className="font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
+      <label className="group flex cursor-pointer items-center gap-3">
+        <div className="relative flex items-center">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={(e) => onChange(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            className={`block h-5 w-9 rounded-full transition-colors duration-200 ease-in-out ${
+              isChecked ? 'bg-[#d4af37]' : 'bg-[var(--admin-border)] group-hover:bg-[#3a443e]'
+            }`}
+          />
+          <div
+            className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${
+              isChecked ? 'translate-x-4 shadow-sm' : 'translate-x-0'
+            }`}
+          />
+        </div>
+        <span className="font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb] transition-colors group-hover:text-white">
           {label}
         </span>
       </label>
@@ -606,9 +619,19 @@ function Field({
       </div>
       {countHint(schema, text, false)}
       {isImageUrl ? (
-        <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
-          JPEG, PNG or WebP, max 5 MB. The URL updates once the upload finishes.
-        </span>
+        <>
+          <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
+            JPEG, PNG or WebP, max 5 MB. After uploading, save this section to
+            persist the image URL.
+          </span>
+          {text ? (
+            <img
+              src={text}
+              alt={`${label} preview`}
+              className="mt-2 h-16 max-w-48 rounded-md border border-[var(--admin-border)] bg-white p-1 object-contain"
+            />
+          ) : null}
+        </>
       ) : null}
       {key.endsWith('Href') && !schema.description ? (
         <span className="mt-1.5 block text-[12px] text-[#7a8a80]">

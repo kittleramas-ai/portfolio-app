@@ -51,10 +51,13 @@ export function WhatsAppFab({
   /** Admin-uploaded WhatsApp icon; falls back to the bundled glyph. */
   icon?: { url: string | null; altText?: string } | null
 }) {
+  const isEnabled = contact?.whatsappEnabled ?? DEFAULT_CONTACT.whatsappEnabled
+  if (!isEnabled) return null
+
   return (
     <div
       className={cn(
-        'fixed bottom-6 right-6 z-50 sm:bottom-8 sm:right-8',
+        'fixed bottom-24 right-6 z-40 sm:bottom-28 sm:right-8',
         'print:hidden',
         className,
       )}

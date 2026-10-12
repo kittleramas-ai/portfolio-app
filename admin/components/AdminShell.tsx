@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   MessageCircle,
+  MessagesSquare,
   Mic,
   Newspaper,
   PanelBottom,
@@ -44,7 +45,15 @@ import { ErrorNote, isUnauthorized } from './fields.tsx'
 /**
  * Icons are keyed by settings group rather than stored alongside the schema,
  * because they are React components and the schema module is also imported by
- * the server. A missing key falls back to a neutral icon rather than crashing.
+ * the server.
+ *
+ * The `Record<SettingsGroupKey, …>` annotation is load-bearing, and it is the
+ * ONLY thing standing between a new group and a dead admin panel: registering a
+ * group in SITE_SETTINGS_SHAPE without adding its icon here fails the build with
+ * "Property '<group>' is missing". There is deliberately no runtime fallback —
+ * `TabButton` renders `tab.icon` as a component, so an undefined one throws
+ * "Element type is invalid" and takes down every tab, not just the new one. Make
+ * the compiler the check instead of the browser.
  */
 const GROUP_ICONS: Record<SettingsGroupKey, LucideIcon> = {
   navbar: Menu,
@@ -60,6 +69,7 @@ const GROUP_ICONS: Record<SettingsGroupKey, LucideIcon> = {
   books: BookOpen,
   quote: Quote,
   advisory: FileText,
+  chatbot: MessagesSquare,
   contact: MessageCircle,
 }
 

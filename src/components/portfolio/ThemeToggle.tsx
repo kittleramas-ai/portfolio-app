@@ -26,38 +26,24 @@ export function ThemeToggle({ className }: { className?: string }) {
     >
       {/* Track icons */}
       <Sun
-        className={cn(
-          'absolute left-1.5 h-4 w-4 transition-all duration-300',
-          isDark ? 'opacity-40' : 'opacity-100',
-        )}
-        style={{ color: isDark ? 'var(--text-tertiary)' : '#8C6D1F' }}
+        className="absolute left-1.5 h-4 w-4 transition-all duration-300 opacity-100 dark:opacity-40 text-[#8C6D1F] dark:text-[var(--text-tertiary)]"
         aria-hidden="true"
       />
       <Moon
-        className={cn(
-          'absolute right-1.5 h-4 w-4 transition-all duration-300',
-          isDark ? 'opacity-100' : 'opacity-40',
-        )}
-        style={{ color: isDark ? '#E5C07B' : 'var(--text-tertiary)' }}
+        className="absolute right-1.5 h-4 w-4 transition-all duration-300 opacity-40 dark:opacity-100 text-[var(--text-tertiary)] dark:text-[#E5C07B]"
         aria-hidden="true"
       />
       {/* Sliding thumb */}
       <span
         aria-hidden="true"
-        className={cn(
-          'relative z-10 flex h-6 w-6 items-center justify-center rounded-full shadow-md transition-transform duration-300',
-          isDark ? 'translate-x-[28px]' : 'translate-x-0',
-        )}
+        className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full shadow-md transition-transform duration-300 translate-x-0 dark:translate-x-[28px]"
         style={{
           backgroundColor: 'var(--toggle-thumb)',
           border: '1px solid var(--toggle-thumb-border)',
         }}
       >
-        {isDark ? (
-          <Moon className="h-3.5 w-3.5 text-slate-900" aria-hidden="true" />
-        ) : (
-          <Sun className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-        )}
+        <Moon className="hidden dark:block h-3.5 w-3.5 text-slate-900" aria-hidden="true" />
+        <Sun className="block dark:hidden h-3.5 w-3.5 text-white" aria-hidden="true" />
       </span>
     </button>
   )

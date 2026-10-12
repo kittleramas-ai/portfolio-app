@@ -10,5 +10,5 @@ import type { PublicMedia } from '../../../admin/server/public.ts'
  */
 export type SignatureMedia = Pick<
   PublicMedia,
-  'url' | 'altText' | 'width' | 'height'
+  'url' | 'altText' | 'width' | 'height' | 'responsiveSrcSet'
 >

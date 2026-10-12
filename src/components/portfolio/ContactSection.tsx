@@ -10,6 +10,35 @@ import { submitEnquiryFn } from '../../../admin/server/public.ts'
 const DEFAULT_ADVISORY = DEFAULT_SITE_SETTINGS.advisory
 const DEFAULT_CONTACT = DEFAULT_SITE_SETTINGS.contact
 
+/**
+ * Digs the server's own validation text out of a rejected server-function call.
+ *
+ * `submitEnquiryFn` throws a ZodError, which arrives here as a serialised
+ * ServerFnError. The messages are written by the schema and are safe to show a
+ * visitor — they say what is wrong with THEIR input, and revealing them exposes
+ * nothing about the server. Returns null for anything that is not a validation
+ * problem, so the caller can fall back to its own copy.
+ */
+function firstValidationMessage(err: unknown): string | null {
+  const text =
+    err instanceof Error ? err.message : typeof err === 'string' ? err : ''
+  if (!text) return null
+  if (!/"message"\s*:/.test(text) && !text.includes('ZodError')) return null
+  try {
+    // The payload is a JSON string inside the message; pull the first issue out
+    // rather than showing the visitor a raw schema dump.
+    const start = text.indexOf('{')
+    if (start === -1) return null
+    const parsed: unknown = JSON.parse(text.slice(start))
+    const issues = (parsed as { issues?: unknown }).issues
+    if (!Array.isArray(issues)) return null
+    const first = issues[0] as { message?: unknown } | undefined
+    return typeof first?.message === 'string' ? first.message : null
+  } catch {
+    return null
+  }
+}
+
 export function ContactSection({
   settings = DEFAULT_ADVISORY,
   contact = DEFAULT_CONTACT,
@@ -40,10 +69,14 @@ export function ContactSection({
       setNotificationFailed(!result.notificationSent)
       setSubmitted(true)
     } catch (err) {
-      // The row either exists or it does not; there is no retry-by-resubmit
-      // story worth building, so the message stays generic.
+      // A rejected phone number is a validation result, not a failure, and
+      // "please email us directly" is a baffling reply to someone who simply
+      // mistyped a digit. Surface the server's own message when there is one,
+      // and keep the generic copy only for genuine transport/server errors.
+      const detail = firstValidationMessage(err)
       setError(
-        'Sorry, that did not go through. Please email us directly instead.',
+        detail ??
+          'Sorry, that did not go through. Please email us directly instead.',
       )
     } finally {
       setSending(false)
@@ -236,8 +269,19 @@ export function ContactSection({
                       id="contact-phone"
                       name="phoneOrCompany"
                       className="w-full px-4 py-3.5 rounded-lg executive-input text-body-sm font-body-sm bg-obsidian-base border border-slate-border focus:border-primary text-text-primary"
-                      placeholder="+91 00000 00000 / Company Name"
-                      type="text"
+                      // type="tel" rather than "text": it selects the numeric
+                      // keypad on mobile and lets the browser/OS offer
+                      // autofill for whatever country the visitor is in. It does
+                      // NOT validate the value, so this stays permissive.
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      // Shows the site's own country first (most enquiries are
+                      // local) plus a foreign one, so a visitor elsewhere does
+                      // not assume an India-only format is expected. The country
+                      // code is REQUIRED, so the leading + is shown, not
+                      // implied.
+                      placeholder="+91 98765 43210 or +44 20 7946 0958, or company name"
                       value={formData.phoneOrCompany}
                       onChange={(e) =>
                         setFormData({

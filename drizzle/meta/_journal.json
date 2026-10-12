@@ -15,6 +15,13 @@
       "when": 1791354459028,
       "tag": "0001_slimy_starjammers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1791524958775,
+      "tag": "0002_swift_zarek",
+      "breakpoints": true
     }
   ]
 }

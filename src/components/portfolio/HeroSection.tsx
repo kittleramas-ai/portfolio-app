@@ -1,6 +1,6 @@
+import type { CSSProperties } from 'react'
 import { Reveal } from './Reveal'
-import { AnimatedText } from './AnimatedText'
-import heroImage from '../../asserts/background-removed.png'
+import heroImage from '../../asserts/background-removed.webp'
 import type { HeroSettings } from '../../../admin/server/settings-schema'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { SignatureMedia } from './media-types'
@@ -14,6 +14,13 @@ const DEFAULT_HERO = DEFAULT_SITE_SETTINGS.hero
 const NAME_CLASS =
   'text-center uppercase leading-[1] tracking-[-0.02em] text-[#C9A227] break-words text-[clamp(2.25rem,15vw,13.5rem)]'
 const NAME_STYLE = { fontFamily: 'Anton, "Bebas Neue", sans-serif' }
+
+/* The name is spelled out as words rather than passed through SplitText.
+   `--hero-word-index` is what staggers them; `.hero-name-word` owns the motion.
+   Written here in the markup instead of split at runtime because a runtime
+   split means the words do not exist until GSAP has loaded — which is exactly
+   the delay this replaces. See `.hero-name-drop` in styles.css. */
+const NAME_WORDS = ['Dr.', 'R.', 'Surendiran'] as const
 
 export function HeroSection({
   settings = DEFAULT_HERO,
@@ -31,26 +38,25 @@ export function HeroSection({
     >
       {/* Name on two lines, behind the portrait. Shares the site's
           max-w-7xl / px-6 md:px-12 shell so it lines up with every other
-          section. pt clears the fixed header; the elastic tween drops each
-          word in from y=90. */}
+          section. pt clears the fixed header; each word drops in from
+          y=0.42em, staggered by `--hero-word-index`. */}
       <div className="relative z-0 mx-auto w-full max-w-7xl px-6 pt-24 sm:pt-32 md:px-12 lg:pt-32">
-        <AnimatedText
-          as="h1"
-          split="words"
-          mode="load"
-          stagger={0.08}
-          duration={1.5}
-          y={90}
-          ease="elastic.out(1, 0.55)"
-          className={NAME_CLASS}
-          style={NAME_STYLE}
-        >
-          <>
-            Dr. R.
-            <br />
-            Surendiran
-          </>
-        </AnimatedText>
+        <h1 className={NAME_CLASS} style={NAME_STYLE}>
+          {NAME_WORDS.map((word, index) => (
+            <span key={word}>
+              <span
+                className="hero-name-word"
+                style={{ '--hero-word-index': index } as CSSProperties}
+              >
+                {word}
+              </span>
+              {/* The original split put "Dr. R." on one line and "Surendiran"
+                  on the next; the break lives here rather than inside a word
+                  so the two lines stay separate inline-block items. */}
+              {index === 1 ? <br /> : index === 0 ? ' ' : null}
+            </span>
+          ))}
+        </h1>
       </div>
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-end gap-6 px-6 pb-10 sm:gap-8 md:px-12 lg:grid-cols-12 lg:pb-12">
@@ -95,18 +101,29 @@ export function HeroSection({
         <div className="order-1 flex justify-center lg:order-2 lg:col-span-6 lg:items-end">
           <div className="-mt-[6vw] lg:-mt-[12vw]">
             <div className="relative aspect-[4/5] w-[64vw] max-w-[270px] overflow-hidden bg-transparent sm:w-[46vw] sm:max-w-[300px] lg:w-[22vw] lg:min-w-[240px] lg:max-w-[320px]">
-              <img
-                src={portrait?.url ?? heroImage}
-                alt="Dr. R. Surendiran"
-                width={portrait?.width ?? 690}
-                height={portrait?.height ?? 814}
-                decoding="async"
-                className="block h-full w-full scale-[1.06] bg-transparent object-cover object-center lg:scale-[1.03]"
-                style={{
-                  backgroundColor: 'transparent',
-                  objectPosition: 'center',
-                }}
-              />
+              <picture>
+                {portrait?.responsiveSrcSet ? (
+                  <source
+                    type="image/webp"
+                    srcSet={portrait.responsiveSrcSet}
+                    sizes="(max-width: 639px) 64vw, (max-width: 1023px) 46vw, 22vw"
+                  />
+                ) : null}
+                <img
+                  src={portrait?.url ?? heroImage}
+                  alt={portrait?.altText || 'Dr. R. Surendiran'}
+                  width={portrait?.width ?? 690}
+                  height={portrait?.height ?? 814}
+                  sizes="(max-width: 639px) 64vw, (max-width: 1023px) 46vw, 22vw"
+                  decoding="async"
+                  fetchPriority="high"
+                  className="block h-full w-full scale-[1.06] bg-transparent object-cover object-center lg:scale-[1.03]"
+                  style={{
+                    backgroundColor: 'transparent',
+                    objectPosition: 'center',
+                  }}
+                />
+              </picture>
             </div>
           </div>
         </div>

@@ -24,7 +24,16 @@ export function Navbar({
   const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50)
+    let ticking = false
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50)
+          ticking = false
+        })
+        ticking = true
+      }
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -78,16 +87,17 @@ export function Navbar({
   // scroll itself, so body overflow alone is not enough — pause it too, or
   // wheel events over the menu panel scroll the page behind the overlay.
   React.useEffect(() => {
+    const smoother = getSmoother()
     if (menuOpen) {
       document.body.style.overflow = 'hidden'
-      getSmoother()?.paused(true)
+      smoother?.paused(true)
     } else {
       document.body.style.overflow = 'unset'
-      getSmoother()?.paused(false)
+      smoother?.paused(false)
     }
     return () => {
       document.body.style.overflow = 'unset'
-      getSmoother()?.paused(false)
+      smoother?.paused(false)
     }
   }, [menuOpen])
 
@@ -95,7 +105,7 @@ export function Navbar({
     <>
       {/* Top Banner Header Block */}
       <header
-        className={`fixed top-0 inset-x-0 w-full z-40 transition-all duration-300 ${
+        className={`fixed top-0 inset-x-0 w-full z-40 transition-all duration-300 promote-layer-border ${
           scrolled
             ? 'bg-obsidian-base/90 backdrop-blur-md border-b border-slate-border/50 shadow-md'
             : 'bg-transparent border-transparent'
@@ -107,6 +117,7 @@ export function Navbar({
             <SignatureMark
               className="h-12 sm:h-14 lg:h-16"
               src={signature?.url}
+              srcSet={signature?.responsiveSrcSet}
               alt={signature?.altText || undefined}
             />
           </a>

@@ -5,6 +5,7 @@ import {
   achievementsSettingsSchema,
   advisorySettingsSchema,
   booksSettingsSchema,
+  chatbotSettingsSchema,
   footerSettingsSchema,
   governanceSettingsSchema,
   keynotesSettingsSchema,
@@ -48,6 +49,7 @@ const emailSchema = z
   .or(z.literal(''))
 
 export const contactSettingsSchema = z.object({
+  whatsappEnabled: z.boolean().default(true).describe('Show the floating WhatsApp button and enable WhatsApp flows.'),
   whatsappNumber: whatsappNumberSchema,
   whatsappMessage: z
     .string()
@@ -93,6 +95,7 @@ export const SITE_SETTINGS_SHAPE = {
   books: booksSettingsSchema,
   quote: quoteSettingsSchema,
   advisory: advisorySettingsSchema,
+  chatbot: chatbotSettingsSchema,
   navbar: navbarSettingsSchema,
   footer: footerSettingsSchema,
 } as const
@@ -123,7 +126,8 @@ export const SETTINGS_GROUPS = [
   {
     key: 'milestones',
     label: 'Milestones',
-    description: 'The four animated counters under the hero.',
+    description:
+      'Edit the four animated counters under the hero. The leadership and keynote counts are sample values; replace them with verified figures before publishing.',
   },
   {
     key: 'about',
@@ -169,6 +173,12 @@ export const SETTINGS_GROUPS = [
     key: 'advisory',
     label: 'Advisory Form',
     description: 'The contact section copy around the enquiry form.',
+  },
+  {
+    key: 'chatbot',
+    label: 'Nexa Chatbot',
+    description:
+      'Edit Nexa’s name, welcome message and conversation copy. Prompts may include {{firstName}}.',
   },
   {
     key: 'contact',
@@ -221,6 +231,7 @@ export {
   achievementsSettingsSchema,
   advisorySettingsSchema,
   booksSettingsSchema,
+  chatbotSettingsSchema,
   footerSettingsSchema,
   governanceSettingsSchema,
   keynotesSettingsSchema,
@@ -237,6 +248,7 @@ export type {
   AchievementsSettings,
   AdvisorySettings,
   BooksSettings,
+  ChatbotSettings,
   FooterSettings,
   GovernanceSettings,
   KeynotesSettings,

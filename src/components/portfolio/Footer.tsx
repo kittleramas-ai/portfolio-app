@@ -68,10 +68,28 @@ export function Footer({
 
   return (
     <footer
-      className="w-full bg-obsidian-base border-t border-slate-border"
+      className="relative w-full overflow-hidden bg-obsidian-base border-t border-slate-border"
       style={{ backgroundColor: 'var(--portfolio-black)' }}
     >
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 md:px-12 md:py-24">
+      {/* Dark mode transparent gold ambient light glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 hidden dark:block"
+        style={{
+          background:
+            'radial-gradient(ellipse 90% 70% at 50% 100%, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0.08) 45%, transparent 75%), radial-gradient(ellipse 60% 40% at 20% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 60%)',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-0 inset-x-0 h-[2px] z-10 hidden dark:block"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent 5%, rgba(212, 175, 55, 0.45) 50%, transparent 95%)',
+          boxShadow: '0 0 20px rgba(212, 175, 55, 0.4)',
+        }}
+      />
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20 md:px-12 md:py-24">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
           {/* Signature lockup */}
           <div className="flex flex-col justify-center lg:col-span-5">
@@ -80,7 +98,12 @@ export function Footer({
               href="#hero"
               aria-label="Back to top — Dr. R. Surendiran"
             >
-              <SignatureMark className="h-16 sm:h-20 md:h-24" src={signature?.url} alt={signature?.altText || undefined} />
+              <SignatureMark
+                className="h-16 sm:h-20 md:h-24"
+                src={signature?.url}
+                srcSet={signature?.responsiveSrcSet}
+                alt={signature?.altText || undefined}
+              />
             </a>
 
             <p className="mt-9 max-w-md text-[15px] leading-relaxed text-text-secondary">

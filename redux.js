@@ -44,3 +44,6 @@ const movies = [
     //     { id: 5, title: 'The Lord of the Rings: The Return of the King', year: 2003 }
     //   ]
     // }
+
+//1. "JavaScript is fun to learn" op:"learn to fun is JavaScript"
+
