@@ -341,16 +341,22 @@ export const submitChatbotEnquiryFn = createServerFn({ method: 'POST' })
       null
     const userAgent = request.headers.get('user-agent')?.slice(0, 512) ?? null
 
-    await insertChatbotEnquiry({
-      firstName: data.firstName,
-      lastName: data.lastName || null,
-      email: data.email.toLowerCase(),
-      phoneOrCompany: data.phoneOrCompany || null,
-      message: data.message,
-      appointmentRequested: data.appointment,
-      ipAddress,
-      userAgent,
-    })
+    let dbSuccess = false
+    try {
+      await insertChatbotEnquiry({
+        firstName: data.firstName,
+        lastName: data.lastName || null,
+        email: data.email.toLowerCase(),
+        phoneOrCompany: data.phoneOrCompany || null,
+        message: data.message,
+        appointmentRequested: Boolean(data.appointment),
+        ipAddress,
+        userAgent,
+      })
+      dbSuccess = true
+    } catch (dbErr) {
+      console.error('[chatbot] DB insert failed:', dbErr)
+    }
 
     try {
       await sendEnquiryNotification(
@@ -366,10 +372,10 @@ export const submitChatbotEnquiryFn = createServerFn({ method: 'POST' })
         // from a contact-form lead in the CEO's inbox.
         'chatbot',
       )
-      return { ok: true as const, notificationSent: true }
+      return { ok: true as const, notificationSent: true, dbSaved: dbSuccess }
     } catch (error) {
       console.error('[chatbot] notification email failed:', error)
-      return { ok: true as const, notificationSent: false }
+      return { ok: true as const, notificationSent: false, dbSaved: dbSuccess }
     }
   })
 
