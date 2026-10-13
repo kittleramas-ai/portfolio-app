@@ -94,13 +94,6 @@ export function CountUp({
       return
     }
 
-    // Immediately trigger if already visible in viewport on mount or refresh
-    const rect = el.getBoundingClientRect()
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      startAnimation()
-      return
-    }
-
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {

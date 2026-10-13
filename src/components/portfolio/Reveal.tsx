@@ -45,13 +45,6 @@ export function Reveal({
       return
     }
 
-    // Immediately reveal if already visible in the viewport on mount or refresh
-    const rect = el.getBoundingClientRect()
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setIsVisible(true)
-      return
-    }
-
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {

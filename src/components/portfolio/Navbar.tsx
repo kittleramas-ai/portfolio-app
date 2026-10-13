@@ -36,9 +36,13 @@ export function Navbar({
         ticking = true
       }
     }
-    onScroll()
+    // Defer initial check to requestAnimationFrame to avoid forced reflow on initial mount
+    const rId = window.requestAnimationFrame(onScroll)
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.cancelAnimationFrame(rId)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   React.useEffect(() => {
