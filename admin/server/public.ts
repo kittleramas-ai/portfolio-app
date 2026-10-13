@@ -209,11 +209,53 @@ const enquiryInput = z.object({
     })
     .default(''),
   message: z.string().trim().min(1, 'Message is required').max(8000),
+  recaptchaToken: z.string().nullable().optional(),
 })
+
+async function verifyRecaptcha(token: string | null | undefined): Promise<boolean> {
+  const secretKey =
+    process.env.RECAPTCHA_SECRET_KEY ||
+    process.env.VITE_RECAPTCHA_SECRET_KEY ||
+    '6LfVw-wtAAAAAOnLMnws2RP_fXikAXSpXYgDO43Y'
+  if (!secretKey) return true // Bypass if secret key is not set
+  if (!token) return true // If token was not generated (e.g. adblock or dev environment), do not block
+
+  try {
+    const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: secretKey,
+        response: token,
+      }).toString(),
+    })
+    const body = (await res.json()) as { success?: boolean; score?: number; 'error-codes'?: string[] }
+    console.log('[reCAPTCHA Server Result]', {
+      success: body.success,
+      score: body.score,
+      errors: body['error-codes'],
+    })
+    if (body.success && typeof body.score === 'number') {
+      // v3 score ranges from 0.0 (bot) to 1.0 (human). 0.3 threshold catches automated scripts
+      return body.score >= 0.3
+    }
+    return Boolean(body.success)
+  } catch (err) {
+    console.warn('[reCAPTCHA] verification network error:', err)
+    return true
+  }
+}
 
 export const submitEnquiryFn = createServerFn({ method: 'POST' })
   .validator(enquiryInput)
   .handler(async ({ data }) => {
+    // Google reCAPTCHA verification
+    const isHuman = await verifyRecaptcha(data.recaptchaToken)
+    if (!isHuman) {
+      console.warn('[reCAPTCHA] Blocked suspected bot enquiry from:', data.email)
+      return { ok: true as const, notificationSent: false }
+    }
+
     const request = getRequest()
     const enquiry = {
       firstName: data.firstName,
@@ -285,6 +327,13 @@ const chatbotEnquiryInput = enquiryInput.extend({
 export const submitChatbotEnquiryFn = createServerFn({ method: 'POST' })
   .validator(chatbotEnquiryInput)
   .handler(async ({ data }) => {
+    // Google reCAPTCHA verification
+    const isHuman = await verifyRecaptcha(data.recaptchaToken)
+    if (!isHuman) {
+      console.warn('[reCAPTCHA] Blocked suspected bot chatbot enquiry from:', data.email)
+      return { ok: true as const, notificationSent: false }
+    }
+
     const request = getRequest()
     const ipAddress =
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??

@@ -49,7 +49,7 @@ export function WhatsAppFab({
   /** Supplied by the route from D1; falls back to defaults when absent. */
   contact?: ContactSettings
   /** Admin-uploaded WhatsApp icon; falls back to the bundled glyph. */
-  icon?: { url: string | null; altText?: string } | null
+  icon?: { url: string | null; altText?: string; responsiveSrcSet?: string | null } | null
 }) {
   const isEnabled = contact?.whatsappEnabled ?? DEFAULT_CONTACT.whatsappEnabled
   if (!isEnabled) return null
@@ -82,7 +82,9 @@ export function WhatsAppFab({
       >
         {icon?.url ? (
           <img
-            src={icon.url}
+            src={icon.responsiveSrcSet?.split(' ')[0] ?? icon.url.replace(/\.png(?=\?|$)/, '.webp')}
+            srcSet={icon.responsiveSrcSet ?? undefined}
+            sizes="32px"
             alt={icon.altText || 'WhatsApp'}
             width={32}
             height={32}

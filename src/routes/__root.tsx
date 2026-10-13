@@ -63,21 +63,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: '/favicon.svg',
       },
       {
-        rel: 'preconnect',
-        href: 'https://fonts.googleapis.com',
-      },
-      {
-        rel: 'preconnect',
-        href: 'https://fonts.gstatic.com',
-        crossOrigin: 'anonymous',
-      },
-      {
         rel: 'preload',
         href: '/fonts/anton-latin.woff2',
         as: 'font',
         type: 'font/woff2',
         crossOrigin: 'anonymous',
       },
+      /* Remaining font preloads kept commented for maximum performance
       {
         rel: 'preload',
         href: '/fonts/bebas-neue-latin.woff2',
@@ -120,6 +112,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         type: 'font/ttf',
         crossOrigin: 'anonymous',
       },
+      */
       {
         rel: 'stylesheet',
         href: appCss,
@@ -170,17 +163,12 @@ function RootDocument({
     >
       <head>
         <HeadContent />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap';l.media='print';l.onload=function(){l.media='all'};document.head.appendChild(l)})();`,
-          }}
-        />
         <style
           dangerouslySetInnerHTML={{
             __html: `
               html, body { background-color: #071A12; color: #EDE8D8; margin: 0; padding: 0; }
               img, svg { max-width: 100%; height: auto; }
-              #hero h1 { font-family: Anton, "Bebas Neue", sans-serif; }
+              #hero h1 { font-family: Impact, 'Arial Narrow', 'Haettenschweiler', 'Helvetica Neue Condensed', sans-serif; }
             `,
           }}
         />

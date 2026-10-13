@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { cn } from '../../routes/lib/utils'
 import { Sparkles } from 'lucide-react'
-import { prefersReducedMotion } from '../../routes/lib/gsap'
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { ChatbotSettings } from '../../../admin/server/settings-schema'
 import { AiOrb } from './AiOrb'
@@ -22,26 +22,15 @@ function useScrollNudge(active: boolean): boolean {
   const [isNudging, setIsNudging] = React.useState(false)
   const lastScrollRef = React.useRef(0)
   const travelledRef = React.useRef(0)
-  const limitRef = React.useRef<Element | null>(null)
-  const measuredAtRef = React.useRef(0)
   const idleTimerRef = React.useRef<number | null>(null)
 
   React.useEffect(() => {
-    if (!active || prefersReducedMotion()) {
+    if (!active || typeof window === 'undefined' || prefersReducedMotion() || isMobileDevice()) {
       setIsNudging(false)
       return
     }
 
     let frame = 0
-
-    const readLimit = (): Element | null => {
-      const fresh = performance.now() - measuredAtRef.current > NUDGE_MEASURE_MS
-      if (!fresh && limitRef.current?.isConnected) return limitRef.current
-      measuredAtRef.current = performance.now()
-      const main = document.querySelector('main')
-      limitRef.current = main?.children[NUDGE_SECTION_LIMIT] ?? null
-      return limitRef.current
-    }
 
     const stop = () => {
       travelledRef.current = 0
@@ -70,12 +59,7 @@ function useScrollNudge(active: boolean): boolean {
       if (delta > 0) travelledRef.current += delta
       else travelledRef.current = 0
 
-      const limit = readLimit()
-      if (
-        !limit ||
-        limit.getBoundingClientRect().top <= 0 ||
-        y < NUDGE_SCROLL_FLOOR_PX
-      ) {
+      if (y < NUDGE_SCROLL_FLOOR_PX) {
         stop()
         return
       }
@@ -93,17 +77,14 @@ function useScrollNudge(active: boolean): boolean {
       frame = window.requestAnimationFrame(evaluate)
     }
 
-    measuredAtRef.current = 0
-    lastScrollRef.current = 0
+    lastScrollRef.current = window.scrollY || 0
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
     return () => {
       if (frame) window.cancelAnimationFrame(frame)
       if (idleTimerRef.current !== null)
         window.clearTimeout(idleTimerRef.current)
       idleTimerRef.current = null
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
     }
   }, [active])
 
@@ -124,6 +105,10 @@ export function ChatbotFab({
   const [isOpen, setIsOpen] = React.useState(false)
   const isNudging = useScrollNudge(!isOpen)
 
+  const handleOpen = () => {
+    setIsOpen(true)
+  }
+
   return (
     <div
       className={cn(
@@ -141,7 +126,7 @@ export function ChatbotFab({
       {!isOpen && (
         <span className={cn('relative block', isNudging && 'chat-fab-bounce')}>
           <button
-            onClick={() => setIsOpen(true)}
+            onClick={handleOpen}
             className={cn(
               'group siri-fab-glow relative flex size-14 sm:size-16 items-center justify-center rounded-full',
               'bg-[#071A12] text-white border-2 border-[#D4AF37]/80',
@@ -150,7 +135,7 @@ export function ChatbotFab({
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4AF37]'
             )}
             aria-label={`Open ${copy.fabLabel}`}
-            aria-expanded={false}
+            aria-expanded={isOpen}
           >
             <div className="relative flex items-center justify-center z-10">
               <div className="relative inline-flex shrink-0 items-center justify-center">
@@ -184,6 +169,7 @@ export function ChatbotFab({
         </span>
       )}
 
+      {/* Modal is strictly mounted only when isOpen is true. Persistence across closes is handled via sessionStorage. */}
       {isOpen && (
         <React.Suspense fallback={null}>
           <ChatbotModal copy={copy} onClose={() => setIsOpen(false)} />

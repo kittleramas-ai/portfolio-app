@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react'
-import { ChevronDown, ChevronRight, Plus, Trash2 } from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
+import type { LucideProps } from 'lucide-react'
 import type { ZodType } from 'zod'
-
+import { useRef, useState } from 'react';
+import { AppIcon, getLucideIcon } from '../../src/components/portfolio/AppIcon.tsx'
 import { saveSettingsGroupFn } from '../server/api.ts'
 import type { SettingsGroupKey, SiteSettings } from '../server/settings-schema.ts'
 import { SETTINGS_GROUPS } from '../server/settings-schema.ts'
@@ -12,6 +13,16 @@ import {
   readServerError,
 } from './fields.tsx'
 import type { SaveState } from './fields.tsx'
+
+const { ChevronDown, ChevronRight, ExternalLink, Plus, Trash2 } = LucideIcons
+
+function AdminIconPreview({ name, className }: { name?: string; className?: string }) {
+  const Component = getLucideIcon(name)
+  if (!Component) {
+    return <LucideIcons.HelpCircle className={className} />
+  }
+  return <Component className={className} />
+}
 
 /**
  * The subset of JSON Schema that `z.toJSONSchema` emits for our content
@@ -75,19 +86,69 @@ const ACCENTS = [
   'sky',
 ] as const
 
-/** A representative slice of Material Symbols for the icon datalist. */
+/** Curated list of popular Lucide and legacy icon names for auto-suggestions. */
 const ICON_SUGGESTIONS = [
+  // Common Lucide actions & symbols
+  'rocket',
+  'sparkles',
+  'flame',
+  'zap',
+  'award',
+  'star',
+  'trophy',
+  'medal',
+  'target',
+  'compass',
+  'globe',
+  'map-pin',
+  'activity',
+  'trending-up',
+  'bar-chart',
+  'layers',
+  'layout',
+  'shield',
+  'shield-check',
+  'lock',
+  'key',
+  'user',
+  'users',
+  'building',
+  'briefcase',
+  'file-text',
+  'book',
+  'book-open',
+  'graduation-cap',
+  'cpu',
+  'database',
+  'server',
+  'terminal',
+  'code',
+  'laptop',
+  'smartphone',
+  'cloud',
+  'mail',
+  'phone',
+  'send',
+  'external-link',
+  'arrow-right',
+  'arrow-up-right',
+  'arrow-up',
+  'check',
+  'check-circle',
+  'calendar',
+  'clock',
+  'heart',
+  'heart-handshake',
+  // Legacy / Material compatibility names
   'rocket_launch',
   'school',
   'campaign',
   'hub',
-  'cloud',
   'bolt',
   'verified_user',
   'currency_rupee',
   'menu_book',
   'payments',
-  'terminal',
   'cognition',
   'public',
   'groups',
@@ -99,7 +160,6 @@ const ICON_SUGGESTIONS = [
   'arrow_forward',
   'arrow_outward',
   'volunteer_activism',
-  'north',
 ]
 
 /** Uppercase the acronyms that camelCase splitting would otherwise mangle. */
@@ -438,14 +498,12 @@ function Field({
             className="sr-only"
           />
           <div
-            className={`block h-5 w-9 rounded-full transition-colors duration-200 ease-in-out ${
-              isChecked ? 'bg-[#d4af37]' : 'bg-[var(--admin-border)] group-hover:bg-[#3a443e]'
-            }`}
+            className={`block h-5 w-9 rounded-full transition-colors duration-200 ease-in-out ${isChecked ? 'bg-[#d4af37]' : 'bg-[var(--admin-border)] group-hover:bg-[#3a443e]'
+              }`}
           />
           <div
-            className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${
-              isChecked ? 'translate-x-4 shadow-sm' : 'translate-x-0'
-            }`}
+            className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${isChecked ? 'translate-x-4 shadow-sm' : 'translate-x-0'
+              }`}
           />
         </div>
         <span className="font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb] transition-colors group-hover:text-white">
@@ -537,47 +595,45 @@ function Field({
     hint?.multiline || (!isLink && !isIcon && (schema.maxLength ?? 0) >= 200)
 
   if (isIcon) {
+    const hasIcon = Boolean(getLucideIcon(text))
     return (
       <label className="block">
         <span className="mb-1.5 block font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
           {label}
         </span>
         <div className="flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="material-symbols-outlined shrink-0 text-[24px] leading-none text-[#f5efe0]"
+          <div
+            className={`flex size-9 shrink-0 items-center justify-center rounded border transition-colors ${hasIcon
+                ? 'border-[var(--admin-gold)]/40 bg-[#1a2e24] text-[var(--admin-gold)] shadow-sm'
+                : 'border-red-500/30 bg-red-950/20 text-red-400'
+              }`}
+            title={hasIcon ? `Previewing: ${text}` : `Icon "${text}" not found`}
           >
-            {normaliseIconName(text)}
-          </span>
+            <AdminIconPreview name={text} className="size-5" />
+          </div>
           <input
-            list="material-symbols"
+            list="icon-suggestions"
             value={text}
-            onChange={(e) => onChange(normaliseIconName(e.target.value))}
+            onChange={(e) => onChange(e.target.value.trim().toLowerCase().replace(/[\s]+/g, '-'))}
             className={inputClass}
-            placeholder="menu_book"
+            placeholder="e.g. rocket, book-open, or rocket_launch"
           />
         </div>
-        <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
-          A Google Material Symbols name, in snake_case. Typing the label
-          works too — spaces and capitals become underscores as you go.
-        </span>
-        {/* The full catalogue is ~3000 icons, far more than the datalist can
-            carry, so the picker links out to it rather than trying to embed it. */}
-        <a
-          href="https://fonts.google.com/icons"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-1.5 inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--admin-gold)] underline underline-offset-2 hover:opacity-80"
-        >
-          Browse Material Symbols
-          <span
-            aria-hidden="true"
-            className="material-symbols-outlined text-[14px]"
-          >
-            open_in_new
+        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1 text-[12px]">
+          <span className="text-[#7a8a80]">
+            Supports standard Lucide icons (e.g. <code>rocket</code>, <code>book-open</code>, <code>shield</code>) or legacy names.
           </span>
-        </a>
-        <datalist id="material-symbols">
+          <a
+            href="https://lucide.dev/icons"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-semibold text-[var(--admin-gold)] underline underline-offset-2 hover:opacity-80"
+          >
+            Browse Lucide Icons
+            <ExternalLink className="size-3.5" />
+          </a>
+        </div>
+        <datalist id="icon-suggestions">
           {ICON_SUGGESTIONS.map((name) => (
             <option key={name} value={name} />
           ))}

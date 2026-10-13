@@ -1,5 +1,6 @@
 import { CountUp } from './CountUp'
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { VenturesSettings } from '../../../admin/server/settings-schema'
 
@@ -248,9 +249,10 @@ export function VenturesSection({
                   {...(theme.tooltip ? { title: card.ctaLabel } : {})}
                 >
                   <span className="min-w-0 flex-1 truncate">{card.ctaLabel}</span>
-                  <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                    {card.ctaIcon}
-                  </span>
+                  <AppIcon
+                    name={card.ctaIcon}
+                    className="size-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                  />
                 </a>
               </div>
             )

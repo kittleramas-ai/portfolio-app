@@ -200,17 +200,87 @@ export interface ChatbotModalProps {
   onClose: () => void
 }
 
+const STORAGE_KEY = 'portfolio-chatbot-session'
+
+/**
+ * Identifies THIS page load.
+ *
+ * `sessionStorage` deliberately outlives a refresh — that is exactly what makes
+ * closing the panel and reopening it keep the conversation, since closing
+ * unmounts this component and the state has to come from somewhere. But it
+ * outlives refresh too, which is wrong here: a reload is a fresh visit and
+ * should start a clean conversation.
+ *
+ * This token separates the two cases. It is generated at MODULE SCOPE, which
+ * the browser re-evaluates on every page load but not on a re-open, so state
+ * written during this load matches the token (persist) while state written
+ * during any earlier load does not (discard).
+ *
+ * Module scope rather than a stored value on purpose: reading a token back out
+ * of storage would return the pre-refresh one and defeat the check entirely.
+ */
+const LOAD_TOKEN: string = (() => {
+  if (typeof window === 'undefined') return 'ssr'
+  try {
+    return crypto.randomUUID()
+  } catch {
+    return `${Date.now()}-${Math.random()}`
+  }
+})()
+
+interface SavedChatState {
+  /** The page load that wrote this. Stale loads are discarded on read. */
+  loadToken: string
+  step: ChatbotStep
+  messages: Array<{
+    id: string
+    type: 'bot' | 'user'
+    content: string
+    timestamp: string
+  }>
+  formData: FormData
+  stepIndex: number
+}
+
+function loadSavedState(): SavedChatState | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as SavedChatState
+    // Written by an earlier page load -> treat this as a new conversation, and
+    // drop it so a later reload cannot resurrect it either.
+    if (parsed?.loadToken !== LOAD_TOKEN) {
+      sessionStorage.removeItem(STORAGE_KEY)
+      return null
+    }
+    return parsed
+  } catch {
+    return null
+  }
+}
+
 export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
-  const [step, setStep] = React.useState<ChatbotStep>('greeting')
-  const [messages, setMessages] = React.useState<ChatbotMessage[]>([])
-  const [formData, setFormData] = React.useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneOrCompany: '',
-    message: '',
-    appointment: false,
+  const saved = React.useMemo(() => loadSavedState(), [])
+
+  const [step, setStep] = React.useState<ChatbotStep>(saved?.step ?? 'greeting')
+  const [messages, setMessages] = React.useState<ChatbotMessage[]>(() => {
+    if (!saved?.messages) return []
+    return saved.messages.map((m) => ({
+      ...m,
+      timestamp: new Date(m.timestamp),
+    }))
   })
+  const [formData, setFormData] = React.useState<FormData>(
+    saved?.formData ?? {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneOrCompany: '',
+      message: '',
+      appointment: false,
+    },
+  )
   const [inputValue, setInputValue] = React.useState('')
   const [isUserTyping, setIsUserTyping] = React.useState(false)
   const userTypingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
@@ -221,7 +291,7 @@ export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
   const [error, setError] = React.useState<string | null>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const currentStepIndex = React.useRef(0)
+  const currentStepIndex = React.useRef(saved?.stepIndex ?? 0)
   const timers = React.useRef<number[]>([])
 
   const clearTimers = React.useCallback(() => {
@@ -233,6 +303,30 @@ export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
     const id = window.setTimeout(fn, ms)
     timers.current.push(id)
   }, [])
+
+  // Persist conversation updates to sessionStorage
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      if (messages.length === 0 && step === 'greeting') {
+        sessionStorage.removeItem(STORAGE_KEY)
+        return
+      }
+      const toSave: SavedChatState = {
+        loadToken: LOAD_TOKEN,
+        step,
+        messages: messages.map((m) => ({
+          ...m,
+          timestamp: m.timestamp.toISOString(),
+        })),
+        formData,
+        stepIndex: currentStepIndex.current,
+      }
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
+    } catch {
+      // sessionStorage quota or security restriction fallback
+    }
+  }, [step, messages, formData])
 
   const resetChatbot = React.useCallback(() => {
     clearTimers()
@@ -251,6 +345,11 @@ export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
     setInputValue('')
     setError(null)
     currentStepIndex.current = 0
+    try {
+      sessionStorage.removeItem(STORAGE_KEY)
+    } catch {
+      // ignore
+    }
   }, [clearTimers])
 
   React.useEffect(() => clearTimers, [clearTimers])
@@ -433,6 +532,9 @@ export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
     setError(null)
 
     try {
+      const { getRecaptchaToken } = await import('../../lib/recaptcha')
+      const recaptchaToken = await getRecaptchaToken('chatbot')
+
       await submitChatbotEnquiryFn({
         data: {
           firstName: formData.firstName,
@@ -441,6 +543,7 @@ export function ChatbotModal({ copy, onClose }: ChatbotModalProps) {
           phoneOrCompany: formData.phoneOrCompany,
           message: formData.message,
           appointment,
+          recaptchaToken,
         },
       })
 

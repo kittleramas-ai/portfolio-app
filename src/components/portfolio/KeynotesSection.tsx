@@ -1,4 +1,5 @@
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { KeynotesSettings } from '../../../admin/server/settings-schema'
 
@@ -13,19 +14,16 @@ const ACCENTS = {
   violet: {
     badge: 'badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/25 text-[#5B21B6] dark:text-indigo-300 tracking-wider',
     tagline: 'text-mono-metric font-mono-metric text-[#5B21B6] dark:text-indigo-300 text-[13px] font-semibold mb-4',
-    footerIcon: 'material-symbols-outlined text-[16px] text-accent-gold',
     footerRight: 'text-[#5B21B6] dark:text-indigo-300 font-semibold',
   },
   gold: {
     badge: 'badge-pill text-[11px] font-mono-metric bg-amber-500/10 border-amber-500/20 text-accent-gold tracking-wider',
     tagline: 'text-mono-metric font-mono-metric text-accent-gold text-[13px] font-semibold mb-4',
-    footerIcon: 'material-symbols-outlined text-[16px] text-accent-gold',
     footerRight: 'text-accent-gold',
   },
   sky: {
     badge: 'badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/25 text-[#075985] dark:text-cyan-400 tracking-wider',
     tagline: 'text-mono-metric font-mono-metric text-[#075985] dark:text-cyan-300 text-[13px] font-semibold mb-4',
-    footerIcon: 'material-symbols-outlined text-[16px] text-emerald-400',
     footerRight: 'text-[#075985] dark:text-cyan-300 font-semibold',
   },
 } as const
@@ -56,9 +54,7 @@ export function KeynotesSection({
         <div>
           <div className="flex items-center gap-2 mb-4">
             <span className="inline-flex items-center gap-2.5 max-w-full px-4 py-2.5 rounded-2xl text-label-badge font-label-badge bg-primary/10 border border-primary/30 text-primary uppercase tracking-widest leading-relaxed text-left shadow-sm break-words">
-              <span className="material-symbols-outlined text-[16px] shrink-0">
-                {settings.eyebrowIcon}
-              </span>
+              <AppIcon name={settings.eyebrowIcon} className="size-4 shrink-0" />
               <span className="min-w-0">
                 {settings.eyebrowTitle}{' '}
                 <span className="opacity-50 mx-1">//</span>{' '}
@@ -88,9 +84,7 @@ export function KeynotesSection({
             href={settings.ctaHref}
           >
             <span>{settings.ctaLabel}</span>
-            <span className="material-symbols-outlined text-[16px]">
-              {settings.ctaIcon}
-            </span>
+            <AppIcon name={settings.ctaIcon} className="size-4" />
           </a>
         </div>
       </div>
@@ -127,9 +121,7 @@ export function KeynotesSection({
               </div>
               <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-tertiary">
                 <span className="flex items-center gap-1.5 text-text-primary font-semibold">
-                  <span className={accent.footerIcon}>
-                    {card.footerIcon}
-                  </span>{' '}
+                  <AppIcon name={card.footerIcon} className="size-4 text-accent-gold" />
                   {card.footerLabel}
                 </span>
                 <span className={accent.footerRight}>{card.footerRightLabel}</span>

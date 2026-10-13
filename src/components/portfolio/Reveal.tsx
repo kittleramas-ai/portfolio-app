@@ -7,6 +7,7 @@ type RevealProps = {
   y?: number
   className?: string
   as?: 'div' | 'section' | 'span'
+  eager?: boolean
 }
 
 /**
@@ -19,11 +20,16 @@ export function Reveal({
   y = 22,
   className = '',
   as = 'div',
+  eager = false,
 }: RevealProps) {
   const ref = React.useRef<HTMLElement>(null)
-  const [isVisible, setIsVisible] = React.useState(false)
+  const [isVisible, setIsVisible] = React.useState(eager)
 
   React.useEffect(() => {
+    if (eager) {
+      setIsVisible(true)
+      return
+    }
     // If reduced motion is preferred or SSR, immediately show content
     if (prefersReducedMotion() || typeof window === 'undefined') {
       setIsVisible(true)

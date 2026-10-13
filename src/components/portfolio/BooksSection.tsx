@@ -1,3 +1,4 @@
+import { Quote, ArrowRight } from 'lucide-react'
 import { Reveal } from './Reveal'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { BooksSettings } from '../../../admin/server/settings-schema'
@@ -127,12 +128,10 @@ export function BooksSection({
             </div>
 
             <div className="text-center md:text-left">
-              <span
+              <Quote
                 aria-hidden="true"
-                className="material-symbols-outlined text-[44px] leading-none text-[rgba(201,162,39,0.45)]"
-              >
-                format_quote
-              </span>
+                className="size-11 text-[rgba(201,162,39,0.45)] inline-block rotate-180"
+              />
               <blockquote className="mt-3 font-serif text-[26px] italic leading-[1.25] text-text-primary sm:text-3xl lg:text-[2.05rem]">
                 {featuredQuote.text}
               </blockquote>
@@ -152,9 +151,7 @@ export function BooksSection({
                 href={settings.ctaHref}
               >
                 {settings.ctaLabel}
-                <span className="material-symbols-outlined text-[18px]">
-                  arrow_forward
-                </span>
+                <ArrowRight className="size-[18px]" />
               </a>
             </div>
           </div>

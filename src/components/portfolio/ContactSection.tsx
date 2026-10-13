@@ -1,11 +1,15 @@
 import * as React from 'react'
+import { Mail, Phone, CheckCircle2 } from 'lucide-react'
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type {
   AdvisorySettings,
   ContactSettings,
 } from '../../../admin/server/settings-schema'
 import { submitEnquiryFn } from '../../../admin/server/public.ts'
+
+import { preloadRecaptcha, getRecaptchaToken } from '../../lib/recaptcha'
 
 const DEFAULT_ADVISORY = DEFAULT_SITE_SETTINGS.advisory
 const DEFAULT_CONTACT = DEFAULT_SITE_SETTINGS.contact
@@ -60,12 +64,23 @@ export function ContactSection({
     message: '',
   })
 
+  // Preload reCAPTCHA script only when user hovers or interacts with the form
+  const handleInteraction = React.useCallback(() => {
+    void preloadRecaptcha()
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSending(true)
     setError(null)
     try {
-      const result = await submitEnquiryFn({ data: { ...formData } })
+      const recaptchaToken = await getRecaptchaToken('contact_form')
+      const result = await submitEnquiryFn({
+        data: {
+          ...formData,
+          recaptchaToken,
+        },
+      })
       setNotificationFailed(!result.notificationSent)
       setSubmitted(true)
     } catch (err) {
@@ -133,9 +148,7 @@ export function ContactSection({
                       href={`mailto:${contact.contactEmail}`}
                       className="group flex items-center gap-3 w-fit"
                     >
-                      <span className="material-symbols-outlined text-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold">
-                        mail
-                      </span>
+                      <Mail className="size-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold" />
                       <span className="text-body-sm font-body-sm text-text-secondary transition-colors group-hover:text-accent-gold break-all">
                         {contact.contactEmail}
                       </span>
@@ -146,9 +159,7 @@ export function ContactSection({
                       href={`tel:${contact.contactPhoneDisplay.replace(/[^\d+]/g, '')}`}
                       className="group flex items-center gap-3 w-fit"
                     >
-                      <span className="material-symbols-outlined text-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold">
-                        call
-                      </span>
+                      <Phone className="size-[18px] text-text-tertiary transition-colors group-hover:text-accent-gold" />
                       <span className="text-body-sm font-body-sm text-text-secondary transition-colors group-hover:text-accent-gold">
                         {contact.contactPhoneDisplay}
                       </span>
@@ -164,9 +175,7 @@ export function ContactSection({
             {submitted ? (
               <div className="executive-card rounded-3xl p-10 text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 mx-auto flex items-center justify-center text-emerald-400">
-                  <span className="material-symbols-outlined text-[32px]">
-                    check_circle
-                  </span>
+                  <CheckCircle2 className="size-8" />
                 </div>
                 <h3 className="text-2xl font-bold text-text-primary">
                   {settings.successHeading}
@@ -203,6 +212,8 @@ export function ContactSection({
               <form
                 className="space-y-6 executive-card rounded-3xl p-8"
                 onSubmit={handleSubmit}
+                onMouseEnter={handleInteraction}
+                onFocus={handleInteraction}
               >
                 {/* Row 1: First Name & Last Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -339,9 +350,7 @@ export function ContactSection({
                     disabled={sending}
                   >
                     <span>{sending ? 'Sending' : settings.submitLabel}</span>
-                    <span className="material-symbols-outlined text-[18px]">
-                      {settings.submitIcon}
-                    </span>
+                    <AppIcon name={settings.submitIcon} className="size-[18px]" />
                   </button>
                 </div>
               </form>

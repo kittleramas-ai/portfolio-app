@@ -75,6 +75,22 @@ export const Route = createFileRoute('/')({
       whatsappIcon: bySlot.get('whatsapp_icon') ?? null,
     }
   },
+  head: ({ loaderData }) => {
+    const portrait = loaderData?.portrait
+    const href = portrait?.url || '/uploads/hero_portrait-300.webp'
+    const imageSrcSet = portrait?.responsiveSrcSet || undefined
+    return {
+      links: [
+        {
+          rel: 'preload',
+          as: 'image',
+          href,
+          imageSrcSet,
+          imageSizes: '(max-width: 639px) 270px, (max-width: 1023px) 300px, 320px',
+        },
+      ],
+    }
+  },
   component: Home,
 })
 

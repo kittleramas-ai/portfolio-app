@@ -10,6 +10,7 @@ import ssrgWhiteLogo from '../../asserts/SSRG-WHITE.webp'
 import bniLogo from '../../asserts/bni_icon.webp'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { AboutSettings } from '../../../admin/server/settings-schema'
+import { AppIcon } from './AppIcon'
 
 const DEFAULT_ABOUT = DEFAULT_SITE_SETTINGS.about
 const PILL_LOGOS: Record<string, string> = {
@@ -84,31 +85,22 @@ const PILLAR_STYLES = [
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-blue relative group transition-all duration-300 hover:border-blue-400/40',
     header: 'grid grid-cols-3 gap-1 p-1 bg-slate-surface rounded-md border border-slate-border shrink-0',
     headerKind: 'dots',
-    headerGlyph: '',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]',
   },
   {
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-amber relative group transition-all duration-300 hover:border-blue-400/40',
     header: 'w-6 h-6 rounded-md bg-blue-500/15 border border-blue-400/35 flex items-center justify-center text-[#0D281E] dark:text-[#E5C07B] shrink-0',
     headerKind: 'glyph',
-    headerGlyph: 'material-symbols-outlined text-[15px]',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]',
   },
   {
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-cyan relative group transition-all duration-300 hover:border-cyan-400/40',
     header: 'w-6 h-6 rounded-md bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0',
     headerKind: 'glyph',
-    headerGlyph: 'material-symbols-outlined text-[15px]',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-cyan-600 dark:text-cyan-300 uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-cyan-600 dark:text-cyan-400 text-[16px]',
   },
 ] as const
 
@@ -229,9 +221,10 @@ export function AboutSection({
               className={`max-h-full max-w-full object-contain ${PILL_LOGO_CLASSES[pill.id] ?? 'size-10'}`}
             />
           ) : (
-            <span className="material-symbols-outlined text-[18px] text-[#0D281E] dark:text-[#E5C07B]">
-              {PILL_ICONS[pill.id] ?? 'business'}
-            </span>
+            <AppIcon
+              name={PILL_ICONS[pill.id] ?? 'building'}
+              className="size-[18px] text-[#0D281E] dark:text-[#E5C07B]"
+            />
           )}
         </div>
         <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
@@ -275,7 +268,7 @@ export function AboutSection({
       <div className="w-full mb-16 relative z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-label-badge font-label-badge bg-slate-surface border border-blue-500/30 text-blue-600 dark:text-[#E5C07B] mb-4">
-            <span className="material-symbols-outlined text-[14px]">{settings.eyebrowIcon}</span>
+            <AppIcon name={settings.eyebrowIcon} className="size-3.5" />
             <span>{settings.eyebrow}</span>
           </div>
         </div>
@@ -356,9 +349,7 @@ export function AboutSection({
                       </div>
                     ) : (
                       <div className={style.header}>
-                        <span className={style.headerGlyph}>
-                          {pillar.headerIcon}
-                        </span>
+                        <AppIcon name={pillar.headerIcon} className="size-3.5" />
                       </div>
                     )}
                     <span className={style.label}>{pillar.label}</span>
@@ -371,7 +362,7 @@ export function AboutSection({
                   </p>
                   <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
                     <span>{pillar.footerMeta}</span>
-                    <span className={style.footerGlyph}>{pillar.footerIcon}</span>
+                    <AppIcon name={pillar.footerIcon} className="size-3.5 text-accent-gold" />
                   </div>
                 </div>
               </div>

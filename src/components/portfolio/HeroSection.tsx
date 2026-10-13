@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { ArrowRight } from 'lucide-react'
 import { Reveal } from './Reveal'
 import heroImage from '../../asserts/background-removed.webp'
 import type { HeroSettings } from '../../../admin/server/settings-schema'
@@ -63,7 +64,7 @@ export function HeroSection({
         {/* Left — statement, actions, proof. Centred on mobile, left-aligned
             from lg up where it sits in its own column. */}
         <div className="order-2 flex flex-col items-center gap-4 text-center sm:gap-5 lg:order-1 lg:col-span-3 lg:items-start lg:text-left">
-          <Reveal delay={100}>
+          <Reveal eager>
             <p className="max-w-xs text-xl font-bold leading-tight text-text-primary sm:text-2xl lg:text-[1.75rem]">
               {settings.statementLine1}{' '}
               <span className="text-text-tertiary">
@@ -75,16 +76,14 @@ export function HeroSection({
             </p>
           </Reveal>
 
-          <Reveal delay={200}>
+          <Reveal eager>
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
               <a
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-container px-6 py-3 text-base font-semibold text-white shadow-[0_0_24px_var(--portfolio-glow-cta)] transition-opacity hover:opacity-90"
                 href={settings.ctaPrimaryHref}
               >
                 {settings.ctaPrimaryLabel}
-                <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
-                  arrow_forward
-                </span>
+                <ArrowRight className="size-[18px]" aria-hidden="true" />
               </a>
               <a
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-border px-6 py-3 text-base font-semibold text-text-primary transition-colors hover:border-accent-gold hover:text-accent-gold"
@@ -106,15 +105,16 @@ export function HeroSection({
                   <source
                     type="image/webp"
                     srcSet={portrait.responsiveSrcSet}
-                    sizes="(max-width: 639px) 64vw, (max-width: 1023px) 46vw, 22vw"
+                    sizes="(max-width: 639px) 270px, (max-width: 1023px) 300px, 320px"
                   />
                 ) : null}
                 <img
                   src={portrait?.url ?? heroImage}
+                  srcSet={portrait?.responsiveSrcSet ?? undefined}
                   alt={portrait?.altText || 'Dr. R. Surendiran'}
                   width={portrait?.width ?? 690}
                   height={portrait?.height ?? 814}
-                  sizes="(max-width: 639px) 64vw, (max-width: 1023px) 46vw, 22vw"
+                  sizes="(max-width: 639px) 270px, (max-width: 1023px) 300px, 320px"
                   decoding="async"
                   fetchPriority="high"
                   className="block h-full w-full scale-[1.06] bg-transparent object-cover object-center lg:scale-[1.03]"
@@ -130,7 +130,7 @@ export function HeroSection({
 
         {/* Right — the counter-statement */}
         <div className="order-3 lg:order-3 lg:col-span-3 lg:flex lg:items-center">
-          <Reveal delay={150}>
+          <Reveal eager>
             <p className="mx-auto max-w-xs text-center text-lg font-semibold leading-snug text-text-secondary sm:text-xl lg:mx-0 lg:text-left lg:text-[1.375rem]">
               {settings.counterStatement}
             </p>

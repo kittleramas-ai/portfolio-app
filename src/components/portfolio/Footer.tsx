@@ -1,3 +1,4 @@
+import { ArrowUp } from 'lucide-react'
 import { SignatureMark } from './SignatureMark'
 import type { SignatureMedia } from './media-types'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
@@ -136,9 +137,7 @@ export function Footer({
             onClick={scrollToTop}
           >
             <span>{settings.backToTopLabel}</span>
-            <span className="material-symbols-outlined text-[16px] transition-transform duration-200 group-hover:-translate-y-0.5">
-              north
-            </span>
+            <ArrowUp className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5" />
           </a>
         </div>
       </div>

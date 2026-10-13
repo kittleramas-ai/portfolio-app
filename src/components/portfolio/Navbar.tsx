@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { Menu, X } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import type { SignatureMedia } from './media-types'
 import { SignatureMark } from './SignatureMark'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { NavbarSettings } from '../../../admin/server/settings-schema'
 import { getSmoother } from '../../routes/lib/gsap'
@@ -134,9 +136,7 @@ export function Navbar({
               className="flex items-center gap-2 text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
               onClick={() => setMenuOpen(true)}
             >
-              <span className="material-symbols-outlined text-[28px]" aria-hidden="true">
-                menu
-              </span>
+              <Menu className="size-7" aria-hidden="true" />
               <span className="hidden sm:inline font-bold uppercase tracking-widest text-sm">
                 {settings.menuButtonLabel}
               </span>
@@ -164,9 +164,7 @@ export function Navbar({
               onClick={() => setMenuOpen(false)}
               className="absolute top-8 left-8 flex items-center justify-center text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[28px]" aria-hidden="true">
-                close
-              </span>
+              <X className="size-7" aria-hidden="true" />
             </button>
 
             {/* Menu Links */}
@@ -179,7 +177,7 @@ export function Navbar({
                     href={link.href}
                     onClick={() => handleNavClick(link.href)}
                     {...(isExternal(link.href)
-                      ? { rel: 'noopener noreferrer', target: '_blank' }
+                       ? { rel: 'noopener noreferrer', target: '_blank' }
                       : {})}
                     className={`text-4xl md:text-5xl lg:text-[56px] leading-tight font-headline-lg font-bold uppercase tracking-tight transition-all duration-200 transform hover:translate-x-4 ${
                       isActive
@@ -203,9 +201,7 @@ export function Navbar({
                   : {})}
               >
                 {settings.ctaLabel}
-                <span className="material-symbols-outlined">
-                  {settings.ctaIcon}
-                </span>
+                <AppIcon name={settings.ctaIcon} className="size-5" />
               </a>
             </div>
           </div>

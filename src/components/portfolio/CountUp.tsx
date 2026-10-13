@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { prefersReducedMotion } from '../../routes/lib/gsap'
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
 import { cn } from '../../routes/lib/utils'
 
 interface CountUpProps {
@@ -55,7 +55,7 @@ export function CountUp({
   const animatedRef = React.useRef(false)
 
   React.useEffect(() => {
-    if (prefersReducedMotion() || typeof window === 'undefined') {
+    if (prefersReducedMotion() || typeof window === 'undefined' || isMobileDevice()) {
       setDisplayValue(formatNumber(target, isComma))
       animatedRef.current = true
       return

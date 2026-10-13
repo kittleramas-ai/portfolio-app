@@ -25,7 +25,7 @@ export function MilestonesSection({
       id="milestones"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <Reveal>
+        <Reveal eager>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-border">
           {settings.metrics.map((m) => (
             <div key={m.id} className={CELL_CLASS}>

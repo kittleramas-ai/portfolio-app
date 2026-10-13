@@ -6,32 +6,22 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ========================================================================= */
-/* SELF-HOSTED DISPLAY FONT (Anton + Bebas Neue fallback)                     */
-/* The hero monogram and the founder's name are the most prominent type on the */
-/* site, and both were silently falling back to a generic sans whenever the    */
-/* Google Fonts request was slow, blocked, or offline — `font-display: swap`  */
-/* paints the fallback first, so a slow CDN showed the wrong face outright.   */
-/* Self-hosting removes that network dependency and the FOUT entirely.        */
-/* Latin subset only (the hero text is ASCII): 18KB + 13KB.                   */
-/* font-display: swap is kept so text still paints immediately if a file is   */
-/* ever slow; unicode-range stops these from being used for other scripts.     */
+/* SELF-HOSTED HERO HEADLINE FONT (Anton - 18 kB woff2)                      */
 /* ========================================================================= */
 @font-face {
   font-family: 'Anton';
   font-style: normal;
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
   src: url('/fonts/anton-latin.woff2') format('woff2');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
     U+FFFD;
-  /* Metric overrides to prevent layout shift vs fallback (Arial Narrow) */
-  size-adjust: 85%;
-  ascent-override: 90%;
-  descent-override: 25%;
-  line-gap-override: 0%;
 }
+
+/* Remaining fonts kept disabled for maximum performance */
+/*
 @font-face {
   font-family: 'Bebas Neue';
   font-style: normal;
@@ -42,26 +32,18 @@
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
     U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
     U+FFFD;
-  /* Metric overrides to prevent layout shift vs fallback (Arial Narrow) */
   size-adjust: 90%;
   ascent-override: 92%;
   descent-override: 22%;
   line-gap-override: 0%;
 }
 
-/* ========================================================================= */
-/* SELF-HOSTED UI FONTS (Manrope + JetBrains Mono)                           */
-/* Previously loaded from Google Fonts (render-blocking). Self-hosted with    */
-/* font-display: swap for instant text rendering. Latin subset only.         */
-/* Metric overrides prevent layout shift vs system fallbacks.                */
-/* ========================================================================= */
 @font-face {
   font-family: 'Manrope';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/manrope/manrope-400.ttf') format('truetype');
-  /* Metric overrides vs system-ui fallback */
   size-adjust: 100%;
   ascent-override: 100%;
   descent-override: 25%;
@@ -118,12 +100,12 @@
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/jetbrains-mono/jetbrains-mono-400.ttf') format('truetype');
-  /* Metric overrides vs ui-monospace fallback */
   size-adjust: 100%;
   ascent-override: 100%;
   descent-override: 25%;
   line-gap-override: 0%;
 }
+*/
 
 :root {
   /* Portfolio palette: Executive Emerald & Bronze (private-banking luxury).
@@ -317,14 +299,21 @@
 }
 
 @theme inline {
-  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  /* Hero/monogram display face. Self-hosted (see @font-face above) with a
-     condensed fallback chain. Registered as a token rather than an inline
-     fontFamily style so `font-display` is always emitted — an unrecognised
-     utility class fails silently and falls back to the body sans, which is
-     what made the hero name render in the wrong face once. */
+  --font-sans:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   --font-display:
-    'Anton', 'Bebas Neue', 'Arial Narrow', 'Haettenschweiler', sans-serif;
+    Impact,
+    'Arial Narrow',
+    'Haettenschweiler',
+    'Helvetica Neue Condensed',
+    sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -964,7 +953,15 @@ a {
 
 .font-mono-metric,
 .font-label-badge {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace;
 }
 
 .font-body-sm,
@@ -2272,6 +2269,17 @@ html {
   .gr-bg {
     position: sticky;
     top: 0;
+  }
+  /* Disable heavy looping backdrop-filter and infinite keyframes on mobile FAB/Orb */
+  .siri-fab-glow::before {
+    animation: none;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  }
+  .animate-orb-spin,
+  .animate-orb-pulse,
+  .animate-orb-swirl,
+  .animate-orb-float {
+    animation: none;
   }
 }
 
