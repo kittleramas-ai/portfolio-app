@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as ApiAdminUploadRouteImport } from './routes/api/admin/upload'
 import { Route as ApiAdminMediaSlotRouteImport } from './routes/api/admin/media.$slot'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminUploadRoute = ApiAdminUploadRouteImport.update({
+  id: '/api/admin/upload',
+  path: '/api/admin/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAdminMediaSlotRoute = ApiAdminMediaSlotRouteImport.update({
   id: '/api/admin/media/$slot',
   path: '/api/admin/media/$slot',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/admin/media/$slot': typeof ApiAdminMediaSlotRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/admin/media/$slot': typeof ApiAdminMediaSlotRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/admin/media/$slot': typeof ApiAdminMediaSlotRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin/login' | '/admin/' | '/api/admin/media/$slot'
+  fullPaths:
+    | '/'
+    | '/admin/login'
+    | '/admin/'
+    | '/api/admin/upload'
+    | '/api/admin/media/$slot'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin/login' | '/admin' | '/api/admin/media/$slot'
-  id: '__root__' | '/' | '/admin/login' | '/admin/' | '/api/admin/media/$slot'
+  to:
+    | '/'
+    | '/admin/login'
+    | '/admin'
+    | '/api/admin/upload'
+    | '/api/admin/media/$slot'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/login'
+    | '/admin/'
+    | '/api/admin/upload'
+    | '/api/admin/media/$slot'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ApiAdminUploadRoute: typeof ApiAdminUploadRoute
   ApiAdminMediaSlotRoute: typeof ApiAdminMediaSlotRoute
 }
 
@@ -92,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin/upload': {
+      id: '/api/admin/upload'
+      path: '/api/admin/upload'
+      fullPath: '/api/admin/upload'
+      preLoaderRoute: typeof ApiAdminUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/admin/media/$slot': {
       id: '/api/admin/media/$slot'
       path: '/api/admin/media/$slot'
@@ -106,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ApiAdminUploadRoute: ApiAdminUploadRoute,
   ApiAdminMediaSlotRoute: ApiAdminMediaSlotRoute,
 }
 export const routeTree = rootRouteImport

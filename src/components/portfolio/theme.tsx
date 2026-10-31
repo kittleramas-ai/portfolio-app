@@ -22,6 +22,7 @@ function paintTheme(theme: Theme) {
   root.style.colorScheme = theme
   try {
     window.localStorage.setItem(STORAGE_KEY, theme)
+    document.cookie = `${STORAGE_KEY}=${theme};path=/;max-age=31536000;SameSite=Lax`
   } catch {
     // ignore storage errors
   }
@@ -31,7 +32,7 @@ function paintTheme(theme: Theme) {
  * Instant theme flip: toggling `.dark` re-resolves CSS variables on every
  * themed element, and any `transition: all / colors` on large layers (body,
  * sections, blurred cards) would animate hundreds of repaints over ~300ms.
- * Suppressing transitions for a single frame collapses the switch into one
+ * Suppressing transitions while the theme changes collapses the switch into one
  * synchronous repaint instead of sustained jank. The toggle switch itself
  * (`.theme-toggle`) is excluded so its slide animation still plays.
  */
@@ -40,11 +41,10 @@ function paintThemeInstant(theme: Theme) {
   const root = document.documentElement
   root.classList.add('theme-no-transitions')
   paintTheme(theme)
-  // Force a synchronous layout so the final state is flushed while
-  // transitions are still off, then re-enable on the next frame.
-  void root.offsetHeight
   requestAnimationFrame(() => {
-    root.classList.remove('theme-no-transitions')
+    requestAnimationFrame(() => {
+      root.classList.remove('theme-no-transitions')
+    })
   })
 }
 
@@ -60,18 +60,20 @@ const ThemeContext = React.createContext<{
 
 
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Always render 'light' on the first pass so client hydration matches the
-  // SSR HTML exactly. Reading localStorage here would render 'dark' on the
-  // client while the server sent 'light' (ThemeToggle aria-attributes differ),
-  // which is the hydration mismatch in the console. The stored theme is
-  // applied in the mount effect below, after hydration completes. The inline
-  // THEME_INIT_SCRIPT in __root already paints the correct `.dark` class
-  // pre-hydration, so there is no visual flash in between.
-  const [theme, setThemeState] = React.useState<Theme>('light')
-  const themeRef = React.useRef<Theme>('light')
+export function ThemeProvider({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode
+  initialTheme?: Theme
+}) {
+  // Use the server-provided initial theme (from cookie) to match SSR output.
+  // Falls back to 'light' if not provided.
+  const [theme, setThemeState] = React.useState<Theme>(initialTheme ?? 'light')
+  const themeRef = React.useRef<Theme>(initialTheme ?? 'light')
   themeRef.current = theme
   const didMountRef = React.useRef(false)
+  const lastToggleRef = React.useRef(0)
 
   // Sync stored theme post-hydration, then re-assert on every change.
   // (idempotent: when classes already match, no transition is triggered).
@@ -120,6 +122,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 
   const toggleTheme = React.useCallback(() => {
+    // Ignore rapid calls (e.g. accidental double-clicks or extension-injected
+    // events during gesture handling) — minimum 300ms between toggles.
+    const now = Date.now()
+    if (now - lastToggleRef.current < 300) return
+    lastToggleRef.current = now
     commit(themeRef.current === 'dark' ? 'light' : 'dark')
   }, [commit])
 
@@ -131,5 +138,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   return React.useContext(ThemeContext)
 }
-
 

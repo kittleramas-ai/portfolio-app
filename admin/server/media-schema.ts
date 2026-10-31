@@ -14,9 +14,9 @@ import { z } from 'zod'
 export const MEDIA_SLOTS = {
   hero_portrait: {
     label: 'Hero Portrait',
-    description: 'The full-length standing photo on the home page.',
+    description: 'The portrait photo shown in the hero on the home page.',
     maxWidth: 1400,
-    maxHeight: 2800,
+    maxHeight: 1800,
     /** Portrait aspect; anything else is rejected so the hero lockup holds. */
     aspect: 'portrait' as const,
     required: true,
@@ -40,6 +40,14 @@ export const MEDIA_SLOTS = {
   favicon: {
     label: 'Favicon',
     description: 'The small icon in the browser tab.',
+    maxWidth: 512,
+    maxHeight: 512,
+    aspect: 'square' as const,
+    required: false,
+  },
+  whatsapp_icon: {
+    label: 'WhatsApp Icon',
+    description: 'The chat icon on the floating WhatsApp button.',
     maxWidth: 512,
     maxHeight: 512,
     aspect: 'square' as const,

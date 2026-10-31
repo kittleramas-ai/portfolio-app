@@ -6,11 +6,10 @@
  * Usage: npx tsx admin/guard-check.ts
  */
 
-import { openDb } from './lib/sqlite.ts'
-import { mkdtempSync, rmSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { count, eq, inArray } from 'drizzle-orm'
 
+import { closeCheckDb, openCheckDb } from './lib/db.ts'
+import { adminSession, adminUser } from '../src/db/schema.ts'
 import {
   buildSessionCookie,
   generateSessionToken,
@@ -19,11 +18,11 @@ import {
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:3001'
 const PEPPER = 'dev-only-pepper-not-for-production' // matches env.ts dev default
-const dir = mkdtempSync(join(tmpdir(), 'guard-'))
+
+const { db } = await openCheckDb()
 
 /**
- * The dev server occasionally drops a connection mid-run (Vite re-optimising
- * after the wrangler invocations touch the same state dir). Retry so a
+ * The dev server occasionally drops a connection mid-run. Retry so a
  * transient socket reset is not reported as an auth failure.
  */
 async function get(
@@ -51,26 +50,32 @@ function check(label: string, ok: boolean, detail = '') {
   if (!ok) failures++
 }
 
-/** Run SQL against the app's own SQLite file. */
-function sql(stmt: string): string {
-  const db = openDb()
-  try {
-    db.exec(stmt)
-    return 'ok'
-  } finally {
-    db.close()
+/** Write a session row exactly as loginFn does, via the query builder. */
+async function putSession(id: string, tokenHash: string, expiresAt: number) {
+  const admin = await db
+    .select({ id: adminUser.id })
+    .from(adminUser)
+    .where(eq(adminUser.email, 'admin@portfolio.local'))
+    .limit(1)
+  const userId = admin[0]?.id
+  if (!userId) {
+    throw new Error(
+      'no admin@portfolio.local row — run: npm run db:seed',
+    )
   }
+  await db.insert(adminSession).values({
+    id,
+    userId,
+    tokenHash,
+    expiresAt: new Date(expiresAt),
+    createdAt: new Date(),
+  })
 }
 
-/** Single-column scalar query, for assertions. */
-function count(stmt: string): number {
-  const db = openDb()
-  try {
-    const row = db.prepare(stmt).get() as { c?: number } | undefined
-    return Number(row?.c ?? 0)
-  } finally {
-    db.close()
-  }
+async function dropSessions(...tokenHashes: string[]) {
+  await db
+    .delete(adminSession)
+    .where(inArray(adminSession.tokenHash, tokenHashes))
 }
 
 // --- 1. no cookie -> redirect, no admin markup
@@ -96,19 +101,14 @@ const token = generateSessionToken()
 const tokenHash = await hashSessionToken(token, PEPPER)
 const expires = new Date(Date.now() + 7 * 86_400_000)
 
-sql(`
-  DELETE FROM admin_session WHERE token_hash = '${tokenHash}';
-  INSERT INTO admin_session (id, user_id, token_hash, expires_at, created_at)
-    SELECT '${crypto.randomUUID()}', id, '${tokenHash}', ${expires.getTime()}, ${Date.now()}
-    FROM admin_user WHERE email = 'admin@portfolio.local';
-`)
+await dropSessions(tokenHash)
+await putSession(crypto.randomUUID(), tokenHash, expires.getTime())
 
-check(
-  'session row written to the database',
-  count(
-    `SELECT COUNT(*) AS c FROM admin_session WHERE token_hash = '${tokenHash}';`,
-  ) === 1,
-)
+const written = await db
+  .select({ n: count() })
+  .from(adminSession)
+  .where(eq(adminSession.tokenHash, tokenHash))
+check('session row written to the database', written.length === 1)
 
 // --- 4. with the cookie -> admin renders
 const cookie = buildSessionCookie(token, expires).split(';')[0]
@@ -156,12 +156,11 @@ check(
 // cannot discard it before the request — otherwise this test proves nothing.
 const staleToken = generateSessionToken()
 const staleHash = await hashSessionToken(staleToken, PEPPER)
-const expiredId = `${crypto.randomUUID()}-expired`
-sql(`
-  INSERT INTO admin_session (id, user_id, token_hash, expires_at, created_at)
-    SELECT '${expiredId}', id, '${staleHash}', ${Date.now() - 1000}, ${Date.now()}
-    FROM admin_user WHERE email = 'admin@portfolio.local';
-`)
+await putSession(
+  `${crypto.randomUUID()}-expired`,
+  staleHash,
+  Date.now() - 1000,
+)
 const stale = await get('/admin', { cookie: `admin_session=${staleToken}` })
 check(
   'an expired session is rejected',
@@ -170,8 +169,8 @@ check(
 )
 
 // --- cleanup
-sql(`DELETE FROM admin_session WHERE token_hash IN ('${tokenHash}', '${staleHash}');`)
-rmSync(dir, { recursive: true, force: true })
+await dropSessions(tokenHash, staleHash)
+await closeCheckDb()
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)
 if (failures > 0) process.exitCode = 1

@@ -1,4 +1,5 @@
-import signatureDark from '../../asserts/signature-dark.png'
+import signatureDark from '../../asserts/signature-dark.webp'
+import signatureDarkSmall from '../../asserts/signature-dark-180.webp'
 import { cn } from '../../routes/lib/utils'
 
 /**
@@ -28,6 +29,7 @@ export function SignatureMark({
   width = 1262,
   height = 345,
   src,
+  srcSet,
   alt = 'Dr. R. Surendiran',
 }: {
   className?: string
@@ -35,18 +37,25 @@ export function SignatureMark({
   height?: number
   /** Admin-uploaded signature. Falls back to the bundled asset. */
   src?: string | null
+  srcSet?: string | null
   alt?: string
 }) {
   const isUpload = Boolean(src)
   return (
     <img
-      src={src ?? signatureDark}
+      src={src ?? signatureDarkSmall}
+      srcSet={srcSet ?? (isUpload ? undefined : `${signatureDarkSmall} 180w, ${signatureDark} 360w`)}
+      sizes="180px"
       alt={alt}
       width={width}
       height={height}
       decoding="async"
+      style={{
+        aspectRatio: `${width} / ${height}`,
+        objectFit: 'contain',
+      }}
       className={cn(
-        'h-auto w-auto select-none',
+        'w-auto select-none',
         // Only the bundled asset needs dark -> white conversion.
         !isUpload && 'dark:invert dark:hue-rotate-180',
         className,

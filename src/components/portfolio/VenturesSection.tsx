@@ -1,5 +1,6 @@
 import { CountUp } from './CountUp'
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { VenturesSettings } from '../../../admin/server/settings-schema'
 
@@ -37,7 +38,7 @@ const CHIP_VALUE =
  */
 const THEMES = [
   {
-    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-cyan-400 relative lg:-rotate-1 min-w-0',
+    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-cyan-400 relative min-w-0',
     counter:
       'text-stat-counter font-stat-counter text-text-primary tracking-tighter shrink-0',
     badge: 'badge-pill text-[11px] font-mono-metric bg-cyan-500/10 border-cyan-400/20 text-cyan-400 tracking-wider text-center leading-snug',
@@ -47,7 +48,7 @@ const THEMES = [
     tooltip: false,
   },
   {
-    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-amber-500 relative lg:rotate-1 min-w-0',
+    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-amber-500 relative min-w-0',
     counter:
       'text-stat-counter font-stat-counter text-accent-gold tracking-tighter shrink-0',
     badge: 'badge-pill text-[11px] font-mono-metric bg-accent-gold/10 border-accent-gold/20 text-accent-gold tracking-wider text-center leading-snug',
@@ -57,7 +58,7 @@ const THEMES = [
     tooltip: true,
   },
   {
-    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-indigo-400 relative lg:-rotate-1 min-w-0',
+    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-indigo-400 relative min-w-0',
     counter:
       'text-stat-counter font-stat-counter text-indigo-400 tracking-tighter shrink-0',
     badge: 'badge-pill text-[11px] font-mono-metric bg-indigo-500/10 border-indigo-400/20 text-indigo-300 tracking-wider text-center leading-snug',
@@ -70,7 +71,7 @@ const THEMES = [
     tooltip: true,
   },
   {
-    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-emerald-500 relative lg:rotate-1 min-w-0',
+    card: 'executive-card h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between border-l-4 border-l-emerald-500 relative min-w-0',
     counter:
       'text-stat-counter font-stat-counter text-emerald-400 tracking-tighter shrink-0',
     badge: 'badge-pill text-[11px] font-mono-metric bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 tracking-wider text-center leading-snug',
@@ -248,9 +249,10 @@ export function VenturesSection({
                   {...(theme.tooltip ? { title: card.ctaLabel } : {})}
                 >
                   <span className="min-w-0 flex-1 truncate">{card.ctaLabel}</span>
-                  <span className="material-symbols-outlined text-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                    {card.ctaIcon}
-                  </span>
+                  <AppIcon
+                    name={card.ctaIcon}
+                    className="size-[18px] shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                  />
                 </a>
               </div>
             )

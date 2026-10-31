@@ -6,7 +6,7 @@ import {
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
-import { getDb } from '../../src/db/index.ts'
+import { getDb, schemaState } from '../../src/db/index.ts'
 import { adminSession, adminUser } from '../../src/db/schema.ts'
 import { verifyPassword } from './password.ts'
 import {
@@ -17,6 +17,7 @@ import {
   sessionExpiry,
 } from './session-token.ts'
 import { getSessionPepper } from './env.ts'
+import { formatIndiaTimestamp } from './time.ts'
 import { pruneExpiredSessions, requireAdmin, resolveAdmin } from './session.ts'
 import {
   settingsGroupEnvelopeSchema,
@@ -134,6 +135,7 @@ export const getAdminSettingsFn = createServerFn({ method: 'GET' }).handler(
     return {
       settings: await getSiteSettings(),
       groups: SETTINGS_GROUPS,
+      schema: await schemaState(),
     }
   },
 )
@@ -156,7 +158,7 @@ export const saveSettingsGroupFn = createServerFn({ method: 'POST' })
       ok: true as const,
       group: data.group,
       value: saved,
-      savedAt: new Date().toISOString(),
+      savedAt: formatIndiaTimestamp(new Date()),
     }
   })
 
@@ -214,6 +216,6 @@ export const deleteMediaFn = createServerFn({ method: 'POST' })
 export const updateAltTextFn = createServerFn({ method: 'POST' })
   .validator(z.object({ slot: mediaSlotKeySchema, altText: altTextSchema }))
   .handler(async ({ data }) => {
-    await requireAdmin(getRequest())
-    return updateAltText(data.slot, data.altText)
+    const admin = await requireAdmin(getRequest())
+    return updateAltText(data.slot, data.altText, admin.userId)
   })

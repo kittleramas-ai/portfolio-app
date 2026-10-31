@@ -6,15 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ========================================================================= */
-/* SELF-HOSTED DISPLAY FONT (Anton + Bebas Neue fallback)                     */
-/* The hero monogram and the founder's name are the most prominent type on the */
-/* site, and both were silently falling back to a generic sans whenever the    */
-/* Google Fonts request was slow, blocked, or offline — `font-display: swap`  */
-/* paints the fallback first, so a slow CDN showed the wrong face outright.   */
-/* Self-hosting removes that network dependency and the FOUT entirely.        */
-/* Latin subset only (the hero text is ASCII): 18KB + 13KB.                   */
-/* font-display: swap is kept so text still paints immediately if a file is   */
-/* ever slow; unicode-range stops these from being used for other scripts.     */
+/* SELF-HOSTED HERO HEADLINE FONT (Anton - 18 kB woff2)                      */
 /* ========================================================================= */
 @font-face {
   font-family: 'Anton';
@@ -22,20 +14,98 @@
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/anton-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
 }
+
+/* Remaining fonts kept disabled for maximum performance */
+/*
 @font-face {
   font-family: 'Bebas Neue';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
   src: url('/fonts/bebas-neue-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+    U+FFFD;
+  size-adjust: 90%;
+  ascent-override: 92%;
+  descent-override: 22%;
+  line-gap-override: 0%;
 }
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope/manrope-400.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/manrope/manrope-500.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope/manrope-600.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/manrope/manrope-700.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/manrope/manrope-800.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono/jetbrains-mono-400.ttf') format('truetype');
+  size-adjust: 100%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+*/
 
 :root {
   /* Portfolio palette: Executive Emerald & Bronze (private-banking luxury).
@@ -229,13 +299,20 @@
 }
 
 @theme inline {
-  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  /* Hero/monogram display face. Self-hosted (see @font-face above) with a
-     condensed fallback chain. Registered as a token rather than an inline
-     fontFamily style so `font-display` is always emitted — an unrecognised
-     utility class fails silently and falls back to the body sans, which is
-     what made the hero name render in the wrong face once. */
-  --font-display: 'Anton', 'Bebas Neue', 'Arial Narrow', 'Haettenschweiler',
+  --font-sans:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  --font-display:
+    Impact,
+    'Arial Narrow',
+    'Haettenschweiler',
+    'Helvetica Neue Condensed',
     sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -589,7 +666,7 @@ a {
   --surface-container-low: #f7f2e7;
   --text-primary: #071a12;
   --text-secondary: #3a4a42;
-  --text-tertiary: #8a8474;
+  --text-tertiary: #6b6656;
   --accent-gold: #8c6d1f;
   --glow-cyan: rgba(212, 175, 55, 0.14);
   --glow-indigo: rgba(13, 40, 30, 0.1);
@@ -680,6 +757,42 @@ a {
   --executive-input-border: rgba(140, 109, 31, 0.28);
   --executive-input-text: #071a12;
 
+  /* Concierge chat accent — its own tokens rather than the shared `amber-*`
+     remap. On ivory paper, gold (#d4af37) sits at roughly 1.9:1 against the
+     panel, which is why the header subtitle and the send glyph used to look
+     washed out; these are the values that actually hold contrast on cream.
+     Mirrored under `.dark` below. */
+  --chat-accent: #8c6d1f;
+  --chat-accent-strong: #5c4a12;
+  /* Sits ON an accent fill (send button, avatar) — cream, not obsidian. */
+  --chat-accent-contrast: #fffdf6;
+  --chat-accent-soft: rgba(140, 109, 31, 0.1);
+  --chat-accent-hover: rgba(140, 109, 31, 0.2);
+  --chat-accent-border: rgba(140, 109, 31, 0.34);
+  --chat-avatar-from: #c9a227;
+  --chat-avatar-to: #8c6d1f;
+  --chat-online: #2e7d5b;
+  --chat-online-contrast: #fffdf6;
+  /* Bubbles are SOLID, not a 10% tint over the cream panel: a translucent fill
+     let the panel gradient show through the message text's own backdrop and the
+     chat read as glass rather than as conversation. The bot sits on sage, the
+     visitor on gold — the same split the accent tokens already draw. */
+  --chat-bot-bubble-bg: #e2efe7;
+  --chat-bot-bubble-border: #b3d2c0;
+  --chat-bot-bubble-text: #1c4f36;
+  --chat-user-bubble-bg: #f3e7c5;
+  --chat-user-bubble-border: #dcc68d;
+  /* Typing strip: a dark signal surface, deliberately the opposite value to the
+     solid bubbles so "the bot is working" reads at a glance in a light panel. */
+  --chat-typing-bg: #0d2a20;
+  --chat-typing-text: #d9f2e4;
+  --chat-typing-beam: rgba(255, 255, 255, 0.22);
+  --chat-typing-rail-from: #c9a227;
+  --chat-typing-rail-to: #1f7a63;
+  /* Matches the panel gradient closely enough that the presence dot's ring
+     reads as a cut-out instead of a second border. */
+  --chat-ring: #fdfbf5;
+
   /* Backdrop */
   --backdrop-base: #fdfbf5;
   --backdrop-grid-line: rgba(140, 109, 31, 0.1);
@@ -748,6 +861,28 @@ a {
   --executive-input-border: #1e3a2e;
   --executive-input-text: #f5efe0;
 
+  --chat-accent: #e5c07b;
+  --chat-accent-strong: #d4af37;
+  --chat-accent-contrast: #071a12;
+  --chat-accent-soft: rgba(212, 175, 55, 0.12);
+  --chat-accent-hover: rgba(212, 175, 55, 0.22);
+  --chat-accent-border: rgba(212, 175, 55, 0.4);
+  --chat-avatar-from: #e5c07b;
+  --chat-avatar-to: #8c6d1f;
+  --chat-online: #4ade80;
+  --chat-online-contrast: #071a12;
+  --chat-bot-bubble-bg: #143528;
+  --chat-bot-bubble-border: #26503e;
+  --chat-bot-bubble-text: #d3f1e0;
+  --chat-user-bubble-bg: #3b2f0e;
+  --chat-user-bubble-border: #5c4b1a;
+  --chat-typing-bg: #071a13;
+  --chat-typing-text: #d6f0e2;
+  --chat-typing-beam: rgba(255, 255, 255, 0.18);
+  --chat-typing-rail-from: #e5c07b;
+  --chat-typing-rail-to: #2a8f72;
+  --chat-ring: #0a1a13;
+
   --backdrop-base: #071a12;
   --backdrop-grid-line: rgba(212, 175, 55, 0.09);
   --backdrop-vignette: radial-gradient(
@@ -793,6 +928,13 @@ a {
   --color-emerald-500: var(--portfolio-emerald-500);
   --color-purple-400: var(--portfolio-purple-400);
   --color-red-500: var(--portfolio-red-500);
+
+  /* Chat accent, exposed as a colour utility so the widget can write
+     `text-chat-accent` rather than hardcoding a hex at every element. */
+  --color-chat-accent: var(--chat-accent);
+  --color-chat-accent-strong: var(--chat-accent-strong);
+  --color-chat-accent-contrast: var(--chat-accent-contrast);
+  --color-chat-online: var(--chat-online);
 }
 
 /* Custom Executive Fonts */
@@ -811,7 +953,15 @@ a {
 
 .font-mono-metric,
 .font-label-badge {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace;
 }
 
 .font-body-sm,
@@ -1053,15 +1203,18 @@ a {
   overflow: hidden;
   background: var(--backdrop-base);
   transition: background-color 300ms ease;
+  contain: strict;
+  transform: translate3d(0, 0, 0);
 }
 .site-backdrop-aurora {
   position: absolute;
   width: 56vmax;
   height: 56vmax;
   border-radius: 9999px;
-  filter: blur(90px);
+  filter: blur(36px);
   opacity: 0.32;
-  will-change: transform;
+  transform: translateZ(0);
+  pointer-events: none;
 }
 .dark .site-backdrop-aurora {
   opacity: 0.5;
@@ -1362,18 +1515,18 @@ a {
 
 @keyframes drift-a {
   from {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(4vmax, 3vmax, 0) scale(1.08);
+    transform: translate3d(40px, 30px, 0);
   }
 }
 @keyframes drift-b {
   from {
-    transform: translate3d(0, 0, 0) scale(1.05);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(-4vmax, 4vmax, 0) scale(1);
+    transform: translate3d(-40px, 40px, 0);
   }
 }
 
@@ -1390,6 +1543,29 @@ a {
   opacity: 1;
   transform: translateY(0);
 }
+/* Metric counter.
+ *
+ * The figure is always the REAL value in the DOM — that is what the server
+ * sent, what a crawler reads, what a no-JS visitor sees. `count-up-pending`
+ * only suppresses it visually, and only while the number sits entirely below
+ * the fold waiting for its turn to count up. It exists so the visitor never
+ * arrives at a row showing a static "0" before the tween has started, which
+ * was the "counts load late" symptom.
+ *
+ * The rule is scoped to `@media (scripting: enabled)` so the class has zero
+ * effect when JavaScript is disabled (crawlers, no-JS users read the real
+ * number directly). It is also disabled under `prefers-reduced-motion`.
+ *
+ * No transition on purpose: the pending class is added in a layout effect
+ * while the element is off screen, and removed in the same commit that starts
+ * the tween. A transition would only smear across the moment the number
+ * appears. */
+@media (scripting: enabled) and (not (prefers-reduced-motion: reduce)) {
+  .count-up-pending {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
@@ -1398,6 +1574,51 @@ a {
   }
   .site-backdrop-aurora {
     animation: none;
+  }
+}
+
+/* ==========================================================================
+   HERO NAME REVEAL — CSS-driven, zero JS
+   ==========================================================================
+   This replaces a SplitText + GSAP tween. A GSAP reveal cannot begin until
+   the GSAP payload has downloaded AND React has hydrated, because both are
+   prerequisites of the effect that starts it; `AnimatedText` gave that wait a
+   400ms budget and gave up quietly. So on a cold refresh the name either
+   waited out ~1.2MB of GSAP or skipped its entrance entirely.
+
+   A CSS animation has neither prerequisite. It starts at first paint, so the
+   name drops in on the same frame the document does — the reveal can no longer
+   be delayed by a download, and there is no hydration-timing race to lose.
+
+   `--hero-name-y` is em, not the 90px GSAP used, because the name is
+   `clamp(2.25rem, 15vw, 13.5rem)`: a fixed 90px is 40% of the cap height on a
+   phone and a rounding error on a desktop.
+
+   `both` fill mode is what holds each word hidden through its stagger delay
+   instead of letting it flash at its final position and jump back down. It
+   reproduces SplitText's `fromTo`, which also rendered from a hidden state. */
+.hero-name-word {
+  display: inline-block;
+  animation: hero-name-drop 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--hero-word-index, 0) * 80ms);
+  will-change: transform, opacity;
+}
+@keyframes hero-name-drop {
+  from {
+    opacity: 0;
+    transform: translateY(var(--hero-name-y, 0.42em));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-name-word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    will-change: auto;
   }
 }
 
@@ -1585,19 +1806,15 @@ a {
 }
 /* ========================================================================= */
 /* GSAP ScrollSmoother + AnimatedText (GSAP only)                             */
-/* ========================================================================= */
+html {
+  scroll-behavior: smooth;
+}
 #smooth-wrapper {
   overflow-x: hidden;
   position: relative;
 }
 #smooth-content {
-  will-change: transform;
   position: relative;
-}
-/* kill native smooth-scroll which fights ScrollSmoother */
-html.gsap-smoothing,
-html.gsap-smoothing body {
-  scroll-behavior: auto !important;
 }
 .gsap-animated-text {
   overflow-wrap: break-word;
@@ -1626,6 +1843,389 @@ html.gsap-smoothing body {
   #smooth-content {
     will-change: auto;
     transform: none !important;
+  }
+}
+
+/* ========================================================================= */
+/* CONCIERGE CHAT — entrance, typing dots, presence pulse                     */
+/* ========================================================================= */
+/* Every rule here is transform/opacity only, so the panel animates without
+   triggering layout. The entrance uses the same easing as `.rise-in` so the
+   panel and its bubbles feel like one motion. */
+
+/* Panel slides up from the FAB. `transform-origin` is bottom-right because the
+   panel is anchored above the button on the right edge — scaling from any
+   other corner looks like it detaches from the FAB. */
+.chat-panel-enter {
+  transform-origin: bottom right;
+  animation: chat-panel-enter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes chat-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Bubbles pop in slightly overshooting. Replaces `.rise-in` inside the panel:
+   the shared keyframe is a flat fade-up, which reads as a page section reveal
+   rather than a message arriving. */
+.chat-bubble-enter {
+  animation: chat-bubble-enter 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes chat-bubble-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Starter cards arrive with a quieter stagger than conversation bubbles. */
+.chat-suggestion-enter {
+  animation: chat-suggestion-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes chat-suggestion-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Three-dot typing indicator. Staggered via `nth-child` delays rather than
+   three separate classes so the component can map over the array. */
+.chat-typing-dot {
+  animation: chat-typing-bounce 1.15s ease-in-out infinite;
+}
+.chat-typing-dot:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.chat-typing-dot:nth-child(3) {
+  animation-delay: 0.32s;
+}
+/* Scale rides along with the lift so each dot reads as rising AND swelling —
+   a translate alone at 6px is too small to notice on a 6px dot. */
+@keyframes chat-typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-5px) scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* Blinking caret after the dots — reads as "composing" rather than "loading". */
+.chat-typing-caret {
+  animation: chat-caret-blink 1s step-end infinite;
+}
+@keyframes chat-caret-blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The typing indicator is a lit surface, not a travelling highlight.
+   It used to be a single wide gradient whose background-position slid from
+   140% to -40%, which read as a translucent sheen washing over the bubble —
+   indistinguishable from a loading spinner and invisible on the dark green.
+   What is here now is the signal-strip treatment: a deep green field, a gold
+   rail down the leading edge running into teal at the foot, and soft vertical
+   light beams falling across it. Static, so it costs no per-frame repaint and
+   cannot be mistaken for motion. */
+.chat-typing-bubble {
+  position: relative;
+  overflow: hidden;
+  /* Creates a stacking context so the `z-index: -1` beam layer paints above the
+     bubble's own background but below its dots. */
+  isolation: isolate;
+  color: var(--chat-typing-text);
+  border-color: color-mix(in srgb, var(--chat-avatar-to) 45%, transparent);
+  background-color: var(--chat-typing-bg);
+  background-image: linear-gradient(
+    180deg,
+    var(--chat-typing-rail-from),
+    var(--chat-typing-rail-to)
+  );
+  background-size: 3px 100%;
+  background-repeat: no-repeat;
+}
+
+/* The beams. A mask fades them towards the foot so they read as light falling
+   across the surface rather than as stripes painted onto it, and a blur pass
+   softens each one into a glow instead of a hard 1px rule. */
+.chat-typing-bubble::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--chat-typing-beam) 0 1px,
+    transparent 1px 6px
+  );
+  filter: blur(0.4px);
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.35) 62%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.35) 62%,
+    transparent 100%
+  );
+}
+
+/* Avatar swaps its check glyph for a spinner while typing, so the header and the
+   transcript agree that a reply is in flight. */
+.chat-typing-avatar {
+  animation: chat-avatar-breathe 1.6s ease-in-out infinite;
+}
+
+/* The presence dot as a lit LED rather than a flat swatch: a saturated core, a
+   coloured bloom in its own currentColor, and an inset highlight so it reads as
+   a dome catching light. `currentColor` is what makes one rule serve all three
+   presence states — the component pairs each with its own text colour. */
+.chat-led {
+  box-shadow:
+    inset 0 0 2px rgba(255, 255, 255, 0.55),
+    0 0 5px 1px color-mix(in srgb, currentColor 70%, transparent),
+    0 0 12px 3px color-mix(in srgb, currentColor 35%, transparent);
+}
+
+/* Presence dot: a slow halo so the header reads as live without a hard blink. */
+.chat-presence-halo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  animation: chat-presence-pulse 2.4s ease-out infinite;
+}
+@keyframes chat-presence-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Avatar ring breathes while the bot is "thinking", so the delay before a reply
+   is legible as activity rather than a frozen widget. */
+.chat-avatar-thinking {
+  animation: chat-avatar-breathe 1.6s ease-in-out infinite;
+}
+@keyframes chat-avatar-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--chat-accent-border);
+  }
+  50% {
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+
+/* FAB attention ring while the panel is closed. */
+.chat-fab-ping {
+  animation: chat-fab-ping 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes chat-fab-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* Scroll-synced attraction hop.
+ *
+ * Gated by a CLASS, not a timer: the class is added while the visitor is
+ * scrolling through the first four sections and removed the moment they stop,
+ * so the animation always mounts from its 0% rest frame and unmounts cleanly.
+ * Restarting a looping CSS animation in place would need an `animation: none`
+ * + reflow hack, which remount-free but stateful; a class is stateless.
+ *
+ * Applied to a wrapper, never to `.siri-fab-glow` itself — that element already
+ * carries `hover:scale-110` / `active:scale-95` and the two `::before/::after`
+ * aurora rings, and a transform here would fight all three.
+ *
+ * The long flat tail (66% -> 100%) is deliberate: ~60% of each 2.6s cycle is
+ * rest, so continuous scrolling reads as repeated hops rather than a vibration. */
+.chat-fab-bounce {
+  animation: chat-fab-bounce 2.6s cubic-bezier(0.34, 0.9, 0.4, 1) infinite;
+  will-change: transform;
+}
+@keyframes chat-fab-bounce {
+  /* Anticipation squash before launch — what makes it read as a jump. */
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  6% {
+    transform: translateY(0) scale(1.08, 0.9);
+  }
+  16% {
+    transform: translateY(-26px) scale(0.96, 1.07);
+  }
+  /* Landing squash, then a smaller second hop so it looks elastic. */
+  28% {
+    transform: translateY(0) scale(1.12, 0.88);
+  }
+  38% {
+    transform: translateY(-14px) scale(0.98, 1.04);
+  }
+  48% {
+    transform: translateY(0) scale(1.06, 0.95);
+  }
+  58% {
+    transform: translateY(-6px) scale(1, 1);
+  }
+  66%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* The badge's spark spins faster while the FAB hops, so the label reads as part
+   of the same event rather than a passive caption beside a moving button. */
+.chat-nudge-sparkle {
+  animation: chat-nudge-sparkle 0.9s ease-in-out infinite;
+}
+@keyframes chat-nudge-sparkle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* Secondary "listening" hop once the visitor stops scrolling. Fires on the
+   scroll-end tail rather than repeating forever, so a parked reader still gets
+   one last nudge but an idle visitor gets nothing more. */
+.chat-fab-bounce-burst {
+  animation: chat-fab-bounce-burst 900ms cubic-bezier(0.34, 1.3, 0.5, 1) both;
+  will-change: transform;
+}
+@keyframes chat-fab-bounce-burst {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-16px) scale(0.97, 1.05);
+  }
+  62% {
+    transform: translateY(0) scale(1.1, 0.9);
+  }
+  82% {
+    transform: translateY(-5px) scale(1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Success check pops in; the step counter and composer leave as a pair. */
+.chat-success-pop {
+  animation: chat-success-pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes chat-success-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Error text shakes once, horizontally only — a vertical shake would fight the
+   transcript's scroll-in. */
+.chat-error-shake {
+  animation: chat-error-shake 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes chat-error-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel-enter,
+  .chat-bubble-enter,
+  .chat-suggestion-enter,
+  .chat-typing-dot,
+  .chat-typing-caret,
+  .chat-typing-bubble,
+  .chat-typing-avatar,
+  .chat-presence-halo::after,
+  .chat-avatar-thinking,
+  .chat-fab-ping,
+  .chat-fab-bounce,
+  .chat-fab-bounce-burst,
+  .chat-nudge-sparkle,
+  .chat-success-pop,
+  .chat-error-shake {
+    animation: none;
+  }
+  /* No keyframes means no sheen and no lift, so restore a resting look rather
+     than leaving the dots stuck at their `from` state (scaled down, 40% opacity)
+     and the bubble with a stray gradient in it. */
+  .chat-typing-dot {
+    opacity: 0.7;
+    transform: none;
+  }
+  .chat-typing-caret {
+    opacity: 1;
+  }
+  .chat-typing-bubble::before {
+    filter: none;
   }
 }
 
@@ -1670,4 +2270,286 @@ html.gsap-smoothing body {
     position: sticky;
     top: 0;
   }
+  /* Disable heavy looping backdrop-filter and infinite keyframes on mobile FAB/Orb */
+  .siri-fab-glow::before {
+    animation: none;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  }
+  .animate-orb-spin,
+  .animate-orb-pulse,
+  .animate-orb-swirl,
+  .animate-orb-float {
+    animation: none;
+  }
 }
+
+/* ========================================================================= */
+/* AI ORB & CHATBOT REDESIGN ANIMATIONS                                      */
+/* ========================================================================= */
+@keyframes orb-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.95; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes orb-swirl {
+  0% { transform: rotate(0deg) scale(1); filter: hue-rotate(0deg); }
+  50% { transform: rotate(180deg) scale(1.15); filter: hue-rotate(60deg); }
+  100% { transform: rotate(360deg) scale(1); filter: hue-rotate(0deg); }
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes orb-pill-pulse {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.3); }
+}
+
+@keyframes orb-think {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(0.92) translateY(2px); }
+}
+
+@keyframes orb-blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+
+.animate-orb-blink {
+  animation: orb-blink 4.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-orb-spin {
+  animation: orb-spin 6s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animate-orb-pulse {
+  animation: orb-pulse 3s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animate-orb-swirl {
+  animation: orb-swirl 4s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animate-orb-float {
+  animation: orb-float 3s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.animate-orb-pill-pulse {
+  animation: orb-pill-pulse 0.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-orb-think {
+  animation: orb-think 1.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ========================================================================= */
+/* COMPOSITOR PROMOTION UTILITIES                                           */
+/* Use these to promote elements that animate non-composited properties     */
+/* (border-color, box-shadow, background-position) to their own compositor  */
+/* layer, preventing jank and layout thrashing.                             */
+/* ========================================================================= */
+.promote-layer {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.promote-layer-bg {
+  will-change: background-position, background-size;
+  transform: translateZ(0);
+}
+
+.promote-layer-shadow {
+  will-change: box-shadow, transform;
+  transform: translateZ(0);
+}
+
+.promote-layer-border {
+  will-change: border-color, transform;
+  transform: translateZ(0);
+}
+
+/* APPLE INTELLIGENCE AURORA BORDER & SIRI ANIMATIONS */
+@keyframes siri-aurora-rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes siri-wave-line {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+  50% { transform: scaleY(1.3); opacity: 1; }
+}
+
+.siri-aurora-glow-container {
+  position: relative;
+  border-radius: 28px;
+}
+
+.siri-aurora-glow-container::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+  background: linear-gradient(
+    90deg,
+    #ff007f,
+    #9d4edf,
+    #00f2fe,
+    #4facfe,
+    #ffb703,
+    #ff007f
+  );
+  background-size: 100% 100%;
+  animation: siri-aurora-rotate 5s ease infinite;
+  z-index: -1;
+  opacity: 0.75;
+  filter: blur(8px);
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.siri-aurora-glow-container::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 29px;
+  background: linear-gradient(
+    90deg,
+    #ff007f,
+    #9d4edf,
+    #00f2fe,
+    #4facfe,
+    #ffb703,
+    #ff007f
+  );
+  background-size: 100% 100%;
+  animation: siri-aurora-rotate 5s ease infinite;
+  z-index: -1;
+  opacity: 0.9;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* SIRI CIRCULAR FAB INITIAL GLOW */
+.siri-fab-glow {
+  position: relative;
+  border-radius: 9999px;
+}
+
+.siri-fab-glow::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    #d4af37,
+    #ff007f,
+    #9d4edf,
+    #00f2fe,
+    #e5c07b,
+    #d4af37
+  );
+  background-size: 100% 100%;
+  animation: siri-aurora-rotate 6s linear infinite;
+  z-index: -1;
+  opacity: 0.85;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.6);
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.siri-wave-bar {
+  animation: siri-wave-line 1.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ========================================================================= */
+/* BOTTOM VIEWPORT BLUR OVERLAY                                              */
+/* ========================================================================= */
+/* A fixed overlay at the bottom of the viewport that fades content into a
+   frosted blur as it approaches the bottom edge. Creates a sense of depth
+   and transition between sections. Scoped to desktop (has hover/focus) and
+   respects reduced motion. */
+.viewport-bottom-blur {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--viewport-blur-height, 80px);
+  pointer-events: none;
+  z-index: 40; /* below FABs (z-50), above content */
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(7, 26, 18, 0.4) 50%,
+    rgba(7, 26, 18, 0.85) 100%
+  );
+  opacity: var(--viewport-blur-opacity, 1);
+  transition: opacity 300ms ease;
+  contain: strict;
+}
+
+/* Dark theme override */
+.dark .viewport-bottom-blur {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(7, 26, 18, 0.4) 50%,
+    rgba(7, 26, 18, 0.9) 100%
+  );
+}
+
+/* Respect reduced motion — disable the blur overlay animation */
+@media (prefers-reduced-motion: reduce) {
+  .viewport-bottom-blur {
+    opacity: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Mobile: lighter blur, shorter height to avoid covering too much screen */
+@media (max-width: 768px) {
+  .viewport-bottom-blur {
+    height: var(--viewport-blur-height-mobile, 60px);
+    backdrop-filter: blur(var(--viewport-blur-radius-mobile, 12px));
+    -webkit-backdrop-filter: blur(var(--viewport-blur-radius-mobile, 12px));
+  }
+}
+
+/* Hide when at the very bottom of the page (footer reached) —
+   this can be toggled via JS by adding .viewport-blur-hidden to body */
+body.viewport-blur-hidden .viewport-bottom-blur {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide in admin panel entirely — viewport blur is only for the portfolio app */
+body:has(.admin-shell) .viewport-bottom-blur,
+body:has(#admin-login) .viewport-bottom-blur,
+.admin-shell ~ .viewport-bottom-blur {
+  display: none !important;
+}
+

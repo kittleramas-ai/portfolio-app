@@ -65,10 +65,17 @@ no longer used for deployment. The old D1 database still exists but is
 abandoned — its rows were copied into `data/portfolio.db` by a one-shot script
 that has since been removed.
 
+> **`admin/integration.ts` used to test that abandoned D1 file.** It shelled out
+> to `wrangler d1 execute` and reported ALL PASS while asserting against a
+> database nothing served from — `site_media` did not even exist in it. It now
+> runs through Drizzle against the same file `resolveDatabasePath` resolves, and
+> `openCheckDb()` fails loudly if `admin_user` is missing. Worth knowing if you
+> ever wondered why the suite was green.
+
 | Concern | Choice |
 |---|---|
-| Database | SQLite file (`DATABASE_FILE`, default `data/portfolio.db`) via `better-sqlite3` |
-| Schema | Applied on first DB access with `CREATE TABLE IF NOT EXISTS`, so a VPS deploy has no migration step to forget |
+| Database | MySQL via `mysql2`. Connection string in `DATABASE_URL`; `src/db/path.ts` resolves it and `drizzle.config.ts` uses the same resolver so the CLI and runtime cannot drift |
+| Schema | Drizzle migrations in `drizzle/*.sql`, applied by `npm run db:migrate`. **A deploy step — do not skip it.** The admin Overview warns when tables are missing |
 | Uploads | `public/uploads/`, served by `server.mjs` |
 | Entry point | `server.mjs`, adapting Node req/res to the `{ fetch }` handler `vite build` emits |
 | Auth | PBKDF2-SHA256 210k; opaque 48-byte tokens stored as `sha256(token+pepper)` in an httpOnly cookie |
@@ -115,12 +122,27 @@ path.
 `integer({ mode: 'timestamp' })`, which Drizzle interprets as **seconds**, while
 the app wrote `Date.now()` (**milliseconds**). Drizzle read every `expires_at`
 back as a date in the year **58722**, so `expiresAt <= now` never fired. Fixed
-with `'timestamp_ms'`. Caught by `admin/expiry-check.ts`.
+with `'timestamp_ms'`, and kept honest by `admin/expiry-check.ts`. On MySQL the
+column is now a `datetime`, which removes the unit ambiguity entirely rather than
+relying on picking the right mode.
 
 **The site silently ignored its own database.** `.env.local` still carried
 `DATABASE_URL="dev.db"` from the starter template, which took priority over the
 default path and pointed the app at a different, non-existent file than the CLI
 tools used. Every read fell back to schema defaults. Removed.
+
+**The schema in the repo did not match the schema in the database.** The
+committed `drizzle/0000_admin_auth.sql` was missing the `site_media` table,
+while a hand-written `CREATE TABLE IF NOT EXISTS` array in `src/db/index.ts`
+created it at boot. Two sources of truth, one of them stale. There is now one:
+`src/db/schema.ts`, with `drizzle/*.sql` generated from it.
+
+**`drizzle-kit migrate` reported success while applying nothing.** A column
+default was emitted as `DEFAULT (unixepoch()) * 1000` — invalid in a SQLite
+DEFAULT clause, because the `*` needs enclosing parentheses. The CLI swallowed
+the error, created the bookkeeping table, and printed "migrations applied
+successfully". Found by running drizzle's programmatic migrator, which surfaces
+the failure. Worth knowing if a migration ever appears to do nothing.
 
 ---
 

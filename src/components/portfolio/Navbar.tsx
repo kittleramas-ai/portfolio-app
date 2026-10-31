@@ -1,9 +1,12 @@
 import * as React from 'react'
+import { Menu, X } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import type { SignatureMedia } from './media-types'
 import { SignatureMark } from './SignatureMark'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { NavbarSettings } from '../../../admin/server/settings-schema'
+import { getSmoother } from '../../routes/lib/gsap'
 
 const DEFAULT_NAV = DEFAULT_SITE_SETTINGS.navbar
 
@@ -23,10 +26,23 @@ export function Navbar({
   const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50)
-    onScroll()
+    let ticking = false
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50)
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    // Defer initial check to requestAnimationFrame to avoid forced reflow on initial mount
+    const rId = window.requestAnimationFrame(onScroll)
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.cancelAnimationFrame(rId)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
 
   React.useEffect(() => {
@@ -73,15 +89,21 @@ export function Navbar({
   /** External links open in a new tab; in-page anchors stay in place. */
   const isExternal = (href: string) => !href.startsWith('#')
 
-  // Prevent scrolling when menu is open
+  // Prevent scrolling when menu is open. ScrollSmoother drives the page
+  // scroll itself, so body overflow alone is not enough — pause it too, or
+  // wheel events over the menu panel scroll the page behind the overlay.
   React.useEffect(() => {
+    const smoother = getSmoother()
     if (menuOpen) {
       document.body.style.overflow = 'hidden'
+      smoother?.paused(true)
     } else {
       document.body.style.overflow = 'unset'
+      smoother?.paused(false)
     }
     return () => {
       document.body.style.overflow = 'unset'
+      smoother?.paused(false)
     }
   }, [menuOpen])
 
@@ -89,7 +111,7 @@ export function Navbar({
     <>
       {/* Top Banner Header Block */}
       <header
-        className={`fixed top-0 inset-x-0 w-full z-40 transition-all duration-300 ${
+        className={`fixed top-0 inset-x-0 w-full z-40 transition-all duration-300 promote-layer-border ${
           scrolled
             ? 'bg-obsidian-base/90 backdrop-blur-md border-b border-slate-border/50 shadow-md'
             : 'bg-transparent border-transparent'
@@ -101,6 +123,7 @@ export function Navbar({
             <SignatureMark
               className="h-12 sm:h-14 lg:h-16"
               src={signature?.url}
+              srcSet={signature?.responsiveSrcSet}
               alt={signature?.altText || undefined}
             />
           </a>
@@ -112,12 +135,12 @@ export function Navbar({
             <button
               type="button"
               aria-label="Toggle Navigation Menu"
+              aria-expanded={menuOpen}
+              aria-controls="navigation-drawer"
               className="flex items-center gap-2 text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
               onClick={() => setMenuOpen(true)}
             >
-              <span className="material-symbols-outlined text-[28px]">
-                menu
-              </span>
+              <Menu className="size-7" aria-hidden="true" />
               <span className="hidden sm:inline font-bold uppercase tracking-widest text-sm">
                 {settings.menuButtonLabel}
               </span>
@@ -128,23 +151,24 @@ export function Navbar({
 
       {/* Full Screen Split Overlay Menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-[100] flex animate-in fade-in duration-300 justify-end">
+        <div id="navigation-drawer" role="dialog" aria-modal="true" aria-label="Navigation Menu" className="fixed inset-0 z-[100] flex animate-in fade-in duration-300 justify-end">
           {/* Left side: Transparent overlay to close */}
           <div
             className="hidden sm:block flex-1 bg-black/20 backdrop-blur-sm cursor-pointer"
             onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
           ></div>
 
           {/* Right side: Solid menu panel */}
           <div className="w-full sm:w-[450px] md:w-[550px] lg:w-[600px] xl:w-[700px] h-full bg-obsidian-base shadow-2xl relative flex flex-col items-start px-8 sm:px-16 md:px-24 pt-24 pb-16 overflow-y-auto animate-in slide-in-from-right-8 duration-300">
             {/* Close Button */}
             <button
+              type="button"
+              aria-label="Close navigation menu"
               onClick={() => setMenuOpen(false)}
-              className="absolute top-8 left-8 flex items-center justify-center text-text-secondary hover:text-accent-gold transition-colors focus:outline-none"
+              className="absolute top-8 left-8 flex items-center justify-center text-text-secondary hover:text-accent-gold transition-colors focus:outline-none cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[28px]">
-                close
-              </span>
+              <X className="size-7" aria-hidden="true" />
             </button>
 
             {/* Menu Links */}
@@ -157,7 +181,7 @@ export function Navbar({
                     href={link.href}
                     onClick={() => handleNavClick(link.href)}
                     {...(isExternal(link.href)
-                      ? { rel: 'noopener noreferrer', target: '_blank' }
+                       ? { rel: 'noopener noreferrer', target: '_blank' }
                       : {})}
                     className={`text-4xl md:text-5xl lg:text-[56px] leading-tight font-headline-lg font-bold uppercase tracking-tight transition-all duration-200 transform hover:translate-x-4 ${
                       isActive
@@ -181,9 +205,7 @@ export function Navbar({
                   : {})}
               >
                 {settings.ctaLabel}
-                <span className="material-symbols-outlined">
-                  {settings.ctaIcon}
-                </span>
+                <AppIcon name={settings.ctaIcon} className="size-5" />
               </a>
             </div>
           </div>

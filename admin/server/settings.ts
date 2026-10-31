@@ -9,11 +9,65 @@ import {
   SITE_SETTINGS_SHAPE,
 } from './settings-schema.ts'
 import type {
+  ChatbotSettings,
   ContactSettings,
   HeroSettings,
+  MilestonesSettings,
   SettingsGroupKey,
   SiteSettings,
 } from './settings-schema.ts'
+import { indiaDateTimeSql } from './time.ts'
+
+const LEGACY_MILESTONE_REPLACEMENTS: Record<
+  string,
+  MilestonesSettings['metrics'][number]
+> = {
+  'INTERNATIONAL JOURNALS': DEFAULT_SITE_SETTINGS.milestones.metrics[2],
+  'SCOPUS INDEXED': DEFAULT_SITE_SETTINGS.milestones.metrics[3],
+  'PROJECTS DELIVERED': DEFAULT_SITE_SETTINGS.milestones.metrics[3],
+}
+
+function replaceLegacyMilestones(
+  settings: MilestonesSettings,
+): MilestonesSettings {
+  return {
+    ...settings,
+    metrics: settings.metrics.map((metric) => {
+      const replacement = LEGACY_MILESTONE_REPLACEMENTS[metric.label]
+      return replacement ? { ...replacement, id: metric.id } : metric
+    }),
+  }
+}
+
+function replaceLegacyChatbotCopy(
+  settings: ChatbotSettings,
+): ChatbotSettings {
+  const defaults = DEFAULT_SITE_SETTINGS.chatbot
+  return {
+    ...settings,
+    headerTitle:
+      settings.headerTitle === 'CEO Concierge'
+        ? defaults.headerTitle
+        : settings.headerTitle,
+    typingIndicatorLabel:
+      settings.typingIndicatorLabel === 'CEO Concierge is typing'
+        ? defaults.typingIndicatorLabel
+        : settings.typingIndicatorLabel,
+    fabLabel:
+      settings.fabLabel === 'CEO Concierge'
+        ? defaults.fabLabel
+        : settings.fabLabel,
+    emptyStatePrompt:
+      settings.emptyStatePrompt === 'Say hi to begin.'
+        ? defaults.emptyStatePrompt
+        : settings.emptyStatePrompt,
+    greetingPrompt:
+      settings.greetingPrompt ===
+      "Hello! I'm the CEO Concierge. May I start by getting your name?"
+        ? defaults.greetingPrompt
+        : settings.greetingPrompt,
+  }
+}
 
 /**
  * Schema per settings group, keyed by the group name.
@@ -66,7 +120,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
     // Merge over defaults so a row saved before a new field existed still
     // picks up that field's default instead of rendering `undefined`.
-    return { ...fallback(), ...parsed.data }
+    const merged = { ...fallback(), ...parsed.data }
+    if (key === 'milestones') {
+      return replaceLegacyMilestones(
+        merged as MilestonesSettings,
+      ) as SiteSettings[TGroup]
+    }
+    if (key === 'chatbot') {
+      return replaceLegacyChatbotCopy(
+        merged as ChatbotSettings,
+      ) as SiteSettings[TGroup]
+    }
+    return merged
   }
 
   return Object.fromEntries(
@@ -97,8 +162,12 @@ export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
   const db = getDb()
   const now = new Date()
 
-  // INSERT ... ON CONFLICT DO UPDATE — one statement, no read-modify-write, so
-  // two concurrent saves to the same group cannot lose one another.
+  // INSERT ... ON DUPLICATE KEY UPDATE — one statement, no read-modify-write,
+  // so two concurrent saves to the same group cannot lose one another.
+  //
+  // `onDuplicateKeyUpdate` is MySQL's ON DUPLICATE KEY UPDATE. SQLite's
+  // `onConflictDoUpdate` named a conflict target, which MySQL has no equivalent
+  // of because ANY unique-key violation takes the update path.
   await db
     .insert(siteSetting)
     .values({
@@ -108,8 +177,7 @@ export async function saveSettingsGroup<TGroup extends SettingsGroupKey>(
       updatedAt: now,
       updatedBy,
     })
-    .onConflictDoUpdate({
-      target: siteSetting.key,
+    .onDuplicateKeyUpdate({
       set: {
         value: JSON.stringify(parsed),
         updatedAt: now,

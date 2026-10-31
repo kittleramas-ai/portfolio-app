@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { ChevronDown, ChevronRight, Plus, Trash2 } from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
+import type { LucideProps } from 'lucide-react'
 import type { ZodType } from 'zod'
-
+import { useRef, useState } from 'react';
+import { AppIcon, getLucideIcon } from '../../src/components/portfolio/AppIcon.tsx'
 import { saveSettingsGroupFn } from '../server/api.ts'
 import type { SettingsGroupKey, SiteSettings } from '../server/settings-schema.ts'
 import { SETTINGS_GROUPS } from '../server/settings-schema.ts'
@@ -12,6 +13,16 @@ import {
   readServerError,
 } from './fields.tsx'
 import type { SaveState } from './fields.tsx'
+
+const { ChevronDown, ChevronRight, ExternalLink, Plus, Trash2 } = LucideIcons
+
+function AdminIconPreview({ name, className }: { name?: string; className?: string }) {
+  const Component = getLucideIcon(name)
+  if (!Component) {
+    return <LucideIcons.HelpCircle className={className} />
+  }
+  return <Component className={className} />
+}
 
 /**
  * The subset of JSON Schema that `z.toJSONSchema` emits for our content
@@ -75,19 +86,69 @@ const ACCENTS = [
   'sky',
 ] as const
 
-/** A representative slice of Material Symbols for the icon datalist. */
+/** Curated list of popular Lucide and legacy icon names for auto-suggestions. */
 const ICON_SUGGESTIONS = [
+  // Common Lucide actions & symbols
+  'rocket',
+  'sparkles',
+  'flame',
+  'zap',
+  'award',
+  'star',
+  'trophy',
+  'medal',
+  'target',
+  'compass',
+  'globe',
+  'map-pin',
+  'activity',
+  'trending-up',
+  'bar-chart',
+  'layers',
+  'layout',
+  'shield',
+  'shield-check',
+  'lock',
+  'key',
+  'user',
+  'users',
+  'building',
+  'briefcase',
+  'file-text',
+  'book',
+  'book-open',
+  'graduation-cap',
+  'cpu',
+  'database',
+  'server',
+  'terminal',
+  'code',
+  'laptop',
+  'smartphone',
+  'cloud',
+  'mail',
+  'phone',
+  'send',
+  'external-link',
+  'arrow-right',
+  'arrow-up-right',
+  'arrow-up',
+  'check',
+  'check-circle',
+  'calendar',
+  'clock',
+  'heart',
+  'heart-handshake',
+  // Legacy / Material compatibility names
   'rocket_launch',
   'school',
   'campaign',
   'hub',
-  'cloud',
   'bolt',
   'verified_user',
   'currency_rupee',
   'menu_book',
   'payments',
-  'terminal',
   'cognition',
   'public',
   'groups',
@@ -99,7 +160,6 @@ const ICON_SUGGESTIONS = [
   'arrow_forward',
   'arrow_outward',
   'volunteer_activism',
-  'north',
 ]
 
 /** Uppercase the acronyms that camelCase splitting would otherwise mangle. */
@@ -333,6 +393,26 @@ function Field({
   const hint = HINTS[path]
   const key = path.split('.').pop() ?? ''
 
+  if (schema.type === 'object') {
+    return (
+      <fieldset className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-row)] p-4">
+        <legend className="px-1 font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
+          {label}
+        </legend>
+        <ObjectFields
+          object={schema}
+          value={
+            value && typeof value === 'object' && !Array.isArray(value)
+              ? (value as Record<string, unknown>)
+              : {}
+          }
+          path={path}
+          onChange={onChange}
+        />
+      </fieldset>
+    )
+  }
+
   if (schema.type === 'array') {
     const itemSchema = schema.items
     const items = Array.isArray(value) ? value : []
@@ -407,15 +487,26 @@ function Field({
   }
 
   if (schema.type === 'boolean') {
+    const isChecked = Boolean(value)
     return (
-      <label className="flex items-center gap-2.5">
-        <input
-          type="checkbox"
-          checked={Boolean(value)}
-          onChange={(e) => onChange(e.target.checked)}
-          className="size-4 accent-[#d4af37]"
-        />
-        <span className="font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
+      <label className="group flex cursor-pointer items-center gap-3">
+        <div className="relative flex items-center">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={(e) => onChange(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            className={`block h-5 w-9 rounded-full transition-colors duration-200 ease-in-out ${isChecked ? 'bg-[#d4af37]' : 'bg-[var(--admin-border)] group-hover:bg-[#3a443e]'
+              }`}
+          />
+          <div
+            className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out ${isChecked ? 'translate-x-4 shadow-sm' : 'translate-x-0'
+              }`}
+          />
+        </div>
+        <span className="font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb] transition-colors group-hover:text-white">
           {label}
         </span>
       </label>
@@ -489,7 +580,9 @@ function Field({
 
   // Strings, including the null union collapsed to ''.
   const text = typeof value === 'string' ? value : value == null ? '' : String(value)
-  const isIcon = key.endsWith('Icon')
+  /** `icon` bare as well as `*Icon`: list items are addressed by their plain
+   *  key, so `ventures.pills.*.icon` would otherwise miss the picker. */
+  const isIcon = key === 'icon' || key.endsWith('Icon')
   /**
    * `maxLength` is the multiline signal, because a 300-character limit means
    * display copy and a 40-character one means a label. Links are the
@@ -497,27 +590,50 @@ function Field({
    * a tall box for "#advisory" wastes the most eye-catching space on the form.
    */
   const isLink = key.endsWith('Href') || key.endsWith('Url')
+  const isImageUrl = key.endsWith('Url')
   const multiline =
     hint?.multiline || (!isLink && !isIcon && (schema.maxLength ?? 0) >= 200)
 
   if (isIcon) {
+    const hasIcon = Boolean(getLucideIcon(text))
     return (
       <label className="block">
         <span className="mb-1.5 block font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
           {label}
         </span>
-        <input
-          list="material-symbols"
-          value={text}
-          onChange={(e) => onChange(e.target.value)}
-          className={inputClass}
-          placeholder="menu_book"
-        />
-        <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
-          A Google Material Symbols name. Unknown names fall back to the glyph
-          spelling, so check it renders on the site.
-        </span>
-        <datalist id="material-symbols">
+        <div className="flex items-center gap-2">
+          <div
+            className={`flex size-9 shrink-0 items-center justify-center rounded border transition-colors ${hasIcon
+                ? 'border-[var(--admin-gold)]/40 bg-[#1a2e24] text-[var(--admin-gold)] shadow-sm'
+                : 'border-red-500/30 bg-red-950/20 text-red-400'
+              }`}
+            title={hasIcon ? `Previewing: ${text}` : `Icon "${text}" not found`}
+          >
+            <AdminIconPreview name={text} className="size-5" />
+          </div>
+          <input
+            list="icon-suggestions"
+            value={text}
+            onChange={(e) => onChange(e.target.value.trim().toLowerCase().replace(/[\s]+/g, '-'))}
+            className={inputClass}
+            placeholder="e.g. rocket, book-open, or rocket_launch"
+          />
+        </div>
+        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1 text-[12px]">
+          <span className="text-[#7a8a80]">
+            Supports standard Lucide icons (e.g. <code>rocket</code>, <code>book-open</code>, <code>shield</code>) or legacy names.
+          </span>
+          <a
+            href="https://lucide.dev/icons"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-semibold text-[var(--admin-gold)] underline underline-offset-2 hover:opacity-80"
+          >
+            Browse Lucide Icons
+            <ExternalLink className="size-3.5" />
+          </a>
+        </div>
+        <datalist id="icon-suggestions">
           {ICON_SUGGESTIONS.map((name) => (
             <option key={name} value={name} />
           ))}
@@ -548,19 +664,104 @@ function Field({
       <span className="mb-1.5 block font-mono-metric text-[11px] uppercase tracking-[0.18em] text-[#b8c4bb]">
         {label}
       </span>
-      <input
-        type={key.endsWith('Url') ? 'url' : 'text'}
-        value={text}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputClass}
-      />
+      <div className="flex items-center gap-2">
+        <input
+          type={key.endsWith('Url') ? 'url' : 'text'}
+          value={text}
+          onChange={(e) => onChange(e.target.value)}
+          className={inputClass}
+        />
+        {isImageUrl ? <FilePickerButton onUploaded={(url) => onChange(url)} /> : null}
+      </div>
       {countHint(schema, text, false)}
+      {isImageUrl ? (
+        <>
+          <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
+            JPEG, PNG or WebP, max 5 MB. After uploading, save this section to
+            persist the image URL.
+          </span>
+          {text ? (
+            <img
+              src={text}
+              alt={`${label} preview`}
+              className="mt-2 h-16 max-w-48 rounded-md border border-[var(--admin-border)] bg-white p-1 object-contain"
+            />
+          ) : null}
+        </>
+      ) : null}
       {key.endsWith('Href') && !schema.description ? (
         <span className="mt-1.5 block text-[12px] text-[#7a8a80]">
           A #section anchor on this page, or a full URL.
         </span>
       ) : null}
     </label>
+  )
+}
+
+function FilePickerButton({
+  onUploaded,
+}: {
+  onUploaded: (url: string) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+
+    setBusy(true)
+    setError(null)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: form,
+        credentials: 'same-origin',
+      })
+      const json = (await res.json()) as {
+        ok: boolean
+        error?: string
+        url?: string
+      }
+      if (!json.ok || !json.url) {
+        setError(json.error ?? 'Upload failed.')
+        return
+      }
+      onUploaded(json.url)
+    } catch {
+      setError('Upload failed. Check your connection and try again.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <span className="relative inline-flex shrink-0">
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={busy}
+        className="rounded-lg border border-[var(--admin-border)] bg-transparent px-3 py-2 font-mono-metric text-[11px] uppercase tracking-wider text-[#b8c4bb] transition-colors hover:border-[var(--admin-gold)] hover:text-[var(--admin-gold)] disabled:cursor-not-allowed disabled:opacity-35"
+      >
+        {busy ? 'Uploading…' : 'Choose file'}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={onPick}
+        className="hidden"
+      />
+      {error ? (
+        <span className="absolute left-0 top-full mt-1 whitespace-nowrap text-[11px] text-red-400">
+          {error}
+        </span>
+      ) : null}
+    </span>
   )
 }
 
@@ -574,6 +775,23 @@ function Field({
  * textarea, where the limit is genuinely hard to hit by eye, and on any field
  * once the value is within a quarter of the cap.
  */
+/**
+ * Turn what the manager can see on Google's icon page into the ligature name
+ * the site actually renders.
+ *
+ * The catalogue shows "Add Circle" and aliases like "+ add, circle, counter…",
+ * so copy-pasting or typing either of those stores a string that renders as
+ * nothing. Lowercasing and folding to snake_case as they type removes the whole
+ * class of mistake rather than reporting it after the fact.
+ */
+function normaliseIconName(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+}
+
 function countHint(schema: JsonSchema, text: string, multiline: boolean) {
   const max = schema.maxLength
   if (!max) return null

@@ -1,4 +1,5 @@
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { GovernanceSettings } from '../../../admin/server/settings-schema'
 
@@ -91,7 +92,7 @@ export function GovernanceSection({
             <div key={role.id} className="executive-card rounded-3xl p-8 flex flex-col justify-between">
               <div>
                 <div className={`w-12 h-12 rounded-2xl ${accent.softBg} border ${accent.border} flex items-center justify-center ${accent.text} mb-6 shadow-md`}>
-                  <span className="material-symbols-outlined text-[26px]">{role.icon}</span>
+                  <AppIcon name={role.icon} className="size-[26px]" />
                 </div>
                 <div className={`text-mono-metric font-mono-metric ${accent.text} text-[12px] uppercase tracking-wider mb-2 font-semibold`}>
                   {role.kicker}

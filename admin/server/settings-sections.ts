@@ -89,36 +89,39 @@ const metricSchema = z.object({
 })
 
 export const milestonesSettingsSchema = z.object({
-  metrics: z.array(metricSchema).max(8).default([
-    {
-      id: 'm1',
-      label: 'PROFESSIONALS',
-      value: 50,
-      suffix: '+',
-      footnote: 'infodazz team · trichy • madurai • karaikudi • kumbakonam',
-    },
-    {
-      id: 'm2',
-      label: 'VENTURES FOUNDED',
-      value: 4,
-      suffix: '',
-      footnote: 'infodazz · kittle · seventh sense · kaster trust',
-    },
-    {
-      id: 'm3',
-      label: 'INTERNATIONAL JOURNALS',
-      value: 30,
-      suffix: '+',
-      footnote: 'seventh sense · research publishing platform',
-    },
-    {
-      id: 'm4',
-      label: 'SCOPUS INDEXED',
-      value: 5,
-      suffix: '+',
-      footnote: 'scopus journals · academic collaboration support',
-    },
-  ]),
+  metrics: z
+    .array(metricSchema)
+    .max(8)
+    .default([
+      {
+        id: 'm1',
+        label: 'PROFESSIONALS',
+        value: 50,
+        suffix: '+',
+        footnote: 'infodazz team · trichy • madurai • karaikudi • kumbakonam',
+      },
+      {
+        id: 'm2',
+        label: 'VENTURES FOUNDED',
+        value: 4,
+        suffix: '',
+        footnote: 'infodazz · kittle · seventh sense · kaster trust',
+      },
+      {
+        id: 'm3',
+        label: 'LEADERSHIP EXPERIENCE',
+        value: 15,
+        suffix: '+',
+        footnote: 'years building ventures · teams · business operations',
+      },
+      {
+        id: 'm4',
+        label: 'KEYNOTES DELIVERED',
+        value: 25,
+        suffix: '+',
+        footnote: 'leadership · entrepreneurship · business growth',
+      },
+    ]),
 })
 
 /* ------------------------------------------------------------------- quote */
@@ -129,9 +132,7 @@ export const quoteSettingsSchema = z.object({
    * second is full white. Kept as two fields rather than one so the gradient
    * across the sentence survives editing.
    */
-  quoteLine1: line(160).default(
-    '“Technology creates possibilities,',
-  ),
+  quoteLine1: line(160).default('“Technology creates possibilities,'),
   quoteLine2: line(160).default('but people create impact.”'),
   attribution: line(80).default('Dr. R. Surendiran — Leadership Philosophy'),
   roles: line(160).default(
@@ -145,8 +146,10 @@ export const quoteSettingsSchema = z.object({
     .string()
     .trim()
     .max(600)
-    .url('Enter a full image URL')
-    .or(z.literal(''))
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
     .default(
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCHt-GFa9dNcxzSQIPTzFtGZugzZXCsvmWUvaqptV3qQcHQQYDqNzfMo7KKVdXQkA80dq9Nn4yb-_AlK94JMjQDCyVXNLPSrJs8y1rPtrLu7C7EuDrAnm3keIkJSnYgXalwhTBmHAPamsx5UZK_L4PJ0d359cuEDwQstjoUbJJDsHmNdpGtFtBjOu9RNrveJRQbHvZyhCDT77BNJcKE43ohJGvXLQDTWIc-L3795cw',
     ),
@@ -173,50 +176,53 @@ export const governanceSettingsSchema = z.object({
   intro: line(400).default(
     'Leading technology companies, research publishing platforms and social initiatives — combined with BNI and Rotary community leadership and academic mentoring.',
   ),
-  roles: z.array(governanceRoleSchema).max(6).default([
-    {
-      id: 'g1',
-      icon: 'memory',
-      kicker: 'ROLE 01 // TECHNOLOGY BUSINESSES',
-      heading: 'Founder & CEO — Infodazz • Founder — Kittle',
-      body: 'Building technology companies and digital ecosystems — Infodazz (Estd 2022, Trichy HQ, Madurai / Karaikudi / Kumbakonam, 50+ professionals) and Kittle Pvt Ltd (Trichy, IT solutions & consulting).',
-      bullets: [
-        'ERP • SaaS • Web & Mobile Apps',
-        'Digital Marketing • SEO • Design • VFX',
-        'Software Solutions • Technology Consulting',
-      ],
-      footer: 'Entities: Infodazz • Kittle Pvt Ltd',
-      accent: 'cyan',
-    },
-    {
-      id: 'g2',
-      icon: 'account_tree',
-      kicker: 'ROLE 02 // RESEARCH & EDUCATION',
-      heading: 'Founder — Seventh Sense Research Group',
-      body: 'Supporting research, education and innovation — 30+ International Journals including 5+ Scopus Indexed, plus research publications, patents, academic mentoring and research guidance.',
-      bullets: [
-        'Ph.D — Madurai Kamaraj University',
-        'MCA — Thiagarajar School of Management',
-        'B.Sc Mathematics — GAC Kumbakonam',
-      ],
-      footer: 'Entity: Seventh Sense Research Group',
-      accent: 'gold',
-    },
-    {
-      id: 'g3',
-      icon: 'school',
-      kicker: 'ROLE 03 // SOCIAL IMPACT & NETWORKS',
-      heading: 'Founder / Trustee — Kaster Trust',
-      body: 'Helping students overcome educational barriers — fee support, learning opportunities and student growth. BNI Member since 2022, Rotary Member since 2024.',
-      bullets: [
-        'Educational fee support',
-        'BNI since 2022 • Rotary since 2024',
-        'Motivational sessions • Global travel',
-      ],
-      footer: 'Entities: Kaster Trust • BNI • Rotary',
-      accent: 'emerald',
-    },
-  ]),
+  roles: z
+    .array(governanceRoleSchema)
+    .max(6)
+    .default([
+      {
+        id: 'g1',
+        icon: 'memory',
+        kicker: 'ROLE 01 // TECHNOLOGY BUSINESSES',
+        heading: 'Founder & CEO — Infodazz • Founder — Kittle',
+        body: 'Building technology companies and digital ecosystems — Infodazz (Estd 2022, Trichy HQ, Madurai / Karaikudi / Kumbakonam, 50+ professionals) and Kittle Pvt Ltd (Trichy, IT solutions & consulting).',
+        bullets: [
+          'ERP • SaaS • Web & Mobile Apps',
+          'Digital Marketing • SEO • Design • VFX',
+          'Software Solutions • Technology Consulting',
+        ],
+        footer: 'Entities: Infodazz • Kittle Pvt Ltd',
+        accent: 'cyan',
+      },
+      {
+        id: 'g2',
+        icon: 'account_tree',
+        kicker: 'ROLE 02 // RESEARCH & EDUCATION',
+        heading: 'Founder — Seventh Sense Research Group',
+        body: 'Supporting research, education and innovation — 30+ International Journals including 5+ Scopus Indexed, plus research publications, patents, academic mentoring and research guidance.',
+        bullets: [
+          'Ph.D — Madurai Kamaraj University',
+          'MCA — Thiagarajar School of Management',
+          'B.Sc Mathematics — GAC Kumbakonam',
+        ],
+        footer: 'Entity: Seventh Sense Research Group',
+        accent: 'gold',
+      },
+      {
+        id: 'g3',
+        icon: 'school',
+        kicker: 'ROLE 03 // SOCIAL IMPACT & NETWORKS',
+        heading: 'Founder / Trustee — Kaster Trust',
+        body: 'Helping students overcome educational barriers — fee support, learning opportunities and student growth. BNI Member since 2022, Rotary Member since 2024.',
+        bullets: [
+          'Educational fee support',
+          'BNI since 2022 • Rotary since 2024',
+          'Motivational sessions • Global travel',
+        ],
+        footer: 'Entities: Kaster Trust • BNI • Rotary',
+        accent: 'emerald',
+      },
+    ]),
 })
 
 /* ------------------------------------------------------------ perspectives */
@@ -239,35 +245,38 @@ export const perspectivesSettingsSchema = z.object({
   intro: line(400).default(
     'Entrepreneurship, Knowledge and Social Impact — building technology companies, supporting research & education, and helping students overcome barriers.',
   ),
-  articles: z.array(perspectiveSchema).max(6).default([
-    {
-      id: 'pe1',
-      badge: 'ENTREPRENEURSHIP',
-      meta: 'Infodazz • Kittle',
-      heading: '“Building Technology Companies and Digital Ecosystems”',
-      body: 'From academic research into entrepreneurship — Infodazz (Estd 2022, 50+ professionals, 11 services) and Kittle Pvt Ltd helping businesses grow through technology, SaaS, ERP, Web/Mobile and digital transformation.',
-      footerLabel: 'Technology Businesses',
-      accent: 'cyan',
-    },
-    {
-      id: 'pe2',
-      badge: 'KNOWLEDGE',
-      meta: 'Seventh Sense Research',
-      heading: '“Supporting Research, Education and Innovation”',
-      body: 'Seventh Sense Research Group — 30+ International Journals, 5+ Scopus Indexed, publication ecosystem and collaboration support, plus research publications, patents and academic mentoring.',
-      footerLabel: 'Research & Education',
-      accent: 'gold',
-    },
-    {
-      id: 'pe3',
-      badge: 'SOCIAL IMPACT',
-      meta: 'Kaster Trust',
-      heading: '“Helping Students Overcome Educational Barriers”',
-      body: 'Kaster Trust helps deserving students continue education by supporting fees and reducing financial barriers — encouraging learning opportunities and student growth.',
-      footerLabel: 'Education Support',
-      accent: 'emerald',
-    },
-  ]),
+  articles: z
+    .array(perspectiveSchema)
+    .max(6)
+    .default([
+      {
+        id: 'pe1',
+        badge: 'ENTREPRENEURSHIP',
+        meta: 'Infodazz • Kittle',
+        heading: '“Building Technology Companies and Digital Ecosystems”',
+        body: 'From academic research into entrepreneurship — Infodazz (Estd 2022, 50+ professionals, 11 services) and Kittle Pvt Ltd helping businesses grow through technology, SaaS, ERP, Web/Mobile and digital transformation.',
+        footerLabel: 'Technology Businesses',
+        accent: 'cyan',
+      },
+      {
+        id: 'pe2',
+        badge: 'KNOWLEDGE',
+        meta: 'Seventh Sense Research',
+        heading: '“Supporting Research, Education and Innovation”',
+        body: 'Seventh Sense Research Group — 30+ International Journals, 5+ Scopus Indexed, publication ecosystem and collaboration support, plus research publications, patents and academic mentoring.',
+        footerLabel: 'Research & Education',
+        accent: 'gold',
+      },
+      {
+        id: 'pe3',
+        badge: 'SOCIAL IMPACT',
+        meta: 'Kaster Trust',
+        heading: '“Helping Students Overcome Educational Barriers”',
+        body: 'Kaster Trust helps deserving students continue education by supporting fees and reducing financial barriers — encouraging learning opportunities and student growth.',
+        footerLabel: 'Education Support',
+        accent: 'emerald',
+      },
+    ]),
 })
 
 /* ---------------------------------------------------------------- keynotes */
@@ -288,7 +297,9 @@ const keynoteSchema = z.object({
 export const keynotesSettingsSchema = z.object({
   eyebrowIcon: line(40).default('public'),
   eyebrowTitle: line(80).default('Global Vision'),
-  eyebrowSubtitle: line(120).default('Motivational Sessions & Professional Interactions'),
+  eyebrowSubtitle: line(120).default(
+    'Motivational Sessions & Professional Interactions',
+  ),
   heading: line(120).default('KNOWLEDGE SHARING & GLOBAL EXPOSURE'),
   intro: line(400).default(
     'A passionate traveller and lifelong learner — Dr. Surendiran believes global exposure creates new perspectives and shares knowledge through motivational sessions and professional interactions.',
@@ -296,46 +307,49 @@ export const keynotesSettingsSchema = z.object({
   ctaLabel: line(60).default('Invite for Motivational Session'),
   ctaHref: line(200).default('#advisory'),
   ctaIcon: line(40).default('campaign'),
-  cards: z.array(keynoteSchema).max(6).default([
-    {
-      id: 'k1',
-      badge: 'MOTIVATIONAL SESSIONS',
-      meta: 'Students & Professionals',
-      heading:
-        '“From Farmer Family to Founder — Continuous Learning & Innovation”',
-      tagline: 'Founder Journey & Education Motivation',
-      body: 'Sharing his journey from humble beginnings through education, dedication and entrepreneurship — motivating students, researchers and aspiring founders to create opportunities through learning.',
-      footerIcon: 'groups',
-      footerLabel: 'Learning & Inspiration',
-      footerRightLabel: 'Founder Story',
-      accent: 'violet',
-    },
-    {
-      id: 'k2',
-      badge: 'PROFESSIONAL INTERACTIONS',
-      meta: 'BNI • Rotary • Business Forums',
-      heading:
-        '“Building Businesses, Research Networks & Community Collaboration”',
-      tagline: 'BNI Member since 2022 • Rotary Member since 2024',
-      body: 'Active in business and professional communities — supporting entrepreneur relationships, collaboration and community contribution through BNI and Rotary networks.',
-      footerIcon: 'military_tech',
-      footerLabel: 'BNI 2022 • Rotary 2024',
-      footerRightLabel: 'Community Networks',
-      accent: 'gold',
-    },
-    {
-      id: 'k3',
-      badge: 'GLOBAL TRAVEL',
-      meta: 'National & International',
-      heading: '“Global Exposure Creates New Perspectives and Opportunities”',
-      tagline: 'Traveller & Lifelong Learner',
-      body: 'Travelled nationally and internationally — bringing global perspectives into technology businesses, research platforms and social initiatives for students and communities.',
-      footerIcon: 'school',
-      footerLabel: 'Lifelong Learning',
-      footerRightLabel: 'Global Vision',
-      accent: 'sky',
-    },
-  ]),
+  cards: z
+    .array(keynoteSchema)
+    .max(6)
+    .default([
+      {
+        id: 'k1',
+        badge: 'MOTIVATIONAL SESSIONS',
+        meta: 'Students & Professionals',
+        heading:
+          '“From Farmer Family to Founder — Continuous Learning & Innovation”',
+        tagline: 'Founder Journey & Education Motivation',
+        body: 'Sharing his journey from humble beginnings through education, dedication and entrepreneurship — motivating students, researchers and aspiring founders to create opportunities through learning.',
+        footerIcon: 'groups',
+        footerLabel: 'Learning & Inspiration',
+        footerRightLabel: 'Founder Story',
+        accent: 'violet',
+      },
+      {
+        id: 'k2',
+        badge: 'PROFESSIONAL INTERACTIONS',
+        meta: 'BNI • Rotary • Business Forums',
+        heading:
+          '“Building Businesses, Research Networks & Community Collaboration”',
+        tagline: 'BNI Member since 2022 • Rotary Member since 2024',
+        body: 'Active in business and professional communities — supporting entrepreneur relationships, collaboration and community contribution through BNI and Rotary networks.',
+        footerIcon: 'military_tech',
+        footerLabel: 'BNI 2022 • Rotary 2024',
+        footerRightLabel: 'Community Networks',
+        accent: 'gold',
+      },
+      {
+        id: 'k3',
+        badge: 'GLOBAL TRAVEL',
+        meta: 'National & International',
+        heading: '“Global Exposure Creates New Perspectives and Opportunities”',
+        tagline: 'Traveller & Lifelong Learner',
+        body: 'Travelled nationally and internationally — bringing global perspectives into technology businesses, research platforms and social initiatives for students and communities.',
+        footerIcon: 'school',
+        footerLabel: 'Lifelong Learning',
+        footerRightLabel: 'Global Vision',
+        accent: 'sky',
+      },
+    ]),
 })
 
 /* ------------------------------------------------------------------- books */
@@ -354,7 +368,24 @@ const bookSchema = z.object({
    */
   tone: z.enum(['dark', 'light']),
   /** Resolved to one of six fixed cover swatches inside the component. */
-  cover: z.enum(['primary', 'slate900', 'slate800', 'slate700', 'slate300', 'slate100']),
+  cover: z.enum([
+    'primary',
+    'slate900',
+    'slate800',
+    'slate700',
+    'slate300',
+    'slate100',
+  ]),
+  /** Optional uploaded cover image; falls back to the `cover` swatch when empty. */
+  coverImageUrl: z
+    .string()
+    .trim()
+    .max(600)
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
+    .default(''),
 })
 
 export const booksSettingsSchema = z.object({
@@ -382,70 +413,87 @@ export const booksSettingsSchema = z.object({
    * which book is featured.
    */
   featuredIds: z.array(idSchema).max(3).default(['b1', 'b2', 'b4']),
-  books: z.array(bookSchema).max(12).default([
-    {
-      id: 'b1',
-      title: 'The Lean Startup',
-      author: 'Eric Ries',
-      subject: 'Startups',
-      note: 'Validated learning as a way to operate when the market will not hold still.',
-      tone: 'dark',
-      cover: 'primary',
-    },
-    {
-      id: 'b2',
-      title: 'Zero to One',
-      author: 'Peter Thiel',
-      subject: 'Strategy',
-      note: 'A contrarian case for building something that cannot simply be copied.',
-      tone: 'dark',
-      cover: 'slate900',
-    },
-    {
-      id: 'b3',
-      title: 'The Hard Thing About Hard Things',
-      author: 'Ben Horowitz',
-      subject: 'Leadership',
-      note: 'The unglamorous, honest version of running a company day to day.',
-      tone: 'dark',
-      cover: 'slate700',
-    },
-    {
-      id: 'b4',
-      title: 'Thinking, Fast and Slow',
-      author: 'Daniel Kahneman',
-      subject: 'Decision Science',
-      note: 'A research-backed reminder that judgement under risk is a system, not a trait.',
-      tone: 'dark',
-      cover: 'slate800',
-    },
-    {
-      id: 'b5',
-      title: 'The Innovator’s Dilemma',
-      author: 'Clayton Christensen',
-      subject: 'Innovation',
-      note: 'Why good companies get disrupted — and what early warning actually looks like.',
-      tone: 'light',
-      cover: 'slate100',
-    },
-    {
-      id: 'b6',
-      title: 'Good to Great',
-      author: 'Jim Collins',
-      subject: 'Organisation',
-      note: 'The unglamorous disciplines behind firms that made a durable leap.',
-      tone: 'light',
-      cover: 'slate300',
-    },
-  ]),
+  books: z
+    .array(bookSchema)
+    .max(12)
+    .default([
+      {
+        id: 'b1',
+        title: 'The Lean Startup',
+        author: 'Eric Ries',
+        subject: 'Startups',
+        note: 'Validated learning as a way to operate when the market will not hold still.',
+        tone: 'dark',
+        cover: 'primary',
+        coverImageUrl: '',
+      },
+      {
+        id: 'b2',
+        title: 'Zero to One',
+        author: 'Peter Thiel',
+        subject: 'Strategy',
+        note: 'A contrarian case for building something that cannot simply be copied.',
+        tone: 'dark',
+        cover: 'slate900',
+        coverImageUrl: '',
+      },
+      {
+        id: 'b3',
+        title: 'The Hard Thing About Hard Things',
+        author: 'Ben Horowitz',
+        subject: 'Leadership',
+        note: 'The unglamorous, honest version of running a company day to day.',
+        tone: 'dark',
+        cover: 'slate700',
+        coverImageUrl: '',
+      },
+      {
+        id: 'b4',
+        title: 'Thinking, Fast and Slow',
+        author: 'Daniel Kahneman',
+        subject: 'Decision Science',
+        note: 'A research-backed reminder that judgement under risk is a system, not a trait.',
+        tone: 'dark',
+        cover: 'slate800',
+        coverImageUrl: '',
+      },
+      {
+        id: 'b5',
+        title: 'The Innovator’s Dilemma',
+        author: 'Clayton Christensen',
+        subject: 'Innovation',
+        note: 'Why good companies get disrupted — and what early warning actually looks like.',
+        tone: 'light',
+        cover: 'slate100',
+        coverImageUrl: '',
+      },
+      {
+        id: 'b6',
+        title: 'Good to Great',
+        author: 'Jim Collins',
+        subject: 'Organisation',
+        note: 'The unglamorous disciplines behind firms that made a durable leap.',
+        tone: 'light',
+        cover: 'slate300',
+        coverImageUrl: '',
+      },
+    ]),
 })
 
 /* -------------------------------------------------------------------- about */
 
-/** The six floating pills. `icon` is a Material Symbols ligature name. */
+/** The six floating pills; logos can be uploaded from the admin editor. */
 const aboutPillSchema = z.object({
   id: idSchema,
-  icon: line(40),
+  logoUrl: z
+    .string()
+    .trim()
+    .max(600)
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
+    .default(''),
   label: line(120),
 })
 
@@ -486,68 +534,72 @@ export const aboutSettingsSchema = z.object({
   intro: line(400).default(
     'Technology entrepreneur, research contributor and business leader across technology solutions, digital transformation, academic publishing and social responsibility.',
   ),
-  pills: z.array(aboutPillSchema).max(8).default([
-    { id: 'p1', icon: 'cloud', label: 'Infodazz • Estd 2022' },
-    { id: 'p2', icon: 'bolt', label: 'Kittle Pvt Ltd • Trichy' },
-    {
-      id: 'p3',
-      icon: 'verified_user',
-      label: 'BNI since 2022 • Rotary since 2024',
-    },
-    {
-      id: 'p4',
-      icon: 'hub',
-      label: '30+ Intl Journals • 5+ Scopus',
-    },
-    {
-      id: 'p5',
-      icon: 'currency_rupee',
-      label: 'Kaster Trust • Education Support',
-    },
-    {
-      id: 'p6',
-      icon: 'school',
-      label: 'Ph.D • MCA • B.Sc Mathematics',
-    },
-  ]),
-  pillars: z.array(aboutPillarSchema).max(6).default([
-    {
-      id: 'd1',
-      question:
-        'How did your journey move from academic research into building technology companies?',
-      label: 'INFODAZZ + KITTLE • PILLAR I — ENTREPRENEURSHIP',
-      lead: 'Helping businesses grow through technology and digital transformation',
-      body: ' — Infodazz was established in 2022 with HQ in Trichy and branches in Madurai, Karaikudi and Kumbakonam, with 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management. Kittle Pvt Ltd, Trichy focuses on Software Solutions, IT Services, Digital Platforms and Technology Consulting.',
-      footerMeta:
-        'Estd 2022 • Trichy HQ • 50+ Professionals • 11 Service Verticals',
-      headerIcon: 'cognition',
-      footerIcon: 'terminal',
-    },
-    {
-      id: 'd2',
-      question:
-        'How do you support researchers, academicians and students?',
-      label: 'SEVENTH SENSE + ACADEMICS • PILLAR II — KNOWLEDGE',
-      lead: 'International research publishing platform for researchers and academicians',
-      body: ' — Seventh Sense Research Group supports 30+ International Journals including 5+ Scopus Indexed Journals, with research publication ecosystem and academic collaboration support. Academic background: Ph.D — Madurai Kamaraj University, MCA — Thiagarajar School of Management Madurai, B.Sc Mathematics — Govt. College of Arts and Science Kumbakonam. Contributions include research publications, patents, academic mentoring and research guidance.',
-      footerMeta:
-        '30+ Journals • 5+ Scopus • Publications • Patents • Mentoring',
-      headerIcon: 'hub',
-      footerIcon: 'payments',
-    },
-    {
-      id: 'd3',
-      question:
-        'What drives your leadership, travel and social impact work?',
-      label: 'KASTER TRUST + NETWORKS • PILLAR III — SOCIAL IMPACT',
-      lead: 'Helping deserving students continue education by reducing financial barriers',
-      body: ' — Kaster Trust provides educational fee support and encourages learning opportunities. Active in business and professional communities as BNI Member since 2022 and Rotary Member since 2024. A passionate traveller and lifelong learner who shares knowledge through motivational sessions and professional interactions.',
-      footerMeta:
-        'BNI since 2022 • Rotary since 2024 • Global Travel • Mentorship',
-      headerIcon: 'school',
-      footerIcon: 'menu_book',
-    },
-  ]),
+  pills: z
+    .array(aboutPillSchema)
+    .max(8)
+    .default([
+      { id: 'p1', logoUrl: '', label: 'Infodazz • Estd 2022' },
+      { id: 'p2', logoUrl: '', label: 'Kittle Pvt Ltd • Trichy' },
+      {
+        id: 'p3',
+        logoUrl: '',
+        label: 'BNI since 2022 • Rotary since 2024',
+      },
+      {
+        id: 'p4',
+        logoUrl: '',
+        label: '30+ Intl Journals • 5+ Scopus',
+      },
+      {
+        id: 'p5',
+        logoUrl: '',
+        label: 'Kaster Trust • Education Support',
+      },
+      {
+        id: 'p6',
+        logoUrl: '',
+        label: 'Ph.D • MCA • B.Sc Mathematics',
+      },
+    ]),
+  pillars: z
+    .array(aboutPillarSchema)
+    .max(6)
+    .default([
+      {
+        id: 'd1',
+        question:
+          'How did your journey move from academic research into building technology companies?',
+        label: 'INFODAZZ + KITTLE • PILLAR I — ENTREPRENEURSHIP',
+        lead: 'Helping businesses grow through technology and digital transformation',
+        body: ' — Infodazz was established in 2022 with HQ in Trichy and branches in Madurai, Karaikudi and Kumbakonam, with 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management. Kittle Pvt Ltd, Trichy focuses on Software Solutions, IT Services, Digital Platforms and Technology Consulting.',
+        footerMeta:
+          'Estd 2022 • Trichy HQ • 50+ Professionals • 11 Service Verticals',
+        headerIcon: 'cognition',
+        footerIcon: 'terminal',
+      },
+      {
+        id: 'd2',
+        question: 'How do you support researchers, academicians and students?',
+        label: 'SEVENTH SENSE + ACADEMICS • PILLAR II — KNOWLEDGE',
+        lead: 'International research publishing platform for researchers and academicians',
+        body: ' — Seventh Sense Research Group supports 30+ International Journals including 5+ Scopus Indexed Journals, with research publication ecosystem and academic collaboration support. Academic background: Ph.D — Madurai Kamaraj University, MCA — Thiagarajar School of Management Madurai, B.Sc Mathematics — Govt. College of Arts and Science Kumbakonam. Contributions include research publications, patents, academic mentoring and research guidance.',
+        footerMeta:
+          '30+ Journals • 5+ Scopus • Publications • Patents • Mentoring',
+        headerIcon: 'hub',
+        footerIcon: 'payments',
+      },
+      {
+        id: 'd3',
+        question: 'What drives your leadership, travel and social impact work?',
+        label: 'KASTER TRUST + NETWORKS • PILLAR III — SOCIAL IMPACT',
+        lead: 'Helping deserving students continue education by reducing financial barriers',
+        body: ' — Kaster Trust provides educational fee support and encourages learning opportunities. Active in business and professional communities as BNI Member since 2022 and Rotary Member since 2024. A passionate traveller and lifelong learner who shares knowledge through motivational sessions and professional interactions.',
+        footerMeta:
+          'BNI since 2022 • Rotary since 2024 • Global Travel • Mentorship',
+        headerIcon: 'school',
+        footerIcon: 'menu_book',
+      },
+    ]),
 })
 
 /* ---------------------------------------------------------------- ventures */
@@ -587,100 +639,151 @@ export const venturesSettingsSchema = z.object({
   intro: line(400).default(
     'Founded and led by Dr. R. Surendiran — from academic research into entrepreneurship, creating opportunities for businesses, researchers, students and communities.',
   ),
-  cards: z.array(ventureCardSchema).max(8).default([
-    {
-      id: 'v1',
-      index: '01',
-      badge: 'FLAGSHIP TECH',
-      meta: 'Estd 2022 • Trichy HQ',
-      title: 'Infodazz',
-      role: 'Founder & CEO',
-      blurb:
-        'Established in 2022 to help businesses grow through technology and digital transformation.',
-      services: [
-        'ERP Solutions • SaaS Platforms',
-        'Web & Mobile Applications',
-        'IT Solutions • Digital Marketing',
-        'Graphic Design • Animation & VFX',
-      ],
-      chips: [
-        { id: 'v1c1', label: 'Team', value: 'Professionals', countTo: 50, suffix: '+' },
-        { id: 'v1c2', label: 'Presence', value: '4 Locations', countTo: null, suffix: '' },
-      ],
-      ctaLabel: 'infodazz.org',
-      ctaHref: 'https://infodazz.org',
-      ctaIcon: 'arrow_outward',
-    },
-    {
-      id: 'v2',
-      index: '02',
-      badge: 'TECH INNOVATION',
-      meta: 'Trichy Based',
-      title: 'Kittle Pvt Ltd',
-      role: 'Founder / Owner',
-      blurb:
-        'Based in Trichy, focused on IT solutions and technology innovation — software solutions and digital platforms for business growth.',
-      services: [
-        'Software Solutions',
-        'IT Services & Support',
-        'Digital Platforms',
-        'Technology Consulting',
-      ],
-      chips: [
-        { id: 'v2c1', label: 'Base', value: 'Trichy, Tamil Nadu', countTo: null, suffix: '' },
-        { id: 'v2c2', label: 'Focus', value: 'Technology Innovation', countTo: null, suffix: '' },
-      ],
-      ctaLabel: 'kittle.ltd',
-      ctaHref: 'https://kittle.ltd/',
-      ctaIcon: 'arrow_outward',
-    },
-    {
-      id: 'v3',
-      index: '03',
-      badge: 'RESEARCH',
-      meta: 'International Platform',
-      title: 'Seventh Sense Research Group',
-      role: 'Founder / Owner',
-      blurb:
-        'International research publishing platform supporting researchers and academicians through publication and academic collaboration.',
-      services: [
-        'Research Publishing',
-        'Peer Review & Editing',
-        'Scopus Indexing Support',
-        'Academic Collaboration',
-      ],
-      chips: [
-        { id: 'v3c1', label: 'Journals', value: 'International', countTo: 30, suffix: '+' },
-        { id: 'v3c2', label: 'Scopus Indexed', value: 'Journals', countTo: 5, suffix: '+' },
-      ],
-      ctaLabel: 'internationaljournalssrg.org',
-      ctaHref: 'https://internationaljournalssrg.org',
-      ctaIcon: 'arrow_outward',
-    },
-    {
-      id: 'v4',
-      index: '04',
-      badge: 'SOCIAL IMPACT',
-      meta: 'Education Support',
-      title: 'Kaster Trust',
-      role: 'Founder / Trustee',
-      blurb:
-        'Supporting education for students from economically disadvantaged backgrounds — reducing financial barriers so deserving students can continue.',
-      services: [
-        'Fee Payment Assistance',
-        'Scholarship Guidance',
-        'Learning Material Access',
-        'Student Mentoring',
-      ],
-      chips: [
-        { id: 'v4c1', label: 'Mission', value: 'Reduce financial barriers', countTo: null, suffix: '' },
-        { id: 'v4c2', label: 'Focus', value: 'Student Growth', countTo: null, suffix: '' },
-      ],
-      ctaLabel: 'Support Student Education',
-      ctaHref: '#advisory',
-      ctaIcon: 'volunteer_activism',
-    },
-  ]),
+  cards: z
+    .array(ventureCardSchema)
+    .max(8)
+    .default([
+      {
+        id: 'v1',
+        index: '01',
+        badge: 'FLAGSHIP TECH',
+        meta: 'Estd 2022 • Trichy HQ',
+        title: 'Infodazz',
+        role: 'Founder & CEO',
+        blurb:
+          'Established in 2022 to help businesses grow through technology and digital transformation.',
+        services: [
+          'ERP Solutions • SaaS Platforms',
+          'Web & Mobile Applications',
+          'IT Solutions • Digital Marketing',
+          'Graphic Design • Animation & VFX',
+        ],
+        chips: [
+          {
+            id: 'v1c1',
+            label: 'Team',
+            value: 'Professionals',
+            countTo: 50,
+            suffix: '+',
+          },
+          {
+            id: 'v1c2',
+            label: 'Presence',
+            value: '4 Locations',
+            countTo: null,
+            suffix: '',
+          },
+        ],
+        ctaLabel: 'infodazz.org',
+        ctaHref: 'https://infodazz.org',
+        ctaIcon: 'arrow_outward',
+      },
+      {
+        id: 'v2',
+        index: '02',
+        badge: 'TECH INNOVATION',
+        meta: 'Trichy Based',
+        title: 'Kittle Pvt Ltd',
+        role: 'Founder / Owner',
+        blurb:
+          'Based in Trichy, focused on IT solutions and technology innovation — software solutions and digital platforms for business growth.',
+        services: [
+          'Software Solutions',
+          'IT Services & Support',
+          'Digital Platforms',
+          'Technology Consulting',
+        ],
+        chips: [
+          {
+            id: 'v2c1',
+            label: 'Base',
+            value: 'Trichy, Tamil Nadu',
+            countTo: null,
+            suffix: '',
+          },
+          {
+            id: 'v2c2',
+            label: 'Focus',
+            value: 'Technology Innovation',
+            countTo: null,
+            suffix: '',
+          },
+        ],
+        ctaLabel: 'kittle.ltd',
+        ctaHref: 'https://kittle.ltd/',
+        ctaIcon: 'arrow_outward',
+      },
+      {
+        id: 'v3',
+        index: '03',
+        badge: 'RESEARCH',
+        meta: 'International Platform',
+        title: 'Seventh Sense Research Group',
+        role: 'Founder / Owner',
+        blurb:
+          'International research publishing platform supporting researchers and academicians through publication and academic collaboration.',
+        services: [
+          'Research Publishing',
+          'Peer Review & Editing',
+          'Scopus Indexing Support',
+          'Academic Collaboration',
+        ],
+        chips: [
+          {
+            id: 'v3c1',
+            label: 'Journals',
+            value: 'International',
+            countTo: 30,
+            suffix: '+',
+          },
+          {
+            id: 'v3c2',
+            label: 'Scopus Indexed',
+            value: 'Journals',
+            countTo: 5,
+            suffix: '+',
+          },
+        ],
+        ctaLabel: 'ssrg',
+        ctaHref: 'https://internationaljournalssrg.org',
+        ctaIcon: 'arrow_outward',
+      },
+      {
+        id: 'v4',
+        index: '04',
+        badge: 'SOCIAL IMPACT',
+        meta: 'Education Support',
+        title: 'Kaster Trust',
+        role: 'Founder / Trustee',
+        blurb:
+          'Supporting education for students from economically disadvantaged backgrounds — reducing financial barriers so deserving students can continue.',
+        services: [
+          'Fee Payment Assistance',
+          'Scholarship Guidance',
+          'Learning Material Access',
+          'Student Mentoring',
+        ],
+        chips: [
+          {
+            id: 'v4c1',
+            label: 'Mission',
+            value: 'Reduce financial barriers',
+            countTo: null,
+            suffix: '',
+          },
+          {
+            id: 'v4c2',
+            label: 'Focus',
+            value: 'Student Growth',
+            countTo: null,
+            suffix: '',
+          },
+        ],
+        ctaLabel: 'Support Student Education',
+        ctaHref: '#advisory',
+        ctaIcon: 'volunteer_activism',
+      },
+    ]),
 })
 
 /* ----------------------------------------------------------- achievements */
@@ -749,143 +852,277 @@ export const achievementsSettingsSchema = z.object({
   ),
   /** Copy of the secondary button under the archive list. */
   inspectLabel: line(60).default('Inspect All Records'),
-  deck: z.array(accoladeSchema).max(8).default([
-    {
-      id: 'accolade-card-1',
-      index: '01',
-      barTitle: 'INFODAZZ • ESTD 2022 • TRICHY HQ',
-      badge: 'TECHNOLOGY BUSINESS',
-      badgeIcon: 'rocket_launch',
-      pill: 'FOUNDER & CEO • DIGITAL TRANSFORMATION',
-      heading: 'Infodazz — Helping Businesses Grow Through Technology',
-      description:
-        'Established in 2022. Headquarters Trichy, branches Madurai, Karaikudi, Kumbakonam. 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management.',
-      certNo: 'ESTD // INFODAZZ-2022',
-      certStatus: 'VERIFIED',
-      certIcon: 'award_star',
-      certTitle: 'Founder & CEO',
-      certSub: 'Infodazz • Trichy • Madurai • Karaikudi • Kumbakonam',
-      quote: '“Vision: helping businesses grow through technology and digital transformation.”',
-      peekMeta: 'TEAM: 50+ PROFESSIONALS',
-      tabShort: '01 Infodazz',
-      fileName: 'infodazz_venture_profile.ts',
-      ctaLabel: 'infodazz.org',
-      ctaHref: 'https://infodazz.org',
-      stats: [
-        { id: 'a1s1', kind: 'count', countTo: 50, prefix: '', suffix: '+', label: 'Team', text: '' },
-        { id: 'a1s2', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: '4 Locations' },
-        { id: 'a1s3', kind: 'count', countTo: 11, prefix: '', suffix: '', label: 'Services', text: '' },
-        { id: 'a1s4', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Estd 2022' },
-      ],
-      statLabels: [
-        'Team Strength',
-        'Locations',
-        'Service Verticals',
-        'Founded',
-      ],
-      accent: 'gold',
-    },
-    {
-      id: 'accolade-card-2',
-      index: '02',
-      barTitle: 'KITTLE PVT LTD • TRICHY • TECHNOLOGY INNOVATION',
-      badge: 'IT SOLUTIONS',
-      badgeIcon: 'cloud_done',
-      pill: 'FOUNDER / OWNER • SOFTWARE & CONSULTING',
-      heading: 'Kittle Pvt Ltd — IT Solutions & Digital Platforms',
-      description:
-        'Trichy-based technology company focused on Software Solutions, IT Services, Digital Platforms and Technology Consulting — building digital ecosystems for business growth.',
-      certNo: 'VENTURE // KITTLE-TRICHY',
-      certStatus: 'VALIDATED',
-      certIcon: 'workspace_premium',
-      certTitle: 'Founder / Owner',
-      certSub: 'Kittle Pvt Ltd • Trichy',
-      quote: '“Focus: software solutions, IT services, digital platforms and technology consulting.”',
-      peekMeta: 'BASE: TRICHY',
-      tabShort: '02 Kittle',
-      fileName: 'kittle_venture_profile.ts',
-      ctaLabel: 'Business Inquiries',
-      ctaHref: '#advisory',
-      stats: [
-        { id: 'a2s1', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Software Solutions' },
-        { id: 'a2s2', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'IT Services' },
-        { id: 'a2s3', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Digital Platforms' },
-        { id: 'a2s4', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Tech Consulting' },
-      ],
-      statLabels: ['Focus Areas', 'Base', 'Offerings', 'Engagement'],
-      accent: 'cyan',
-    },
-    {
-      id: 'accolade-card-3',
-      index: '03',
-      barTitle: 'SEVENTH SENSE RESEARCH GROUP • PUBLISHING PLATFORM',
-      badge: 'RESEARCH PUBLISHER',
-      badgeIcon: 'school',
-      pill: 'FOUNDER / OWNER • ACADEMIC COLLABORATION',
-      heading: 'Seventh Sense — 30+ Journals, 5+ Scopus Indexed',
-      description:
-        'International research publishing platform supporting researchers and academicians. Research publication ecosystem and academic collaboration support. Academic profile: Ph.D Madurai Kamaraj University, MCA Thiagarajar School of Management Madurai, B.Sc Mathematics GAC Kumbakonam — with research publications, patents, mentoring and guidance.',
-      certNo: 'PLATFORM // SSRG-JOURNALS',
-      certStatus: 'ACADEMIC PLATFORM',
-      certIcon: 'menu_book',
-      certTitle: 'Founder / Owner',
-      certSub: 'Seventh Sense Research Group',
-      quote: '“Supporting researchers and academicians through publishing and collaboration.”',
-      peekMeta: '30+ JOURNALS • 5+ SCOPUS',
-      tabShort: '03 Seventh Sense',
-      fileName: 'seventh_sense_profile.ts',
-      ctaLabel: 'SSRG Platform Portal',
-      ctaHref: 'https://internationaljournalssrg.org',
-      stats: [
-        { id: 'a3s1', kind: 'count', countTo: 30, prefix: '', suffix: '+', label: 'Journals', text: '' },
-        { id: 'a3s2', kind: 'count', countTo: 5, prefix: '', suffix: '+', label: 'Scopus', text: '' },
-        { id: 'a3s3', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Publications' },
-        { id: 'a3s4', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Mentoring' },
-      ],
-      statLabels: [
-        'Intl Journals',
-        'Scopus Indexed',
-        'Ecosystem',
-        'Mentorship',
-      ],
-      accent: 'emerald',
-    },
-    {
-      id: 'accolade-card-4',
-      index: '04',
-      barTitle: 'KASTER TRUST • LEADERSHIP • GLOBAL VISION',
-      badge: 'SOCIAL IMPACT',
-      badgeIcon: 'volunteer_activism',
-      pill: 'FOUNDER / TRUSTEE • BNI 2022 • ROTARY 2024',
-      heading: 'Kaster Trust — Education Support & Community Leadership',
-      description:
-        'Founder / Trustee of Kaster Trust supporting education for economically disadvantaged students via fee support and learning opportunities. BNI Member since 2022, Rotary Member since 2024. From humble farmer family background — passionate traveller sharing knowledge through motivational sessions.',
-      certNo: 'TRUST // KASTER-EDUCATION',
-      certStatus: 'SOCIAL MISSION',
-      certIcon: 'campaign',
-      certTitle: 'Founder / Trustee',
-      certSub: 'Kaster Trust • BNI • Rotary',
-      quote: '“Technology creates possibilities, but people create impact.”',
-      peekMeta: 'MISSION: EDUCATION ACCESS',
-      tabShort: '04 Kaster & Networks',
-      fileName: 'kaster_trust_profile.ts',
-      ctaLabel: 'Support Education',
-      ctaHref: '#advisory',
-      stats: [
-        { id: 'a4s1', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Fee Support' },
-        { id: 'a4s2', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'BNI 2022' },
-        { id: 'a4s3', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Rotary 2024' },
-        { id: 'a4s4', kind: 'text', countTo: null, prefix: '', suffix: '', label: '', text: 'Global Travel' },
-      ],
-      statLabels: [
-        'Mission Focus',
-        'BNI Membership',
-        'Rotary Membership',
-        'Vision',
-      ],
-      accent: 'indigo',
-    },
-  ]),
+  deck: z
+    .array(accoladeSchema)
+    .max(8)
+    .default([
+      {
+        id: 'accolade-card-1',
+        index: '01',
+        barTitle: 'INFODAZZ • ESTD 2022 • TRICHY HQ',
+        badge: 'TECHNOLOGY BUSINESS',
+        badgeIcon: 'rocket_launch',
+        pill: 'FOUNDER & CEO • DIGITAL TRANSFORMATION',
+        heading: 'Infodazz — Helping Businesses Grow Through Technology',
+        description:
+          'Established in 2022. Headquarters Trichy, branches Madurai, Karaikudi, Kumbakonam. 50+ professionals across ERP, SaaS, Web & Mobile Apps, IT Solutions, Digital Marketing, SEO, Design, Animation/VFX, Photography/Videography and Event Management.',
+        certNo: 'ESTD // INFODAZZ-2022',
+        certStatus: 'VERIFIED',
+        certIcon: 'award_star',
+        certTitle: 'Founder & CEO',
+        certSub: 'Infodazz • Trichy • Madurai • Karaikudi • Kumbakonam',
+        quote:
+          '“Vision: helping businesses grow through technology and digital transformation.”',
+        peekMeta: 'TEAM: 50+ PROFESSIONALS',
+        tabShort: '01 Infodazz',
+        fileName: 'infodazz_venture_profile.ts',
+        ctaLabel: 'infodazz.org',
+        ctaHref: 'https://infodazz.org',
+        stats: [
+          {
+            id: 'a1s1',
+            kind: 'count',
+            countTo: 50,
+            prefix: '',
+            suffix: '+',
+            label: 'Team',
+            text: '',
+          },
+          {
+            id: 'a1s2',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: '4 Locations',
+          },
+          {
+            id: 'a1s3',
+            kind: 'count',
+            countTo: 11,
+            prefix: '',
+            suffix: '',
+            label: 'Services',
+            text: '',
+          },
+          {
+            id: 'a1s4',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Estd 2022',
+          },
+        ],
+        statLabels: [
+          'Team Strength',
+          'Locations',
+          'Service Verticals',
+          'Founded',
+        ],
+        accent: 'gold',
+      },
+      {
+        id: 'accolade-card-2',
+        index: '02',
+        barTitle: 'KITTLE PVT LTD • TRICHY • TECHNOLOGY INNOVATION',
+        badge: 'IT SOLUTIONS',
+        badgeIcon: 'cloud_done',
+        pill: 'FOUNDER / OWNER • SOFTWARE & CONSULTING',
+        heading: 'Kittle Pvt Ltd — IT Solutions & Digital Platforms',
+        description:
+          'Trichy-based technology company focused on Software Solutions, IT Services, Digital Platforms and Technology Consulting — building digital ecosystems for business growth.',
+        certNo: 'VENTURE // KITTLE-TRICHY',
+        certStatus: 'VALIDATED',
+        certIcon: 'workspace_premium',
+        certTitle: 'Founder / Owner',
+        certSub: 'Kittle Pvt Ltd • Trichy',
+        quote:
+          '“Focus: software solutions, IT services, digital platforms and technology consulting.”',
+        peekMeta: 'BASE: TRICHY',
+        tabShort: '02 Kittle',
+        fileName: 'kittle_venture_profile.ts',
+        ctaLabel: 'Business Inquiries',
+        ctaHref: '#advisory',
+        stats: [
+          {
+            id: 'a2s1',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Software Solutions',
+          },
+          {
+            id: 'a2s2',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'IT Services',
+          },
+          {
+            id: 'a2s3',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Digital Platforms',
+          },
+          {
+            id: 'a2s4',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Tech Consulting',
+          },
+        ],
+        statLabels: ['Focus Areas', 'Base', 'Offerings', 'Engagement'],
+        accent: 'cyan',
+      },
+      {
+        id: 'accolade-card-3',
+        index: '03',
+        barTitle: 'SEVENTH SENSE RESEARCH GROUP • PUBLISHING PLATFORM',
+        badge: 'RESEARCH PUBLISHER',
+        badgeIcon: 'school',
+        pill: 'FOUNDER / OWNER • ACADEMIC COLLABORATION',
+        heading: 'Seventh Sense — 30+ Journals, 5+ Scopus Indexed',
+        description:
+          'International research publishing platform supporting researchers and academicians. Research publication ecosystem and academic collaboration support. Academic profile: Ph.D Madurai Kamaraj University, MCA Thiagarajar School of Management Madurai, B.Sc Mathematics GAC Kumbakonam — with research publications, patents, mentoring and guidance.',
+        certNo: 'PLATFORM // SSRG-JOURNALS',
+        certStatus: 'ACADEMIC PLATFORM',
+        certIcon: 'menu_book',
+        certTitle: 'Founder / Owner',
+        certSub: 'Seventh Sense Research Group',
+        quote:
+          '“Supporting researchers and academicians through publishing and collaboration.”',
+        peekMeta: '30+ JOURNALS • 5+ SCOPUS',
+        tabShort: '03 Seventh Sense',
+        fileName: 'seventh_sense_profile.ts',
+        ctaLabel: 'SSRG Platform Portal',
+        ctaHref: 'https://internationaljournalssrg.org',
+        stats: [
+          {
+            id: 'a3s1',
+            kind: 'count',
+            countTo: 30,
+            prefix: '',
+            suffix: '+',
+            label: 'Journals',
+            text: '',
+          },
+          {
+            id: 'a3s2',
+            kind: 'count',
+            countTo: 5,
+            prefix: '',
+            suffix: '+',
+            label: 'Scopus',
+            text: '',
+          },
+          {
+            id: 'a3s3',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Publications',
+          },
+          {
+            id: 'a3s4',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Mentoring',
+          },
+        ],
+        statLabels: [
+          'Intl Journals',
+          'Scopus Indexed',
+          'Ecosystem',
+          'Mentorship',
+        ],
+        accent: 'emerald',
+      },
+      {
+        id: 'accolade-card-4',
+        index: '04',
+        barTitle: 'KASTER TRUST • LEADERSHIP • GLOBAL VISION',
+        badge: 'SOCIAL IMPACT',
+        badgeIcon: 'volunteer_activism',
+        pill: 'FOUNDER / TRUSTEE • BNI 2022 • ROTARY 2024',
+        heading: 'Kaster Trust — Education Support & Community Leadership',
+        description:
+          'Founder / Trustee of Kaster Trust supporting education for economically disadvantaged students via fee support and learning opportunities. BNI Member since 2022, Rotary Member since 2024. From humble farmer family background — passionate traveller sharing knowledge through motivational sessions.',
+        certNo: 'TRUST // KASTER-EDUCATION',
+        certStatus: 'SOCIAL MISSION',
+        certIcon: 'campaign',
+        certTitle: 'Founder / Trustee',
+        certSub: 'Kaster Trust • BNI • Rotary',
+        quote: '“Technology creates possibilities, but people create impact.”',
+        peekMeta: 'MISSION: EDUCATION ACCESS',
+        tabShort: '04 Kaster & Networks',
+        fileName: 'kaster_trust_profile.ts',
+        ctaLabel: 'Support Education',
+        ctaHref: '#advisory',
+        stats: [
+          {
+            id: 'a4s1',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Fee Support',
+          },
+          {
+            id: 'a4s2',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'BNI 2022',
+          },
+          {
+            id: 'a4s3',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Rotary 2024',
+          },
+          {
+            id: 'a4s4',
+            kind: 'text',
+            countTo: null,
+            prefix: '',
+            suffix: '',
+            label: '',
+            text: 'Global Travel',
+          },
+        ],
+        statLabels: [
+          'Mission Focus',
+          'BNI Membership',
+          'Rotary Membership',
+          'Vision',
+        ],
+        accent: 'indigo',
+      },
+    ]),
 })
 
 /* ----------------------------------------------------------------- navbar */
@@ -902,16 +1139,19 @@ export const navbarSettingsSchema = z.object({
   ctaHref: line(200).default('#advisory'),
   ctaIcon: line(40).default('arrow_forward'),
   menuButtonLabel: line(40).default('Menu'),
-  links: z.array(navLinkSchema).max(20).default([
-    { id: 'n1', label: 'About', href: '#about' },
-    { id: 'n2', label: 'Ventures', href: '#ventures' },
-    { id: 'n3', label: 'Honors', href: '#achievements' },
-    { id: 'n4', label: 'Keynotes', href: '#keynotes' },
-    { id: 'n5', label: 'Advisory', href: '#governance' },
-    { id: 'n6', label: 'Perspectives', href: '#perspectives' },
-    { id: 'n7', label: 'Books', href: '#books' },
-    { id: 'n8', label: 'Contact', href: '#advisory' },
-  ]),
+  links: z
+    .array(navLinkSchema)
+    .max(20)
+    .default([
+      { id: 'n1', label: 'About', href: '#about' },
+      { id: 'n2', label: 'Ventures', href: '#ventures' },
+      { id: 'n3', label: 'Honors', href: '#achievements' },
+      { id: 'n4', label: 'Keynotes', href: '#keynotes' },
+      { id: 'n5', label: 'Advisory', href: '#governance' },
+      { id: 'n6', label: 'Perspectives', href: '#perspectives' },
+      { id: 'n7', label: 'Books', href: '#books' },
+      { id: 'n8', label: 'Contact', href: '#advisory' },
+    ]),
 })
 
 /* ----------------------------------------------------------------- footer */
@@ -947,44 +1187,115 @@ export const footerSettingsSchema = z.object({
     '© {year} Dr. R. Surendiran. Infodazz • Kittle Pvt Ltd • Seventh Sense Research Group • Kaster Trust. All Rights Reserved.',
   ),
   backToTopLabel: line(60).default('Back to Top'),
-  columns: z.array(footerColumnSchema).max(8).default([
-    {
-      id: 'fc1',
-      heading: 'GOVERNANCE',
-      links: [
-        { id: 'fc1l1', label: 'Executive Profile', href: '#about', external: false, accent: true },
-        { id: 'fc1l2', label: 'Board Advisory', href: '#governance', external: false, accent: false },
-        { id: 'fc1l3', label: 'Keynotes & Summits', href: '#keynotes', external: false, accent: false },
-        { id: 'fc1l4', label: 'Publications', href: '#perspectives', external: false, accent: false },
-        { id: 'fc1l5', label: 'Infodazz Enterprise', href: 'https://infodazz.org', external: true, accent: false },
-      ],
-    },
-    {
-      id: 'fc2',
-      heading: 'VENTURES',
-      links: [
-        { id: 'fc2l1', label: 'Infodazz — Estd 2022', href: '#ventures', external: false, accent: false },
-        { id: 'fc2l2', label: 'Kittle Pvt Ltd — Trichy', href: '#ventures', external: false, accent: false },
-        { id: 'fc2l3', label: 'Seventh Sense Research', href: 'https://internationaljournalssrg.org', external: true, accent: false },
-        { id: 'fc2l4', label: 'Kaster Trust — Education', href: '#ventures', external: false, accent: false },
-      ],
-    },
-    {
-      id: 'fc3',
-      heading: 'ENGAGEMENT',
-      links: [
-        { id: 'fc3l1', label: 'Advisory Governance', href: '#about', external: false, accent: false },
-        { id: 'fc3l2', label: 'Direct Consultation', href: '#advisory', external: false, accent: false },
-      ],
-    },
-  ]),
+  columns: z
+    .array(footerColumnSchema)
+    .max(8)
+    .default([
+      {
+        id: 'fc1',
+        heading: 'GOVERNANCE',
+        links: [
+          {
+            id: 'fc1l1',
+            label: 'Executive Profile',
+            href: '#about',
+            external: false,
+            accent: true,
+          },
+          {
+            id: 'fc1l2',
+            label: 'Board Advisory',
+            href: '#governance',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc1l3',
+            label: 'Keynotes & Summits',
+            href: '#keynotes',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc1l4',
+            label: 'Publications',
+            href: '#perspectives',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc1l5',
+            label: 'Infodazz Enterprise',
+            href: 'https://infodazz.org',
+            external: true,
+            accent: false,
+          },
+        ],
+      },
+      {
+        id: 'fc2',
+        heading: 'VENTURES',
+        links: [
+          {
+            id: 'fc2l1',
+            label: 'Infodazz — Estd 2022',
+            href: '#ventures',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc2l2',
+            label: 'Kittle Pvt Ltd — Trichy',
+            href: '#ventures',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc2l3',
+            label: 'Seventh Sense Research',
+            href: 'https://internationaljournalssrg.org',
+            external: true,
+            accent: false,
+          },
+          {
+            id: 'fc2l4',
+            label: 'Kaster Trust — Education',
+            href: '#ventures',
+            external: false,
+            accent: false,
+          },
+        ],
+      },
+      {
+        id: 'fc3',
+        heading: 'ENGAGEMENT',
+        links: [
+          {
+            id: 'fc3l1',
+            label: 'Advisory Governance',
+            href: '#about',
+            external: false,
+            accent: false,
+          },
+          {
+            id: 'fc3l2',
+            label: 'Direct Consultation',
+            href: '#advisory',
+            external: false,
+            accent: false,
+          },
+        ],
+      },
+    ]),
 })
 
 /* ------------------------------------------------------------- the contact */
 
 export const advisorySettingsSchema = z.object({
   eyebrow: line(60).default('CONTACT US'),
-  heading: line(160).default("Let's build, research and create impact together!"),
+  heading: line(160).default(
+    "Let's build, research and create impact together!",
+  ),
   bio: line(600).default(
     'Dr. R. Surendiran — Founder & CEO, Infodazz • Founder / Owner, Kittle Pvt Ltd & Seventh Sense Research Group • Founder / Trustee, Kaster Trust. For business growth, research collaboration, education support and motivational sessions. HQ Trichy — Madurai, Karaikudi, Kumbakonam.',
   ),
@@ -1003,6 +1314,138 @@ export const advisorySettingsSchema = z.object({
   successAgainLabel: line(60).default('Send Another Message'),
 })
 
+/* ------------------------------------------------------------- the chatbot */
+
+/**
+ * Every string the Nexa chatbot renders.
+ *
+ * Prompts are stored as templates, not pre-rendered text: `{{firstName}}` is
+ * substituted at send time by `promptFor` in ChatbotFab. That is why the
+ * personalisation survives a manager editing the wording — they are editing the
+ * template, and the value is filled in afterwards from what the visitor typed.
+ *
+ * A manager who deletes a token simply gets "Thank you. What's your email
+ * address?", which reads fine. `promptFor` deliberately leaves an UNKNOWN token
+ * visible rather than blanking it, so a typo such as `{{firstname}}` shows up in
+ * the transcript instead of silently dropping a word.
+ *
+ * Keep these in the same order as `STEP_ORDER` in ChatbotFab. That array is the
+ * flow; this object is the copy for each of its steps.
+ */
+/**
+ * Presence shown next to the bot's name.
+ *
+ * An enum rather than a free string because the DOT COLOUR is derived from it
+ * in the component — a manager can flip the badge to "Busy" without the widget
+ * having to guess a colour from the wording.
+ */
+export const CHATBOT_PRESENCE_KEYS = ['online', 'busy', 'offline'] as const
+const presenceSchema = z.enum(CHATBOT_PRESENCE_KEYS)
+
+export const chatbotSettingsSchema = z.object({
+  /** Chat window header. */
+  headerTitle: line(60).default('Nexa'),  /**
+   * Optional photo for the bot's avatar.
+   *
+   * Empty falls back to the initial tile, so the widget is never broken by a
+   * missing image. The admin form gives any `*Url` key a file picker and a
+   * preview, so this can be uploaded without hand-writing a path.
+   */
+  avatarUrl: z
+    .string()
+    .trim()
+    .max(600)
+    .refine(
+      (v) => v === '' || v.startsWith('/uploads/') || /^https?:\/\/.+/.test(v),
+      'Enter a full image URL or an /uploads/... path',
+    )
+    .default(''),
+  /** Presence badge in the header. Drives the dot colour as well as the text. */
+  presence: presenceSchema.default('online'),
+  presenceLabel: line(30).default('Online'),
+  /** Screen-reader text for the animated typing indicator. */
+  typingIndicatorLabel: line(40).default('Nexa is typing'),
+  /**
+   * Live status shown under the name while a reply is in flight, WhatsApp-style.
+   *
+   * Separate from `typingIndicatorLabel` because the header is a live region
+   * sitting next to the name — "Nexa is typing" there reads as a second copy of
+   * the name, so the visible word is kept short and the full sentence stays in
+   * the transcript bubble for screen readers.
+   */
+  typingHeaderLabel: line(30).default('typing…'),
+  /** Hover label on the floating button, and its accessible name. */
+  fabLabel: line(60).default('Chat with Nexa'),
+  /** Empty-transcript prompt shown before the visitor says hello. */
+  emptyStatePrompt: line(120).default(
+    "Hi, I'm Nexa, your executive office assistant. How can I help you connect today?",
+  ),
+  /** The chip that fills the composer for the visitor. */
+  greetingChipLabel: line(20).default('hi'),
+
+  /** Asked once the visitor has greeted the bot. */
+  greetingPrompt: line(240).default(
+    "Hello! I'm Nexa, your executive office assistant. May I start by getting your name?",
+  ),
+  namePrompt: line(240).default('May I start by getting your name?'),
+  /** Supports {{firstName}}. */
+  emailPrompt: line(240).default(
+    "Thank you, {{firstName}}. What's your email address?",
+  ),
+  /** Supports {{firstName}}. Examples span countries on purpose — a visitor
+   *  outside India should not read an India-only sample as the expected format.
+   *  The country code is required, so the wording asks for it outright. */
+  phonePrompt: line(320).default(
+    "Got it, {{firstName}}. What's your phone number including the country code? For example +91 98765 43210, or +44 20 7946 0958. A company name works too.",
+  ),
+  queryPrompt: line(300).default(
+    'What would you like to discuss with Dr. Surendiran?',
+  ),
+  appointmentPrompt: line(300).default(
+    'Would you like to schedule an appointment with the CEO?',
+  ),
+
+  /** Quick-reply buttons on the appointment step. */
+  yesLabel: line(20).default('Yes'),
+  noLabel: line(20).default('No'),
+
+  /** Terminal states. */
+  submittingMessage: line(160).default('Sending your request...'),
+  successMessage: line(400).default(
+    "Perfect! Your request has been sent to the Executive Office. You'll hear back within 24 hours.",
+  ),
+  successFooter: line(200).default("We'll be in touch soon."),
+  successCloseLabel: line(40).default('Close'),
+  errorMessage: line(300).default(
+    'Something went wrong. Please try again or email us directly.',
+  ),
+  retryLabel: line(40).default('Try Again'),
+
+  /** Validation copy, so the tone of a rejection is editable too. */
+  greetingRequiredMessage: line(160).default(
+    'Say "hi" to start the conversation.',
+  ),
+  nameRequiredMessage: line(120).default('Please enter your name.'),
+  /** Shown when the name has no letters in it, e.g. "555". */
+  nameTextRequiredMessage: line(200).default(
+    'Please enter your name as text — letters are needed, numbers alone will not do.',
+  ),
+  emailInvalidMessage: line(160).default('Please enter a valid email address.'),
+  queryRequiredMessage: line(200).default(
+    'Please tell us what you would like to discuss.',
+  ),
+  /** Shown when the query has no letters in it, e.g. "555". */
+  queryTextRequiredMessage: line(240).default(
+    'Please describe what you would like to discuss in words, rather than numbers alone.',
+  ),
+  appointmentInvalidMessage: line(160).default('Please answer Yes or No.'),
+  /** Accepts a fully-qualified international number OR a company name — the
+   *  country code is required for a number. See src/lib/phone.ts. */
+  phoneInvalidMessage: line(300).default(
+    'Please include your country code — for example +91 98765 43210 or +44 20 7946 0958. A company name works too.',
+  ),
+})
+
 export type MilestonesSettings = z.infer<typeof milestonesSettingsSchema>
 export type QuoteSettings = z.infer<typeof quoteSettingsSchema>
 export type GovernanceSettings = z.infer<typeof governanceSettingsSchema>
@@ -1015,3 +1458,4 @@ export type AchievementsSettings = z.infer<typeof achievementsSettingsSchema>
 export type NavbarSettings = z.infer<typeof navbarSettingsSchema>
 export type FooterSettings = z.infer<typeof footerSettingsSchema>
 export type AdvisorySettings = z.infer<typeof advisorySettingsSchema>
+export type ChatbotSettings = z.infer<typeof chatbotSettingsSchema>

@@ -24,6 +24,7 @@ export type AdminMediaState = {
   unavailableReason: string | null
 }
 
+
 /**
  * Loads the media slots once, at the shell level.
  *
@@ -244,7 +245,11 @@ function SlotCard({
         >
           {hasImage ? (
             <img
-              src={entry.url ?? ''}
+              src={
+                entry.url
+                  ? `${entry.url}?v=${encodeURIComponent(entry.updatedAt ?? String(entry.sizeBytes ?? Date.now()))}`
+                  : ''
+              }
               alt={altText || meta.label}
               className="h-full w-full object-contain"
             />
@@ -259,7 +264,7 @@ function SlotCard({
           <p className="font-mono-metric text-[11px] text-[#7a8a80]">
             {hasImage && entry.width && entry.height
               ? `${entry.width}x${entry.height} · ${((entry.sizeBytes ?? 0) / 1024).toFixed(0)} KB`
-              : `Max ${meta.maxWidth}x${meta.maxHeight} · ${meta.aspect} · 5 MB`}
+              : 'JPEG, PNG or WebP · 5 MB max'}
           </p>
 
           <label className="block">

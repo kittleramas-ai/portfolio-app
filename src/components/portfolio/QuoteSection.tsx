@@ -13,13 +13,13 @@ export function QuoteSection({
 }) {
   return (
     <section
-      className="py-28 md:py-36 px-6 md:px-12 relative overflow-hidden border-b border-slate-border"
+      className="relative overflow-hidden border-b border-slate-border py-28 md:py-36"
       style={{
         background:
           'radial-gradient(800px 400px at 20% 10%, var(--portfolio-quote-glint), transparent 60%), radial-gradient(700px 380px at 85% 90%, var(--portfolio-quote-shadow), transparent 60%), var(--portfolio-quote-bg)',
       }}
     >
-      <div className="max-w-5xl mx-auto text-center relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 text-center md:px-12">
         <AnimatedText
           as="blockquote"
           split="words"
@@ -41,6 +41,10 @@ export function QuoteSection({
           <div className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-white/80 shadow-lg shrink-0">
             <img
               alt={settings.portraitAlt}
+              width={56}
+              height={56}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover grayscale contrast-125"
               src={settings.portraitUrl}
             />

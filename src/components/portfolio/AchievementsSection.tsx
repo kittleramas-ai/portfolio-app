@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { CountUp } from './CountUp'
 import { Reveal } from './Reveal'
+import { AppIcon } from './AppIcon'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { AchievementsSettings } from '../../../admin/server/settings-schema'
 
@@ -75,7 +77,6 @@ const ACCENTS = {
 
 type AccentClasses = (typeof ACCENTS)[keyof typeof ACCENTS]
 type AccentKey = keyof typeof ACCENTS
-
 /**
  * The `accent` enum is site-wide and wider than the four themes designed here,
  * so an unmapped value falls back to gold rather than rendering an unthemed
@@ -150,6 +151,7 @@ export function AchievementsSection({
 
   const card = deck[active]
   const accent = accentFor(card.accent)
+  const badgeText = card.accent === 'gold' ? 'text-[#735919]' : accent.text
 
   // order for peeking bars: the 3 cards behind active, nearest first
   const behind = [1, 2, 3].map((o) => (active + o) % deck.length)
@@ -284,7 +286,7 @@ export function AchievementsSection({
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className={`hidden sm:inline-flex items-center whitespace-nowrap shrink-0 px-2.5 py-1 rounded-md text-[10px] leading-none font-mono-metric font-bold ${accent.bg} ${accent.text} border ${accent.border} uppercase tracking-widest`}
+                    className={`hidden sm:inline-flex items-center whitespace-nowrap shrink-0 px-2.5 py-1 rounded-md text-[10px] leading-none font-mono-metric font-bold ${accent.bg} ${badgeText} border ${accent.border} uppercase tracking-widest`}
                   >
                     {card.badge}
                   </span>
@@ -343,14 +345,14 @@ export function AchievementsSection({
                         className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider no-underline border transition-all hover:brightness-125 ${accent.tabActive}`}
                       >
                         <span>{card.ctaLabel}</span>
-                        <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+                        <ArrowUpRight className="size-4" />
                       </a>
                       <button
                         onClick={next}
                         className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[12px] font-bold uppercase tracking-wider bg-slate-surface border border-slate-border text-text-secondary hover:text-text-primary hover:border-slate-border-highlight transition-all cursor-pointer"
                       >
                         <span>{settings.inspectLabel}</span>
-                        <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        <ArrowRight className="size-4" />
                       </button>
                     </div>
                   </div>
@@ -362,16 +364,16 @@ export function AchievementsSection({
                         <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
                         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
                         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-                        <span className="ml-2 text-[11px] font-mono-metric text-text-tertiary truncate">{card.fileName}</span>
+                        <span className="ml-2 text-[11px] font-mono-metric text-[#A39E8D] truncate">{card.fileName}</span>
                         <span className={`ml-auto flex items-center gap-1.5 text-[10px] font-mono-metric uppercase tracking-wider shrink-0 ${accent.text}`}>
                           <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
                           {card.certStatus}
                         </span>
                       </div>
                       <div className="p-4 sm:p-5 font-mono-metric text-[12px] leading-relaxed">
-                        <div className="text-text-tertiary">{`// ${card.certSub}`}</div>
+                        <div className="text-[#A39E8D]">{`// ${card.certSub}`}</div>
                         <div className="mt-2">
-                          <span className="text-purple-400">const </span>
+                           <span className="text-purple-400">const </span>
                           <span className="text-cyan-300">registryRecord </span>
                           <span className="text-slate-400">= {'{'}</span>
                         </div>
@@ -397,11 +399,11 @@ export function AchievementsSection({
                           <div
                             className={`w-11 h-11 rounded-lg ${accent.softBg} border ${accent.border} flex items-center justify-center ${accent.text} shrink-0`}
                           >
-                            <span className="material-symbols-outlined text-[24px]">{card.certIcon}</span>
+                            <AppIcon name={card.certIcon} className="size-6" />
                           </div>
                           <div className="min-w-0">
                             <div className="text-[13px] font-bold text-white uppercase tracking-wider truncate">{card.certTitle}</div>
-                            <div className="text-[11px] text-text-tertiary font-mono-metric truncate">{card.certSub}</div>
+                            <div className="text-[11px] text-[#A39E8D] font-mono-metric truncate">{card.certSub}</div>
                           </div>
                         </div>
                         <p className="mt-3 text-[11px] text-amber-200/80 leading-relaxed">
@@ -425,12 +427,17 @@ export function AchievementsSection({
                   {deck.map((d, i) => (
                     <button
                       key={d.id}
+                      type="button"
                       aria-label={`Go to card ${i + 1}`}
                       onClick={() => goTo(i)}
-                      className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                        i === active ? `w-6 ${accent.bg} border ${accent.border}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
-                      }`}
-                    />
+                      className="p-1.5 flex items-center justify-center cursor-pointer focus:outline-none"
+                    >
+                      <span
+                        className={`h-1.5 rounded-full transition-all block ${
+                          i === active ? `w-6 ${accent.bg} border ${accent.border}` : 'w-1.5 bg-slate-border hover:bg-slate-border-highlight'
+                        }`}
+                      />
+                    </button>
                   ))}
                 </div>
                 <button
@@ -438,15 +445,15 @@ export function AchievementsSection({
                   aria-label="Previous honor"
                   className="w-9 h-9 shrink-0 rounded-lg border border-slate-border bg-slate-surface text-text-primary flex items-center justify-center hover:border-slate-border-highlight transition-all cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  <ChevronLeft className="size-[18px]" />
                 </button>
                 <button
                   onClick={next}
-                  aria-label="Next honor"
+                  aria-label="Cycle Deck, next honor"
                   className="w-9 h-9 sm:w-auto sm:h-9 sm:px-3.5 rounded-lg border border-slate-border bg-slate-surface text-text-secondary hover:text-text-primary hover:border-slate-border-highlight flex items-center justify-center sm:justify-start gap-0 sm:gap-1.5 text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
                 >
                   <span className="hidden sm:inline">Cycle Deck</span>
-                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                  <ChevronRight className="size-[18px]" />
                 </button>
               </div>
             </div>

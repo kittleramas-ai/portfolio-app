@@ -1,5 +1,8 @@
 import * as React from 'react'
 
+import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
+import { cn } from '../../routes/lib/utils'
+
 interface CountUpProps {
   target: number
   prefix?: string
@@ -29,11 +32,35 @@ export function CountUp({
   duration = 1200,
   className = '',
 }: CountUpProps) {
-  const [displayValue, setDisplayValue] = React.useState('0')
+  const isComma = format === 'comma'
+
+  /**
+   * Seeded with the REAL number, not `'0'`.
+   *
+   * This component previously started at `'0'` and only ever reached `target`
+   * after hydration had finished AND an IntersectionObserver had fired. Every
+   * number on the page therefore read "0" in the server HTML, and stayed there
+   * for as long as the main thread was busy — which is exactly what a visitor
+   * scrolling into view of this section sees. It also meant a visitor with JS
+   * blocked, or a crawler, read a portfolio claiming zero ventures, zero
+   * professionals and zero keynotes.
+   *
+   * The real figure costs nothing to render and is true at every point the
+   * animation is not running, so it is what the first paint shows.
+   */
+  const [displayValue, setDisplayValue] = React.useState(() =>
+    formatNumber(target, isComma),
+  )
   const ref = React.useRef<HTMLSpanElement>(null)
   const animatedRef = React.useRef(false)
 
   React.useEffect(() => {
+    if (prefersReducedMotion() || typeof window === 'undefined' || isMobileDevice()) {
+      setDisplayValue(formatNumber(target, isComma))
+      animatedRef.current = true
+      return
+    }
+
     const el = ref.current
     if (!el) return
 
@@ -41,7 +68,7 @@ export function CountUp({
       if (animatedRef.current) return
       animatedRef.current = true
 
-      const isComma = format === 'comma'
+      setDisplayValue('0')
       const startTime = performance.now()
 
       const update = (currentTime: number) => {
@@ -61,32 +88,37 @@ export function CountUp({
 
       requestAnimationFrame(update)
     }
-    
-    if (typeof IntersectionObserver !== 'undefined') {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              startAnimation()
-              observer.unobserve(entry.target)
-            }
-          })
-        },
-        {
-          threshold: 0.15,
-          rootMargin: '0px 0px -50px 0px',
-        },
-      )
 
-      observer.observe(el)
-      return () => observer.disconnect()
-    } else {
+    if (typeof IntersectionObserver === 'undefined') {
       startAnimation()
+      return
     }
-  }, [target, format, duration])
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            startAnimation()
+            observer.unobserve(entry.target)
+            break
+          }
+        }
+      },
+      {
+        threshold: 0,
+        rootMargin: '0px 0px 50px 0px',
+      },
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [target, format, duration, isComma])
 
   return (
-    <span ref={ref} className={className}>
+    <span
+      ref={ref}
+      className={cn('count-up', className)}
+    >
       {prefix}
       {displayValue}
       {suffix}

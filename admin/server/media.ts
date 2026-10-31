@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm'
+import sharp from 'sharp'
 
 import { getDb } from '../../src/db/index.ts'
 import { siteMedia } from '../../src/db/schema.ts'
@@ -13,10 +14,81 @@ import {
   writeUpload,
 } from './media-storage.ts'
 import { validateUpload } from './media-validate.ts'
+import { formatIndiaTimestamp } from './time.ts'
 
 export type SaveMediaResult =
   | { ok: true; entry: MediaEntry }
   | { ok: false; error: string }
+
+function heroPortraitVariantWidths(sourceWidth: number): number[] {
+  return [...new Set([300, 678].map((width) => Math.min(width, sourceWidth)))]
+}
+
+async function renderHeroPortraitVariant(
+  bytes: Uint8Array,
+  width: number,
+): Promise<Uint8Array> {
+  return sharp(bytes)
+    .resize({ width, withoutEnlargement: true })
+    .webp({ quality: 78 })
+    .toBuffer()
+}
+
+export async function ensureUploadImageVariant(
+  sourceFileName: string,
+  width: number,
+): Promise<string | null> {
+  if (!Number.isInteger(width) || width <= 0) {
+    throw new Error('Image variant width must be a positive integer.')
+  }
+  if (sourceFileName.includes('..') || sourceFileName.includes('/') || sourceFileName.includes('\\')) {
+    throw new Error('Invalid upload filename.')
+  }
+  const extensionIndex = sourceFileName.lastIndexOf('.')
+  if (extensionIndex <= 0) return null
+
+  const fileName = `${sourceFileName.slice(0, extensionIndex)}-${width}.webp`
+  if (await uploadExists(fileName)) return fileName
+
+  const source = await readUpload(sourceFileName)
+  if (!source) return null
+  const optimized = await sharp(source)
+    .resize({ width, withoutEnlargement: true })
+    .webp({ quality: 78 })
+    .toBuffer()
+  await writeUpload(fileName, optimized)
+  return fileName
+}
+
+/**
+ * Add responsive WebP derivatives for existing hero uploads the first time
+ * they are requested, as well as for images uploaded after this was added.
+ */
+export async function ensureHeroPortraitVariants(
+  sourceFileName: string,
+  sourceWidth: number,
+): Promise<void> {
+  const variants = heroPortraitVariantWidths(sourceWidth)
+  const checked = await Promise.all(
+    variants.map(async (width) => ({
+      width,
+      fileName: `hero_portrait-${width}.webp`,
+      exists: await uploadExists(`hero_portrait-${width}.webp`),
+    })),
+  )
+  const missing = checked.filter((variant) => !variant.exists)
+  if (missing.length === 0) return
+
+  const source = await readUpload(sourceFileName)
+  if (!source) throw new Error('The uploaded hero portrait could not be read.')
+
+  await Promise.all(
+    missing.map(async (variant) => {
+      const bytes = await renderHeroPortraitVariant(source, variant.width)
+      await writeUpload(variant.fileName, bytes)
+    }),
+  )
+}
 
 /**
  * Current state of every slot.
@@ -55,7 +127,7 @@ export async function listMedia(): Promise<MediaEntry[]> {
         width: row.width,
         height: row.height,
         altText: row.altText,
-        updatedAt: new Date(row.updatedAt).toISOString(),
+        updatedAt: formatIndiaTimestamp(new Date(row.updatedAt)),
       })
     }),
   )
@@ -102,18 +174,31 @@ export async function saveMedia(input: {
     .limit(1)
 
   try {
+    if (input.slot === 'hero_portrait') {
+      const variantWidths = heroPortraitVariantWidths(validated.width)
+      const variants = await Promise.all(
+        variantWidths.map(async (width) => ({
+          fileName: `${input.slot}-${width}.webp`,
+          bytes: await renderHeroPortraitVariant(input.bytes, width),
+        })),
+      )
+      await Promise.all(
+        variants.map((variant) => writeUpload(variant.fileName, variant.bytes)),
+      )
+    }
     await writeUpload(storageKey, input.bytes)
   } catch (err) {
     return {
       ok: false,
       error:
         err instanceof Error
-          ? `Could not save the file: ${err.message}`
+          ? `Could not save or optimize the file: ${err.message}`
           : 'Could not save the file.',
     }
   }
 
   const now = new Date()
+  const updatedAt = now
   await db
     .insert(siteMedia)
     .values({
@@ -124,11 +209,10 @@ export async function saveMedia(input: {
       width: validated.width,
       height: validated.height,
       altText: input.altText.slice(0, 160),
-      updatedAt: now,
+      updatedAt,
       updatedBy: input.updatedBy,
     })
-    .onConflictDoUpdate({
-      target: siteMedia.slot,
+.onDuplicateKeyUpdate({
       set: {
         storageKey,
         contentType: validated.contentType,
@@ -136,7 +220,7 @@ export async function saveMedia(input: {
         width: validated.width,
         height: validated.height,
         altText: input.altText.slice(0, 160),
-        updatedAt: now,
+        updatedAt,
         updatedBy: input.updatedBy,
       },
     })
@@ -157,7 +241,7 @@ export async function saveMedia(input: {
     width: validated.width,
     height: validated.height,
     altText: input.altText.slice(0, 160),
-    updatedAt: now.toISOString(),
+    updatedAt: formatIndiaTimestamp(now),
   }
   return { ok: true, entry: mediaEntrySchema.parse(entry) }
 }
@@ -171,6 +255,7 @@ export async function saveMedia(input: {
 export async function updateAltText(
   slot: MediaSlotKey,
   altText: string,
+  updatedBy: string,
 ): Promise<{ ok: boolean; error?: string }> {
   const db = getDb()
 
@@ -199,7 +284,11 @@ export async function updateAltText(
 
   await db
     .update(siteMedia)
-    .set({ altText: altText.slice(0, 160), updatedAt: new Date() })
+    .set({
+      altText: altText.slice(0, 160),
+      updatedAt: new Date(),
+      updatedBy,
+    })
     .where(eq(siteMedia.slot, slot))
 
   return { ok: true }

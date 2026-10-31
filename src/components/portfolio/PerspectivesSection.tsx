@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react'
 import { Reveal } from './Reveal'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { PerspectivesSettings } from '../../../admin/server/settings-schema'
@@ -111,9 +112,7 @@ export function PerspectivesSection({
               </div>
               <div className="pt-4 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px]">
                 <span className="text-text-tertiary">{article.footerLabel}</span>
-                <span className={`material-symbols-outlined text-[18px] ${accent.text} group-hover:translate-x-1 transition-transform`}>
-                  arrow_forward
-                </span>
+                <ArrowRight className={`size-[18px] ${accent.text} group-hover:translate-x-1 transition-transform`} />
               </div>
             </article>
           )

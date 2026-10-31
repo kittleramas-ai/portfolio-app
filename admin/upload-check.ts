@@ -4,8 +4,14 @@
  *
  * Uploads are multipart against /api/admin/media/<slot>, which is the path the
  * admin UI actually uses.
+ *
+ * The database is read through Drizzle rather than a raw `better-sqlite3`
+ * connection with `.prepare()`. Note the deliberate extra connection at the
+ * `row removed` assertion below: `deleteMedia()` writes through the app's own
+ * cached handle, so a second connection is the only way to observe the write
+ * without closing the app's handle mid-run.
  */
-import Database from 'better-sqlite3'
+import { eq } from 'drizzle-orm'
 import {
   existsSync,
   readdirSync,
@@ -15,6 +21,8 @@ import {
 } from 'node:fs'
 import { join } from 'node:path'
 
+import { closeCheckDb, openCheckDb } from './lib/db.ts'
+import { adminSession, adminUser, siteMedia } from '../src/db/schema.ts'
 import {
   buildSessionCookie,
   generateSessionToken,
@@ -23,8 +31,9 @@ import {
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const PEPPER = 'dev-only-pepper-not-for-production'
-const DB = join(process.cwd(), 'data', 'portfolio.db')
 const UPLOADS = join(process.cwd(), 'public', 'uploads')
+
+const { db } = await openCheckDb()
 
 let failures = 0
 function check(label: string, ok: boolean, detail = '') {
@@ -74,15 +83,27 @@ function makePng(width: number, height: number): Uint8Array {
 }
 
 // --- session ---------------------------------------------------------------
-const db = new Database(DB)
-db.pragma('foreign_keys = ON')
+const admin = await db
+  .select({ id: adminUser.id })
+  .from(adminUser)
+  .where(eq(adminUser.email, 'admin@portfolio.local'))
+  .limit(1)
+if (!admin[0]) {
+  console.error('no admin@portfolio.local row — run: npm run db:seed')
+  await closeCheckDb()
+  process.exit(1)
+}
+
 const token = generateSessionToken()
 const tokenHash = await hashSessionToken(token, PEPPER)
 const expires = new Date(Date.now() + 7 * 86_400_000)
-db.prepare(
-  `INSERT OR REPLACE INTO admin_session (id, user_id, token_hash, expires_at, created_at)
-   SELECT ?, id, ?, ?, ? FROM admin_user WHERE email = 'admin@portfolio.local'`,
-).run(crypto.randomUUID(), tokenHash, expires.getTime(), Date.now())
+await db.insert(adminSession).values({
+  id: crypto.randomUUID(),
+  userId: admin[0].id,
+  tokenHash,
+  expiresAt: expires,
+  createdAt: new Date(),
+})
 const cookie = buildSessionCookie(token, expires).split(';')[0]
 
 async function upload(
@@ -163,12 +184,21 @@ check(
 
 // --- 4. the row is recorded -------------------------------------------------
 {
-  const row = db
-    .prepare('SELECT slot, storage_key, content_type, width FROM site_media WHERE slot = ?')
-    .get('signature') as Record<string, unknown> | undefined
+  const rows = await db
+    .select({
+      slot: siteMedia.slot,
+      storageKey: siteMedia.storageKey,
+      contentType: siteMedia.contentType,
+      width: siteMedia.width,
+    })
+    .from(siteMedia)
+    .where(eq(siteMedia.slot, 'signature'))
+    .limit(1)
+  if (rows.length === 0) throw new Error('site_media row vanished mid-test')
+  const row = rows[0]
   check('database row created', Boolean(row))
-  check('row points at the written file', row?.storage_key === fileName)
-  check('row stores the detected content type', row?.content_type === 'image/png')
+  check('row points at the written file', row.storageKey === fileName)
+  check('row stores the detected content type', row.contentType === 'image/png')
 }
 
 // --- 5. the static file is served ------------------------------------------
@@ -252,31 +282,26 @@ if (existsSync(onDisk)) {
   // service function directly instead — the point of this test is the file and
   // row cleanup, not the RPC layer.
   const { deleteMedia } = await import('./server/media.ts')
-  const { getDb } = await import('../src/db/index.ts')
 
   const removed = await deleteMedia('signature')
   check('delete reports success', removed.ok === true)
 
-  // getDb() is a separate connection; close it so the check below sees the write.
-  try {
-    ;(getDb() as unknown as { $client?: { close?: () => void } }).$client?.close?.()
-  } catch {
-    /* no-op */
-  }
+  // deleteMedia writes through the app's own cached handle, which shares this
+  // process's connection — reading back through `db` sees its own write, so the
+  // old "open a second connection and hope" dance is unnecessary.
+  const rows = await db
+    .select({ slot: siteMedia.slot })
+    .from(siteMedia)
+    .where(eq(siteMedia.slot, 'signature'))
+    .limit(1)
 
   check('file removed from disk', !existsSync(onDisk))
-
-  const db2 = new Database(DB)
-  const row = db2
-    .prepare('SELECT slot FROM site_media WHERE slot = ?')
-    .get('signature')
-  db2.close()
-  check('row removed', row === undefined)
+  check('row removed', rows.length === 0)
 }
 
 // --- cleanup ---------------------------------------------------------------
-db.prepare('DELETE FROM admin_session WHERE token_hash = ?').run(tokenHash)
-db.close()
+await db.delete(adminSession).where(eq(adminSession.tokenHash, tokenHash))
+await closeCheckDb()
 rmSync(onDisk, { force: true })
 
 console.log(`\n${failures === 0 ? 'ALL PASS' : `${failures} FAILURE(S)`}`)

@@ -1,14 +1,38 @@
 import * as React from 'react'
 import { prefersReducedMotion, isMobileDevice } from '../../routes/lib/gsap'
 import { loadGsap } from '../../routes/lib/gsapLoader'
+import kittleLogo from '../../asserts/kittle_icon.webp'
+import kittleWhiteLogo from '../../asserts/kittle_white.webp'
+import infodazzLogo from '../../asserts/infodazz_logo.webp'
+import infodazzWhiteLogo from '../../asserts/infodazz_white.webp'
+import ssrgLogo from '../../asserts/ssrg_logo.webp'
+import ssrgWhiteLogo from '../../asserts/SSRG-WHITE.webp'
+import bniLogo from '../../asserts/bni_icon.webp'
 import { DEFAULT_SITE_SETTINGS } from '../../../admin/server/settings-schema'
 import type { AboutSettings } from '../../../admin/server/settings-schema'
+import { AppIcon } from './AppIcon'
 
 const DEFAULT_ABOUT = DEFAULT_SITE_SETTINGS.about
+const PILL_LOGOS: Record<string, string> = {
+  p1: infodazzLogo,
+  p2: kittleLogo,
+  p3: bniLogo,
+  p4: ssrgLogo,
+}
+const PILL_ICONS: Record<string, string> = {
+  p5: 'currency_rupee',
+  p6: 'school',
+}
+const PILL_LOGO_CLASSES: Record<string, string> = {
+  p1: 'h-auto w-24',
+  p2: 'h-auto w-24',
+  p3: 'size-12 scale-125 object-cover',
+  p4: 'size-12 object-contain',
+}
 
 /**
  * The six floating pills are a closed visual set, not a theme the admin picks:
- * each pill owns its own float animation class and its own gradient, and nothing
+ * each pill owns its own float animation class, and nothing
  * in settings records which is which. The classes therefore stay here in code
  * and are looked up POSITIONALLY — index 0 is the first pill of the left column,
  * index 3 the first of the right, matching the order of `settings.pills`. Adding
@@ -19,33 +43,27 @@ const DEFAULT_ABOUT = DEFAULT_SITE_SETTINGS.about
 const PILL_STYLES = [
   {
     pill: 'float-pill-1 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-blue-500/30 shadow-[0_0_20px_var(--portfolio-glow-cyan)] hover:border-blue-400/50 hover:shadow-[0_0_28px_var(--portfolio-glow-cyan-hover)] hover:scale-105 transition-all duration-300 cursor-pointer select-none',
-    disc: 'w-7 h-7 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-600 flex items-center justify-center text-white shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px]',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
   {
     pill: 'float-pill-2 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-blue-400/25 shadow-[0_0_16px_var(--portfolio-glow-blue)] hover:border-blue-400/45 hover:shadow-[0_0_24px_var(--portfolio-glow-blue-hover)] hover:scale-105 transition-all duration-300 cursor-pointer select-none lg:mr-4',
-    disc: 'w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px]',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
   {
     pill: 'float-pill-3 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-slate-border shadow-lg hover:border-blue-500/40 hover:shadow-[0_0_20px_var(--portfolio-glow-cyan)] hover:scale-105 transition-all duration-300 cursor-pointer select-none',
-    disc: 'w-7 h-7 rounded-full bg-slate-surface border border-slate-border flex items-center justify-center text-blue-500 shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px]',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
   {
     pill: 'float-pill-4 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-blue-500/30 shadow-[0_0_20px_var(--portfolio-glow-cyan)] hover:border-blue-400/50 hover:shadow-[0_0_28px_var(--portfolio-glow-cyan-hover)] hover:scale-105 transition-all duration-300 cursor-pointer select-none',
-    disc: 'w-7 h-7 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center text-white shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px] font-bold',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
   {
     pill: 'float-pill-5 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-blue-400/25 shadow-[0_0_16px_var(--portfolio-glow-blue)] hover:border-blue-400/45 hover:shadow-[0_0_24px_var(--portfolio-glow-blue-hover)] hover:scale-105 transition-all duration-300 cursor-pointer select-none lg:ml-4',
-    disc: 'w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px]',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
   {
     pill: 'float-pill-6 inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-surface border border-indigo-400/25 shadow-[0_0_16px_var(--portfolio-glow-indigo)] hover:border-indigo-400/45 hover:shadow-[0_0_24px_var(--portfolio-glow-indigo-hover)] hover:scale-105 transition-all duration-300 cursor-pointer select-none',
-    disc: 'w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center text-white shadow-sm shrink-0',
-    glyph: 'material-symbols-outlined text-[16px] font-bold',
+    disc: 'h-8 w-12 flex items-center justify-center shrink-0 overflow-hidden',
   },
 ] as const
 
@@ -63,34 +81,26 @@ const pillStyleAt = (index: number) =>
  */
 const PILLAR_STYLES = [
   {
+
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-blue relative group transition-all duration-300 hover:border-blue-400/40',
     header: 'grid grid-cols-3 gap-1 p-1 bg-slate-surface rounded-md border border-slate-border shrink-0',
     headerKind: 'dots',
-    headerGlyph: '',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]',
   },
   {
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-amber relative group transition-all duration-300 hover:border-blue-400/40',
     header: 'w-6 h-6 rounded-md bg-blue-500/15 border border-blue-400/35 flex items-center justify-center text-[#0D281E] dark:text-[#E5C07B] shrink-0',
     headerKind: 'glyph',
-    headerGlyph: 'material-symbols-outlined text-[15px]',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-[#0D281E] dark:text-[#E5C07B] uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-[#0D281E] dark:text-[#E5C07B] text-[16px]',
   },
   {
     card: 'w-full max-w-2xl p-6 md:p-7 rounded-2xl md:rounded-3xl executive-card executive-card-glow-cyan relative group transition-all duration-300 hover:border-cyan-400/40',
     header: 'w-6 h-6 rounded-md bg-cyan-500/15 border border-cyan-400/35 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0',
     headerKind: 'glyph',
-    headerGlyph: 'material-symbols-outlined text-[15px]',
     label:
       'text-[12px] font-mono-metric font-semibold tracking-[0.2em] text-cyan-600 dark:text-cyan-300 uppercase',
-    footerGlyph:
-      'material-symbols-outlined text-cyan-600 dark:text-cyan-400 text-[16px]',
   },
 ] as const
 
@@ -167,16 +177,62 @@ export function AboutSection({
   const renderPill = (
     pill: AboutSettings['pills'][number],
     style: (typeof PILL_STYLES)[number],
-  ) => (
-    <div key={pill.id} className={style.pill}>
-      <div className={style.disc}>
-        <span className={style.glyph}>{pill.icon}</span>
+  ) => {
+    const logo = pill.logoUrl || PILL_LOGOS[pill.id]
+    const darkLogo = {
+      p1: infodazzWhiteLogo,
+      p2: kittleWhiteLogo,
+      p4: ssrgWhiteLogo,
+    }[pill.id]
+    const logoClass =
+      `max-h-full max-w-full object-contain ${PILL_LOGO_CLASSES[pill.id] ?? 'size-10'}`
+    return (
+      <div key={pill.id} className={style.pill}>
+        <div className={logo ? 'flex h-12 w-24 shrink-0 items-center justify-center overflow-hidden' : 'flex size-8 shrink-0 items-center justify-center'}>
+          {darkLogo ? (
+            <>
+              <img
+                src={logo}
+                alt=""
+                width={96}
+                height={32}
+                loading="lazy"
+                decoding="async"
+                className={`${logoClass} dark:hidden`}
+              />
+              <img
+                src={darkLogo}
+                alt=""
+                width={96}
+                height={32}
+                loading="lazy"
+                decoding="async"
+                className={`${logoClass} hidden dark:block`}
+              />
+            </>
+          ) : logo ? (
+            <img
+              src={logo}
+              alt=""
+              width={96}
+              height={32}
+              loading="lazy"
+              decoding="async"
+              className={`max-h-full max-w-full object-contain ${PILL_LOGO_CLASSES[pill.id] ?? 'size-10'}`}
+            />
+          ) : (
+            <AppIcon
+              name={PILL_ICONS[pill.id] ?? 'building'}
+              className="size-[18px] text-[#0D281E] dark:text-[#E5C07B]"
+            />
+          )}
+        </div>
+        <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
+          {pill.label}
+        </span>
       </div>
-      <span className="text-[13px] font-mono-metric font-semibold text-text-primary tracking-tight">
-        {pill.label}
-      </span>
-    </div>
-  )
+    )
+  }
 
   return (
     <section
@@ -212,7 +268,7 @@ export function AboutSection({
       <div className="w-full mb-16 relative z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-label-badge font-label-badge bg-slate-surface border border-blue-500/30 text-blue-600 dark:text-[#E5C07B] mb-4">
-            <span className="material-symbols-outlined text-[14px]">{settings.eyebrowIcon}</span>
+            <AppIcon name={settings.eyebrowIcon} className="size-3.5" />
             <span>{settings.eyebrow}</span>
           </div>
         </div>
@@ -293,9 +349,7 @@ export function AboutSection({
                       </div>
                     ) : (
                       <div className={style.header}>
-                        <span className={style.headerGlyph}>
-                          {pillar.headerIcon}
-                        </span>
+                        <AppIcon name={pillar.headerIcon} className="size-3.5" />
                       </div>
                     )}
                     <span className={style.label}>{pillar.label}</span>
@@ -308,7 +362,7 @@ export function AboutSection({
                   </p>
                   <div className="pt-3 border-t border-slate-border flex items-center justify-between text-mono-metric font-mono-metric text-[12px] text-text-secondary">
                     <span>{pillar.footerMeta}</span>
-                    <span className={style.footerGlyph}>{pillar.footerIcon}</span>
+                    <AppIcon name={pillar.footerIcon} className="size-3.5 text-accent-gold" />
                   </div>
                 </div>
               </div>

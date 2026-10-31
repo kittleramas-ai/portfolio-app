@@ -24,7 +24,7 @@ export const Route = createFileRoute('/api/admin/media/$slot')({
     handlers: {
       POST: async ({ request, params }) => {
         try {
-          await requireAdmin(request)
+          const admin = await requireAdmin(request)
 
           if (!isSafeSameOrigin(request)) {
             return Response.json(
@@ -69,7 +69,7 @@ export const Route = createFileRoute('/api/admin/media/$slot')({
             declaredType: file.type,
             bytes,
             altText,
-            updatedBy: null,
+            updatedBy: admin.userId,
           })
 
           if (!result.ok) {

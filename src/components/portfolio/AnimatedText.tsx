@@ -32,6 +32,19 @@ type AnimatedTextProps = {
  * SSR-safe: renders plain text on server, splits only on client.
  * Respects prefers-reduced-motion.
  */
+function extractText(node: React.ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node)
+  }
+  if (Array.isArray(node)) {
+    return node.map(extractText).join(' ')
+  }
+  if (React.isValidElement(node)) {
+    return extractText((node.props as any)?.children)
+  }
+  return ''
+}
+
 export function AnimatedText({
   as = 'div',
   split = 'words',
@@ -51,6 +64,10 @@ export function AnimatedText({
   const [mobileVisible, setMobileVisible] = React.useState(false)
   // Set post-mount so SSR + first client render stay identical (no hydration mismatch).
   const [isMobile, setIsMobile] = React.useState(false)
+
+  const textLabel = React.useMemo(() => {
+    return extractText(children).replace(/\s+/g, ' ').trim()
+  }, [children])
 
   const defaultStagger = React.useMemo(() => {
     if (stagger !== undefined) return stagger
@@ -98,18 +115,60 @@ export function AnimatedText({
     let cancelled = false
     let revert: (() => void) | null = null
 
+    /**
+     * How long a `mode="load"` animation will WAIT for GSAP before giving up.
+     *
+     * The hero headline is server-rendered and fully visible on first paint —
+     * `.gsap-animated-text` deliberately carries no `opacity: 0`, because hiding
+     * the largest text on the page in CSS would suppress its LCP and leave the
+     * name permanently invisible if GSAP ever failed to load.
+     *
+     * The cost of that choice is that the reveal can only start once GSAP
+     * arrives. When it is slow, `fromTo` applies `autoAlpha: 0` to text the
+     * visitor has already been reading, so the headline DISAPPEARS and then
+     * slides back in. That reads as a broken page, not as an animation.
+     *
+     * So a load-mode reveal is treated as a bonus: if GSAP has not arrived
+     * within this budget the text is simply left alone. Fast connections still
+     * get the full animation; slow ones get a headline that is simply already
+     * there. Scroll- and scrub-triggered modes are unaffected — nothing is
+     * visible until the element is scrolled into view, so a late arrival there
+     * causes no pop.
+     */
+    const LOAD_BUDGET_MS = 400
+    let deadline: number | undefined
+    const budget = new Promise<'budget-expired'>((resolve) => {
+      deadline = window.setTimeout(
+        () => resolve('budget-expired'),
+        LOAD_BUDGET_MS,
+      )
+    })
+
     // GSAP loads lazily (separate chunk) — never in the initial bundle.
-    loadGsap().then(
-      ({ gsap, ScrollTrigger, SplitText }) => {
+    Promise.race([
+      loadGsap().then((api) => ({ api } as const)),
+      budget,
+    ]).then(
+      (result) => {
+        if (deadline !== undefined) window.clearTimeout(deadline)
         if (cancelled || !ref.current) return
+        // Out of budget (or GSAP failed): leave the text exactly as rendered.
+        if (result === 'budget-expired') return
+        const { gsap, ScrollTrigger, SplitText } = result.api
         const ctx = gsap.context(() => {
           let splitter: SplitTextType | null = null
           try {
             splitter = new SplitText(el as HTMLElement, {
               type: split,
-              // keep accessible original? SplitText handles aria automatically in 3.13+
               smartWrap: true,
             } as any)
+            
+            // Fix Lighthouse prohibited ARIA attribute errors (SplitText adds these)
+            el.removeAttribute('aria-label')
+            const hiddenChildren = el.querySelectorAll('[aria-hidden="true"]')
+            for (let i = 0; i < hiddenChildren.length; i++) {
+              hiddenChildren[i].removeAttribute('aria-hidden')
+            }
           } catch (err) {
             console.warn('[AnimatedText] SplitText failed, falling back to block fade.', err)
             gsap.fromTo(
@@ -125,11 +184,11 @@ export function AnimatedText({
                   mode === 'load'
                     ? undefined
                     : {
-                        trigger: el,
-                        start,
-                        once: mode === 'scroll',
-                        scrub: mode === 'scrub' ? true : undefined,
-                      },
+                      trigger: el,
+                      start,
+                      once: mode === 'scroll',
+                      scrub: mode === 'scrub' ? true : undefined,
+                    },
               },
             )
             return
@@ -163,7 +222,7 @@ export function AnimatedText({
             const safety = window.setTimeout(() => {
               gsap.set(targets, { y: 0, autoAlpha: 1, clearProps: 'transform' })
             }, (delay + duration + defaultStagger * targets.length) * 1000 + 800)
-            ;(tween as any)?.then?.(() => window.clearTimeout(safety))
+              ; (tween as any)?.then?.(() => window.clearTimeout(safety))
             const origCleanup = () => window.clearTimeout(safety)
             // chain into outer cleanup via ScrollTrigger refresh timer below
             window.setTimeout(origCleanup, (delay + duration + 2) * 1000)
@@ -198,6 +257,7 @@ export function AnimatedText({
                 ease,
                 overwrite: true,
                 clearProps: 'transform',
+
                 // Fail-visible: stale trigger measurements after fast anchor
                 // jumps leave text readable instead of hidden.
                 immediateRender: false,
@@ -231,6 +291,9 @@ export function AnimatedText({
 
     return () => {
       cancelled = true
+      // Cleared so an unmount before the budget expires does not leave a timer
+      // running against a detached node.
+      if (deadline !== undefined) window.clearTimeout(deadline)
       revert?.()
     }
   }, [split, mode, defaultStagger, duration, y, delay, ease, start, isMobile])
